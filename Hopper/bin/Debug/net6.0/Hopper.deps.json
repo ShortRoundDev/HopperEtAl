@@ -1,0 +1,79 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "Hopper/1.0.0": {
+        "dependencies": {
+          "LibJohn": "1.0.0",
+          "NLog": "4.7.12",
+          "OpenGL.Net": "0.8.4",
+          "SDL2-CS": "1.0.0"
+        },
+        "runtime": {
+          "Hopper.dll": {}
+        }
+      },
+      "NLog/4.7.12": {
+        "runtime": {
+          "lib/netstandard2.0/NLog.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.7.12.301"
+          }
+        }
+      },
+      "OpenGL.Net/0.8.4": {
+        "runtime": {
+          "lib/net461/OpenGL.Net.dll": {
+            "assemblyVersion": "0.8.4.0",
+            "fileVersion": "0.8.4.0"
+          }
+        }
+      },
+      "LibJohn/1.0.0": {
+        "runtime": {
+          "LibJohn.dll": {}
+        }
+      },
+      "SDL2-CS/1.0.0": {
+        "runtime": {
+          "SDL2-CS.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Hopper/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "NLog/4.7.12": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-cFe+YQVxghBt4hoB8IH+XVW/vyS6rWJPfWmm0rmgS/iaI3lzzFsGRzjw3VhByovLugw7Zp3kY7nVUWADCu6n2g==",
+      "path": "nlog/4.7.12",
+      "hashPath": "nlog.4.7.12.nupkg.sha512"
+    },
+    "OpenGL.Net/0.8.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-F7o2KkIrz9rrtBY7+VRgPKnf2mV8pt3h4/o/CWPt86oIocjzKTQFNo2qH4zVYSWyy/T9rS0xBpu9t75MS6wM8Q==",
+      "path": "opengl.net/0.8.4",
+      "hashPath": "opengl.net.0.8.4.nupkg.sha512"
+    },
+    "LibJohn/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "SDL2-CS/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

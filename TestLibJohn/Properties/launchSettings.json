@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TestLibJohn": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\colli\\source\\repos\\Hopper\\TestLibJohn"
+    }
+  }
+}

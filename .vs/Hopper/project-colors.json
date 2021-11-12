@@ -1,0 +1,31 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "7561b192-7771-4634-8088-4944b056f399": {
+      "ProjectGuid": "7561b192-7771-4634-8088-4944b056f399",
+      "DisplayName": "Hopper",
+      "ColorIndex": 0
+    },
+    "dd5906a2-4bb3-4dcd-8b4a-5b8f5e97373a": {
+      "ProjectGuid": "dd5906a2-4bb3-4dcd-8b4a-5b8f5e97373a",
+      "DisplayName": "SDL2-CS.Core",
+      "ColorIndex": 1
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    },
+    "ebc760ee-ae3b-458b-bc6f-d713f0fb1486": {
+      "ProjectGuid": "ebc760ee-ae3b-458b-bc6f-d713f0fb1486",
+      "DisplayName": "LibJohn",
+      "ColorIndex": 2
+    },
+    "dd78d12c-16cb-48fa-9270-35e81bc87fc6": {
+      "ProjectGuid": "dd78d12c-16cb-48fa-9270-35e81bc87fc6",
+      "DisplayName": "TestLibJohn",
+      "ColorIndex": 3
+    }
+  },
+  "NextColorIndex": 4
+}

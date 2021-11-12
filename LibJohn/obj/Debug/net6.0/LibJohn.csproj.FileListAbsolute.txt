@@ -1,0 +1,13 @@
+C:\Users\colli\source\repos\Hopper\LibJohn\bin\Debug\net6.0\LibJohn.deps.json
+C:\Users\colli\source\repos\Hopper\LibJohn\bin\Debug\net6.0\LibJohn.dll
+C:\Users\colli\source\repos\Hopper\LibJohn\bin\Debug\net6.0\ref\LibJohn.dll
+C:\Users\colli\source\repos\Hopper\LibJohn\bin\Debug\net6.0\LibJohn.pdb
+C:\Users\colli\source\repos\Hopper\LibJohn\obj\Debug\net6.0\LibJohn.GlobalUsings.g.cs
+C:\Users\colli\source\repos\Hopper\LibJohn\obj\Debug\net6.0\LibJohn.csproj.AssemblyReference.cache
+C:\Users\colli\source\repos\Hopper\LibJohn\obj\Debug\net6.0\LibJohn.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\colli\source\repos\Hopper\LibJohn\obj\Debug\net6.0\LibJohn.AssemblyInfoInputs.cache
+C:\Users\colli\source\repos\Hopper\LibJohn\obj\Debug\net6.0\LibJohn.AssemblyInfo.cs
+C:\Users\colli\source\repos\Hopper\LibJohn\obj\Debug\net6.0\LibJohn.csproj.CoreCompileInputs.cache
+C:\Users\colli\source\repos\Hopper\LibJohn\obj\Debug\net6.0\LibJohn.dll
+C:\Users\colli\source\repos\Hopper\LibJohn\obj\Debug\net6.0\ref\LibJohn.dll
+C:\Users\colli\source\repos\Hopper\LibJohn\obj\Debug\net6.0\LibJohn.pdb

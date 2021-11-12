@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Textures>
+	<!-- Tiles -->
+	<Texture>
+		<Name>1</Name>
+		<Path>Assets\Textures\Tiles\1.png</Path>
+	</Texture>
+	<Texture>
+		<Name>2</Name>
+		<Path>Assets\Textures\Tiles\2.png</Path>
+	</Texture>
+		<Texture>
+		<Name>3</Name>
+		<Path>Assets\Textures\Tiles\3.png</Path>
+	</Texture>
+	<!-- Engine -->
+	<Texture>
+		<Name>Numbers</Name>
+		<Path>Assets\Textures\Engine\Numbers.png</Path>
+	</Texture>
+	<!-- Game Engine Default Textures -->
+	<Texture>
+		<Name>Missing</Name>
+		<Path>Assets\Textures\Engine\Missing.png</Path>
+	</Texture>
+	<!-- Entities -->
+	<Texture>
+		<Name>Player</Name>
+		<Path>Assets\Textures\Player\Player.png</Path>
+	</Texture>
+	<Texture>
+		<Name>Brainiac</Name>
+		<Path>Assets\Textures\Enemies\Brainiac\Brainiac.png</Path>
+	</Texture>
+	<Texture>
+		<Name>Turret</Name>
+		<Path>Assets\Textures\Enemies\Turret\Turret.png</Path>
+	</Texture>
+	
+	<Texture>
+		<Name>RedKey</Name>
+		<Path>Assets\Textures\Items\Keys\RedKey.png</Path>
+	</Texture>
+	<Texture>
+		<Name>GreenKey</Name>
+		<Path>Assets\Textures\Items\Keys\GreenKey.png</Path>
+	</Texture>
+	<Texture>
+		<Name>BlueKey</Name>
+		<Path>Assets\Textures\Items\Keys\BlueKey.png</Path>
+	</Texture>
+
+	<Texture>
+		<Name>RedDoor</Name>
+		<Path>Assets\Textures\Doors\RedDoor.png</Path>
+	</Texture>
+	<Texture>
+		<Name>GreenDoor</Name>
+		<Path>Assets\Textures\Doors\GreenDoor.png</Path>
+	</Texture>
+	<Texture>
+		<Name>BlueDoor</Name>
+		<Path>Assets\Textures\Doors\BlueDoor.png</Path>
+	</Texture>
+
+	<Texture>
+		<Name>Ammo</Name>
+		<Path>Assets\Textures\Items\Ammo\Ammo.png</Path>
+	</Texture>
+
+	<Texture>
+		<Name>Pizza</Name>
+		<Path>Assets\Textures\Items\Collectibles\Pizza.png</Path>
+	</Texture>
+	<Texture>
+		<Name>Burrito</Name>
+		<Path>Assets\Textures\Items\Collectibles\Burrito.png</Path>
+	</Texture>
+</Textures>
