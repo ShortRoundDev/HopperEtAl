@@ -121,11 +121,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\colli\\source\\repos\\Hopper\\Hopper\\Hopper.csproj",
+      "projectUniqueName": "C:\\Users\\colli\\Source\\Repos\\HopperEtAl\\Hopper\\Hopper.csproj",
       "projectName": "Hopper",
-      "projectPath": "C:\\Users\\colli\\source\\repos\\Hopper\\Hopper\\Hopper.csproj",
+      "projectPath": "C:\\Users\\colli\\Source\\Repos\\HopperEtAl\\Hopper\\Hopper.csproj",
       "packagesPath": "C:\\Users\\colli\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\colli\\source\\repos\\Hopper\\Hopper\\obj\\",
+      "outputPath": "C:\\Users\\colli\\Source\\Repos\\HopperEtAl\\Hopper\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -140,17 +140,18 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\colli\\source\\repos\\Hopper\\LibJohn\\LibJohn.csproj": {
-              "projectPath": "C:\\Users\\colli\\source\\repos\\Hopper\\LibJohn\\LibJohn.csproj"
+            "C:\\Users\\colli\\Source\\Repos\\HopperEtAl\\LibJohn\\LibJohn.csproj": {
+              "projectPath": "C:\\Users\\colli\\Source\\Repos\\HopperEtAl\\LibJohn\\LibJohn.csproj"
             },
-            "C:\\Users\\colli\\source\\repos\\Hopper\\SDL2-CS\\SDL2-CS.Core.csproj": {
-              "projectPath": "C:\\Users\\colli\\source\\repos\\Hopper\\SDL2-CS\\SDL2-CS.Core.csproj"
+            "C:\\Users\\colli\\Source\\Repos\\HopperEtAl\\SDL2-CS\\SDL2-CS.Core.csproj": {
+              "projectPath": "C:\\Users\\colli\\Source\\Repos\\HopperEtAl\\SDL2-CS\\SDL2-CS.Core.csproj"
             }
           }
         }
@@ -189,7 +190,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100-rc.2.21505.57\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100-rc.1.21463.6\\RuntimeIdentifierGraph.json"
       }
     }
   },

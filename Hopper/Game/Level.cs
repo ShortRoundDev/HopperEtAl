@@ -18,6 +18,7 @@ namespace Hopper.Game
 
         public UInt16 Width { get; set; }
         public UInt16 Height { get; set; }
+        public Tile[,] Background { get; set; }
         public Tile[,] Tiles { get; set; }
         public List<Entity> Entities { get; set; } = new();
 

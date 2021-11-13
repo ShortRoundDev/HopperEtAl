@@ -24,7 +24,7 @@ namespace Hopper.Managers
         public static void Init()
         {
             InitEntityDefinitions();
-            CurrentLevel = new Level("Assets/Levels/FirstMap.map");
+            CurrentLevel = new Level("Assets/Levels/Test.txt");
         }
 
         public static void Update()
