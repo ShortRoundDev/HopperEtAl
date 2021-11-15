@@ -20,7 +20,7 @@ namespace Hopper.Game.Entities.Doors
                 {
                     1 => "RedDoor",
                     2 => "GreenDoor",
-                    4 => "BluueDoor"
+                    4 => "BlueDoor"
                 }
             ),
             x, y,
@@ -65,11 +65,11 @@ namespace Hopper.Game.Entities.Doors
                             return;
                         }
                     }
-                    if (e.MoveVec.x > 0)
+                    if (e.Box.x < Box.x)
                     {
                         e.Box.x = Box.x - e.Box.w - 1;
                     }
-                    else
+                    else if(e.Box.x + e.Box.w > Box.x + Box.w)
                     {
                         e.Box.x = Box.x + Box.w + 1;
                     }

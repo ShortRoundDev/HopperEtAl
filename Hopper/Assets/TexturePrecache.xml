@@ -9,9 +9,21 @@
 		<Name>2</Name>
 		<Path>Assets\Textures\Tiles\2.png</Path>
 	</Texture>
-		<Texture>
+	<Texture>
 		<Name>3</Name>
 		<Path>Assets\Textures\Tiles\3.png</Path>
+	</Texture>
+	<Texture>
+		<Name>4</Name>
+		<Path>Assets\Textures\Tiles\4.png</Path>
+	</Texture>
+	<Texture>
+		<Name>5</Name>
+		<Path>Assets\Textures\Tiles\5.png</Path>
+	</Texture>
+	<Texture>
+		<Name>6</Name>
+		<Path>Assets\Textures\Tiles\6.png</Path>
 	</Texture>
 	<!-- Engine -->
 	<Texture>
@@ -75,5 +87,19 @@
 	<Texture>
 		<Name>Burrito</Name>
 		<Path>Assets\Textures\Items\Collectibles\Burrito.png</Path>
+	</Texture>
+	<Texture>
+		<Name>BubbleTea</Name>
+		<Path>Assets\Textures\Items\Collectibles\BubbleTea.png</Path>
+	</Texture>
+	<Texture>
+		<Name>BubbleTeaEmpty</Name>
+		<Path>Assets\Textures\Items\Collectibles\BubbleTeaEmpty.png</Path>
+	</Texture>
+
+	<!-- Particles -->
+	<Texture>
+		<Name>GreenBubble</Name>
+		<Path>Assets\Textures\Particles\Bubble.png</Path>
 	</Texture>
 </Textures>

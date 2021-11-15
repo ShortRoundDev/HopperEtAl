@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hopper.Game.Entities.Items
 {
-    [EntityId('r')]
+    [EntityId(1002)]
     public class RedKey : Key
     {
         public RedKey(int x, int y) : base(x, y, 1)

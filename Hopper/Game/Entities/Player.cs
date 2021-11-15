@@ -15,14 +15,14 @@ using Scancodes = SDL2.SDL.SDL_Scancode;
 
 namespace Hopper.Game.Entities
 {
-    [EntityId('P')]
+    [EntityId(3003)]
     public class Player : Entity, Killable
     {
 
         bool Walking { get; set; } = false;
         bool Jumping { get; set; } = false;
 
-        int DamageBoost { get; set; } = 0;
+        public int DamageBoost { get; set; } = 0;
         public int Ammo { get; set; } = 0;
         public int Score { get; set; } = 0;
         public int Keys { get; set; }
@@ -45,8 +45,7 @@ namespace Hopper.Game.Entities
         public Player(int x, int y) : base(
             GraphicsManager.GetTexture("Player"),
             x, y,
-            32,
-            48
+            32, 48
         )
         {
             GameManager.MainPlayer = this;
@@ -106,28 +105,19 @@ namespace Hopper.Game.Entities
             Animate.Update();
             MoveAndCollide();
 
+            float gravity = GameManager.Gravity;
+            if(MoveVec.y < 0 && !InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down)
+            {
+                gravity *= 2.0f;
+            }
+
             if (DamageBoost > 0)
             {
                 DamageBoost--;
             }
-            else
-            {
-                foreach(var entity in GameManager.CurrentLevel.Entities)
-                {
-                    if(entity is Enemy)
-                    {
-                        if (entity.Box.Intersect(Box))
-                        {
-                            DamageBoost = 100;
-                            MoveVec.x = -4;
-                            MoveVec.y = -4;
-                        }
-                    }
-                }
-            }
 
             var moveVec = MoveVec;
-            moveVec.y += GameManager.Gravity;
+            moveVec.y += gravity;
             bool shooting = false;
             if (shootTimer > 0)
             {
@@ -159,12 +149,12 @@ namespace Hopper.Game.Entities
                 moveVec.x = -2.0f;
                 Walking = true;
             }
-            if(InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down && OnGround)
+            if(InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Edge && OnGround)
             {
                 Jumping = true;
                 moveVec.y = -8.0f;
             }
-            if (Ammo > 0 && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LCTRL].Down && shootTimer <= 10)
+            if (Ammo > 0 && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LCTRL].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LCTRL].Edge && shootTimer <= 10)
             {
                 Ammo--;
                 GameManager.AddEntity(
@@ -187,6 +177,13 @@ namespace Hopper.Game.Entities
             Animate.Animation = animations[(shooting ? "Shooting" : "Default") + animation];
 
             MoveVec = moveVec;
+        }
+
+        public void OnDamageHandler(Entity e, int Damage)
+        {
+            DamageBoost = 100;
+            MoveVec.x = -4;
+            MoveVec.y = -4;
         }
     }
 }

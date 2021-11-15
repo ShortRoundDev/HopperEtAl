@@ -18,11 +18,24 @@ namespace Hopper.Graphics
 
         public float Frame { get; set; } = 0.0f;
         public int Animation { get; set; } = 0;
+        public bool Loop { get; set; } = true;
+        public bool Finished { get; set; } = false;
 
         public void Update()
         {
+            if (Finished)
+            {
+                return;
+            }
             Frame += Speed;
-            Frame = Frame % Columns;
+            if (Loop)
+            {
+                Frame = Frame % Columns;
+            }
+            else if(Frame > Columns) {
+                Frame = Columns;
+                Finished = true;
+            }
         }
 
         public SDL.SDL_Rect GetUVMap()

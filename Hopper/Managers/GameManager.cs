@@ -13,7 +13,7 @@ namespace Hopper.Managers
     public static class GameManager
     {
         public static Level CurrentLevel { get; set; }
-        public static float Gravity { get; set; } = 0.4f;
+        public static float Gravity { get; set; } = 0.3f;
         private static Dictionary<UInt16, Type> TypeIds { get; set; } = new();
 
         private static List<Entity> ToDelete { get; set; } = new();
@@ -24,7 +24,7 @@ namespace Hopper.Managers
         public static void Init()
         {
             InitEntityDefinitions();
-            CurrentLevel = new Level("Assets/Levels/Test.txt");
+            CurrentLevel = new Level("Assets/Levels/FirstMap.map");
         }
 
         public static void Update()

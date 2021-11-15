@@ -11,7 +11,7 @@ namespace Hopper.Graphics
 {
     public class Camera
     {
-        public SDL.SDL_FPoint Position { get; set; }
+        public SDL.SDL_FPoint Position { get; set; } = new SDL.SDL_FPoint() { x = 0, y = 0 };
         public Func<SDL.SDL_FPoint> Tracker { get; set; }
         public SDL.SDL_FPoint Scale { get; set; }
         public void Draw()

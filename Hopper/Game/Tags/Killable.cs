@@ -14,11 +14,13 @@ namespace Hopper.Game.Tags
     {
         public int Health { get; set; }
         public int MaxHealth { get; set; }
+        public int DamageBoost { get; set; }
 
         public void OnDamage(Entity entity, int damage)
         {
             var _this = this as Entity;
             Health -= damage;
+            OnDamageHandler(entity, damage);
             if (_this == null)
             {
                 return;
@@ -56,6 +58,11 @@ namespace Hopper.Game.Tags
                 b = 0x00,
                 a = 0x00
             });
+        }
+
+        public void OnDamageHandler(Entity e, int damage)
+        {
+            return;
         }
     }
 }

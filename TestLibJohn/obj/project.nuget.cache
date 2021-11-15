@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gu2G2ngEGI1R35Q1ZnhPYDiZOKFE9+11y8oti5yzmlgHLlEwQhLxaTCbK+4Ow24GazA42LF8P9Fghnij1sN7pA==",
+  "dgSpecHash": "VIuOHDE/bt+xiUN2bZP5NsiC2H9ZHe+RnxUrSF7u8z9/+Z8Fve4ycwDjizfM/jN/k2zUoGUooNNXTwb5NVpEVg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\colli\\Source\\Repos\\HopperEtAl\\TestLibJohn\\TestLibJohn.csproj",
+  "projectFilePath": "C:\\Users\\colli\\source\\repos\\Hopper\\TestLibJohn\\TestLibJohn.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\colli\\.nuget\\packages\\coverlet.collector\\3.1.0\\coverlet.collector.3.1.0.nupkg.sha512",
     "C:\\Users\\colli\\.nuget\\packages\\microsoft.codecoverage\\16.11.0\\microsoft.codecoverage.16.11.0.nupkg.sha512",

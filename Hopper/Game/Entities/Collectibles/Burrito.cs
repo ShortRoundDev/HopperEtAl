@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Hopper.Game.Entities.Collectibles
 {
-    [EntityId('h')]
+    [EntityId(1005)]
     public class Burrito : Collectible
     {
         public Burrito(int x, int y) : base(GraphicsManager.GetTexture("Burrito"), x, y)

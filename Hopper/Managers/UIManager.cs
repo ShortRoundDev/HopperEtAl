@@ -14,9 +14,13 @@ namespace Hopper.Managers
     {
         public static Queue<(string Message, Point Position)> NumberMessages { get; set; } = new();
         private static IntPtr Numbers { get; set; }
+        private static IntPtr BubbleTea { get; set; }
+        private static IntPtr EmptyBubbleTea { get; set; }
         public static void Init()
         {
             Numbers = GraphicsManager.GetTexture("Numbers");
+            BubbleTea = GraphicsManager.GetTexture("BubbleTea");
+            EmptyBubbleTea = GraphicsManager.GetTexture("BubbleTeaEmpty");
         }
 
         public static void Draw()
@@ -27,6 +31,7 @@ namespace Hopper.Managers
                 var message = NumberMessages.Dequeue();
                 DrawNumberString(message.Message, message.Position);
             }
+            DrawHealthBar();
         }
 
         public static void DrawNumbers(string message, Point position)
@@ -60,6 +65,44 @@ namespace Hopper.Managers
                 };
                 SDL.SDL_RenderCopyF(GraphicsManager.Renderer, Numbers, ref src, ref r);
                 //Render.Box(r, src, Numbers, SDL.SDL_RendererFlip.SDL_FLIP_NONE);
+            }
+        }
+
+        private static void DrawHealthBar()
+        {
+            var player = GameManager.MainPlayer;
+
+            var src = new SDL.SDL_Rect()
+            {
+                x = 0,
+                y = 0,
+                w = 12,
+                h = 16
+            };
+            
+            for(int i = 0; i < player.Health; i++)
+            {
+                var dst = new SDL.SDL_Rect()
+                {
+                    x = 10 + i * 36,
+                    y = 10,
+                    w = 36,
+                    h = 48
+                };
+
+                SDL.SDL_RenderCopy(GraphicsManager.Renderer, BubbleTea, ref src, ref dst);
+            }
+            for (int i = player.Health; i < player.MaxHealth; i++)
+            {
+                var dst = new SDL.SDL_Rect()
+                {
+                    x = 10 + i * 36,
+                    y = 10,
+                    w = 36,
+                    h = 48
+                };
+
+                SDL.SDL_RenderCopy(GraphicsManager.Renderer, EmptyBubbleTea, ref src, ref dst);
             }
         }
     }

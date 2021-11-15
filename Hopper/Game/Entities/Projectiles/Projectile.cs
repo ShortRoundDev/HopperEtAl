@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 
 namespace Hopper.Game.Entities.Projectiles
 {
-    public abstract class Projectile : Entity
+    public abstract class Projectile : Entity, Enemy
     {
-        protected Type[] CollideWith { get; set; }
-        protected int Damage { get; set; }
+        public Type[] CollideWith { get; set; }
+        public int Damage { get; set; }
+
         protected Projectile(IntPtr Texture, Rect Box, Point MoveVec, Type[] CollideWith) : base(Texture, Box)
         {
             this.MoveVec = MoveVec;
@@ -28,23 +29,8 @@ namespace Hopper.Game.Entities.Projectiles
             }
             if (this.CollideWith == null || this.CollideWith.Count() == 0)
                 return;
-            foreach (var entity in GameManager.CurrentLevel.Entities)
-            {
-                foreach (var type in CollideWith)
-                {
-                    if (entity.GetType().IsAssignableTo(type))
-                    {
-                        if (entity.Box.Intersect(Box))
-                        {
-                            if(entity is Killable k)
-                            {
-                                k.OnDamage(this, Damage);
-                            }
-                            GameManager.DeleteEntity(this);
-                            return;
-                        }
-                    }
-                }
+            if((this as Enemy).EnemyUpdate()){
+                GameManager.DeleteEntity(this);
             }
         }
     }

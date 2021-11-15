@@ -16,8 +16,8 @@ namespace Hopper.Game
         public bool Solid { get; set; }
         public float Friction { get; set; }
 
-        public Tile(int x, int y, char tileNum) : base(
-            GraphicsManager.GetTexture(System.Text.Encoding.ASCII.GetString(new byte[] { (byte)tileNum })),
+        public Tile(int x, int y, UInt16 tileNum) : base(
+            GraphicsManager.GetTexture($"{tileNum}"),
             new Rect()
             {
                 x = (float)x * 32.0f,

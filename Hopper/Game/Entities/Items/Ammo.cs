@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Hopper.Game.Entities.Items
 {
-    [EntityId('a')]
+    [EntityId(1000)]
     public class Ammo : Entity
     {
         public Ammo(int x, int y) : base(GraphicsManager.GetTexture("Ammo"), x, y, 12, 12)

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XFgycOfuQsWMGZkw8usTWEnJxI5FBcdK2zPGiRLoRkyuIagmJm3gupG+HZfOiseD9ru+RiF9uGxi+Q2QtCQAuw==",
+  "dgSpecHash": "oKLVVv9AId6bGJ7cpYM3j3tk1UvrGOuBn0im795o8s6hXYS3+cJOk+r9GtHdiPkP/rS9X0wAbxAIJkbdBTM18g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\colli\\Source\\Repos\\HopperEtAl\\Hopper\\Hopper.csproj",
+  "projectFilePath": "C:\\Users\\colli\\source\\repos\\Hopper\\Hopper\\Hopper.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\colli\\.nuget\\packages\\nlog\\4.7.12\\nlog.4.7.12.nupkg.sha512",
     "C:\\Users\\colli\\.nuget\\packages\\opengl.net\\0.8.4\\opengl.net.0.8.4.nupkg.sha512"

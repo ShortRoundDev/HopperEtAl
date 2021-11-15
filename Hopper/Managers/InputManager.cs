@@ -27,6 +27,11 @@ namespace Hopper.Managers
 
         public static void Update()
         {
+            for (int i = 0; i < Keys.Length; i++)
+            {
+                Keys[i].Edge = false;
+            }
+
             SDL.SDL_Event e;
             while(SDL.SDL_PollEvent(out e) != 0)
             {
@@ -43,6 +48,7 @@ namespace Hopper.Managers
                         break;
                 }
             }
+            
         }
 
         private static void KeyDown(SDL.SDL_Scancode scanCode)

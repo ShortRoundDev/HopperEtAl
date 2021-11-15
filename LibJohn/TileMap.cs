@@ -9,11 +9,8 @@ namespace LibJohn
         public LevelToken Level { get; set;}
 
         private RawWallToken[] _RawWalls { get; set; }
-        public WallToken[] Walls { get; set; }
 
         private RawEntityToken[] _RawEntities { get; set; }
-        public EntityToken[] Entities { get; set; }
-
         public TileMap()
         {
         }
@@ -115,6 +112,7 @@ namespace LibJohn
             level.Entities = new EntityToken[level.TotalEntities];
             Level = level;
             ConvertWalls(data);
+            ConvertEntities(data);
         }
 
         private void ConvertWalls(byte[] data)
@@ -137,7 +135,7 @@ namespace LibJohn
                     UInt64 c = rawWall.Message;
                     if(c == 0)
                     {
-                        continue;
+                        goto end;
                     }
                     for (; c < (UInt64)data.Length; c++)
                     {
@@ -151,7 +149,43 @@ namespace LibJohn
                         .Take((int)(c - rawWall.Message))
                         .ToArray();
                     wall.Message = System.Text.Encoding.ASCII.GetString(message);
+                end:
+                    Level.Walls[j, i] = wall;
                 }
+            }
+        }
+        
+        private void ConvertEntities(byte[] data)
+        {
+            for(UInt64 i = 0; i < Level.TotalEntities; i++)
+            {
+                var entity = new EntityToken();
+                var rawEnt = _RawEntities[i];
+                entity.EntityId = rawEnt.EntityId;
+                entity.X = rawEnt.X;
+                entity.Y = rawEnt.Y;
+
+                UInt64 c = rawEnt.Config;
+                if (c == 0)
+                {
+                    goto end;
+                }
+                for (; c < (UInt64)data.Length; c++)
+                {
+                    if (data[c] == 0)
+                    {
+                        break;
+                    }
+                }
+
+                byte[] message = data
+                    .Skip((int)rawEnt.Config)
+                    .Take((int)(c - rawEnt.Config))
+                    .ToArray();
+
+                entity.Config = System.Text.Encoding.ASCII.GetString(message);
+            end:
+                Level.Entities[i] = entity;
             }
         }
     }

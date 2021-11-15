@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hopper.Game.Entities.Doors
 {
-    [EntityId('B')]
+    [EntityId(2001)]
     public class BlueDoor : Door
     {
         public BlueDoor(int x, int y) : base(x, y, 4)

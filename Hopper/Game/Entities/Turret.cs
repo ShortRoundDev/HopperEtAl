@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Hopper.Game.Entities
 {
-    [EntityId('c')]
+    [EntityId(3001)]
     public class Turret : Entity, Enemy, Killable
     {
         public int Health { get; set; } = 1;
@@ -23,6 +23,9 @@ namespace Hopper.Game.Entities
         int VolleyCoolDown { get; set; } = 0;
         int ShotCooldown { get; set; } = 0;
         int BulletsFired { get; set; } = 0;
+        public int Damage { get; set; } = 0;
+        public Type[] CollideWith { get; set; } = null;
+        public int DamageBoost { get; set; } = 0;
 
         public Turret(int x, int y) : base(GraphicsManager.GetTexture("Turret"), x, y, 32, 32)
         {

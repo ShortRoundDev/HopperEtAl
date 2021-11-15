@@ -37,6 +37,16 @@ namespace Hopper.Game
             {
                 for(int j = 0; j < Height; j++)
                 {
+                    if(Background[i, j] != null)
+                    {
+                        Background[i, j].Draw();
+                    }
+                }
+            }
+            for(int i = 0; i < Width; i++)
+            {
+                for(int j = 0; j < Height; j++)
+                {
                     var tile = Tiles[i, j];
                     if (tile != null)
                     {
@@ -66,6 +76,43 @@ namespace Hopper.Game
         {
             var tileMap = new TileMap();
             tileMap.LoadFile(path);
+
+            Background = new Tile[tileMap.Level.Width, tileMap.Level.Height];
+            Tiles = new Tile[tileMap.Level.Width, tileMap.Level.Height];
+            Width = tileMap.Level.Width;
+            Height = tileMap.Level.Height;
+            for (int i = 0; i < tileMap.Level.Width; i++)
+            {
+                for (int j = 0; j < tileMap.Level.Height; j++)
+                {
+                    if (tileMap.Level.Walls[i, j].WallType != 0)
+                    {
+                        Tiles[i, j] = new Tile(i, j, tileMap.Level.Walls[i, j].WallType); ;
+                    }
+                    if (tileMap.Level.Walls[i, j].Floor != 0)
+                    {
+                        Background[i, j] = new Tile(i, j, tileMap.Level.Walls[i, j].Floor);
+                    }
+                }
+            }
+
+            Entities = new List<Entity>((int)tileMap.Level.TotalEntities);
+            for(UInt64 i = 0; i < tileMap.Level.TotalEntities; i++)
+            {
+                var entity = GameManager.MakeEntity(
+                    tileMap.Level.Entities[i].EntityId,
+                    tileMap.Level.Entities[i].X,
+                    tileMap.Level.Entities[i].Y
+                );
+                if (entity != null)
+                {
+                    Entities.Add(entity);
+                }
+                else
+                {
+                    Console.Out.WriteLine("Warning: Couldn't instantiate entity!");
+                }
+            }
             
             return;
         }
