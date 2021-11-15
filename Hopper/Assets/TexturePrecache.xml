@@ -38,7 +38,7 @@
 	<!-- Entities -->
 	<Texture>
 		<Name>Player</Name>
-		<Path>Assets\Textures\Player\Player.png</Path>
+		<Path>Assets\Textures\Player\PlayerB.png</Path>
 	</Texture>
 	<Texture>
 		<Name>Brainiac</Name>

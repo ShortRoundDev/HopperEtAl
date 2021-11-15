@@ -44,3 +44,4 @@ C:\Users\colli\Source\Repos\HopperEtAl\Hopper\obj\Debug\net6.0\Hopper.dll
 C:\Users\colli\Source\Repos\HopperEtAl\Hopper\obj\Debug\net6.0\ref\Hopper.dll
 C:\Users\colli\Source\Repos\HopperEtAl\Hopper\obj\Debug\net6.0\Hopper.pdb
 C:\Users\colli\Source\Repos\HopperEtAl\Hopper\obj\Debug\net6.0\Hopper.genruntimeconfig.cache
+C:\Users\colli\source\repos\Hopper\Hopper\obj\Debug\net6.0\Hopper.csproj.CopyComplete
