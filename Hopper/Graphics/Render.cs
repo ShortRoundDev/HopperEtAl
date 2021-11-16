@@ -75,5 +75,16 @@ namespace Hopper.Graphics
             SDL.SDL_RenderFillRectF(GraphicsManager.Renderer, ref dst);
             SDL.SDL_SetRenderDrawColor(GraphicsManager.Renderer, r, g, b, a);
         }
+
+        public static void BoxDraw(SDL.SDL_FRect rect, SDL.SDL_Color color)
+        {
+            byte r, g, b, a;
+            SDL.SDL_GetRenderDrawColor(GraphicsManager.Renderer, out r, out g, out b, out a);
+            SDL.SDL_SetRenderDrawColor(GraphicsManager.Renderer, color.r, color.g, color.b, color.a);
+
+            var dst = FRectPerspective(rect);
+            SDL.SDL_RenderDrawRectF(GraphicsManager.Renderer, ref dst);
+            SDL.SDL_SetRenderDrawColor(GraphicsManager.Renderer, r, g, b, a);
+        }
     }
 }

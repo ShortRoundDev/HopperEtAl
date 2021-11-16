@@ -32,8 +32,8 @@ namespace Hopper.Managers
             Renderer = _Renderer;
             MainCamera = new Camera()
             {
-                Position = new() { x = 32.0f, y = 32.0f },
-                Scale = new() { x = 1.0f, y = 1.0f }
+                Position = new() { x = 320.0f, y = 8.0f * 32.0f + 24 },
+                Scale = new() { x = 3.0f, y = 3.0f }
             };
 
             InitTextures("Assets/TexturePrecache.xml");
