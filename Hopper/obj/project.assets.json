@@ -32,7 +32,7 @@
       },
       "SDL2-CS/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v6.0",
+        "framework": ".NETStandard,Version=v2.0",
         "compile": {
           "bin/placeholder/SDL2-CS.dll": {}
         },
