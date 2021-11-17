@@ -12,7 +12,7 @@ namespace Hopper.Game.Entities.Collectibles
     {
         public Collectible(IntPtr texture, int x, int y) : base(texture, x, y, 32, 32)
         {
-
+            GameManager.TotalCollectibles++;
         }
 
         public override void Draw()
@@ -26,6 +26,9 @@ namespace Hopper.Game.Entities.Collectibles
             {
                 GameManager.MainPlayer.Score += 100;
                 GameManager.DeleteEntity(this);
+                Deleted = true;
+                Console.WriteLine("Collected! " + GetType().Name);
+                GameManager.TotalCollected++;
             }
         }
     }

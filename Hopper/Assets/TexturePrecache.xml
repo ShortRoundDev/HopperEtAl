@@ -30,6 +30,12 @@
 		<Name>Numbers</Name>
 		<Path>Assets\Textures\Engine\Numbers.png</Path>
 	</Texture>
+	
+	<Texture>
+		<Name>Font</Name>
+		<Path>Assets\Textures\Engine\Font.png</Path>
+	</Texture>
+	
 	<Texture>
 		<Name>Use</Name>
 		<Path>Assets\Textures\Engine\Use.png</Path>
@@ -47,6 +53,10 @@
 	<Texture>
 		<Name>DeathScreen</Name>
 		<Path>Assets\Textures\Engine\DeathScreen.png</Path>
+	</Texture>
+	<Texture>
+		<Name>Recap</Name>
+		<Path>Assets\Textures\Engine\Recap.png</Path>
 	</Texture>
 	
 	<!-- Game Engine Default Textures -->

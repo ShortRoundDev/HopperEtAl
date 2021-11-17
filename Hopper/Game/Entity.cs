@@ -186,7 +186,7 @@ namespace Hopper.Game
             }
         }
 
-        public void Configure(string configuration)
+        public virtual void Configure(string configuration)
         {
 
         }

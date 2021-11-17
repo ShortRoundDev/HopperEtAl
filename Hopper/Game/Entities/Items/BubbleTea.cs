@@ -16,6 +16,7 @@ namespace Hopper.Game.Entities.Items
         {
 
         }
+
         public override void Draw()
         {
             Render.Box(Box.AsFRect(), Texture);

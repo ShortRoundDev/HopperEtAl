@@ -21,9 +21,17 @@ namespace Hopper.Managers
 
         public static Player MainPlayer { get; set; }
         public static string CurrentLevelPath { get; set; }
+        public static string NextLevelPath { get; set; }
 
         public static GAME_STATE State { get; set; } = GAME_STATE.MAIN_MENU;
         public static bool Quit { get; set; } = false;
+
+        public static int TotalCollectibles { get; set; }
+        public static int TotalCollected { get; set; } = 0;
+
+        public static int TotalEnemies { get; set; }
+        public static int TotalKilled { get; set; } = 0;
+
 
         public static void Init()
         {
@@ -131,6 +139,13 @@ namespace Hopper.Managers
         {
             CurrentLevel = new Level("Assets/Levels/FirstMap.map");
             State = GAME_STATE.IN_GAME;
+        }
+
+        public static void NewLevel(string newLevel)
+        {
+            CurrentLevel = new Level(newLevel);
+            State = GAME_STATE.IN_GAME;
+            
         }
     }
 

@@ -36,6 +36,7 @@ namespace Hopper.Game.Entities
                     h = 48
                 }
             };
+            GameManager.TotalEnemies++;
         }
         public override void Draw()
         {
@@ -77,6 +78,11 @@ namespace Hopper.Game.Entities
             int x = (int)Box.x + rand.Next((int)Box.w);
             var pop = new GreenBubble(x, y);
             GameManager.AddEntity(pop);
+        }
+
+        public void OnDie()
+        {
+            GameManager.TotalKilled++;
         }
     }
 }

@@ -15,6 +15,7 @@ namespace Hopper.Game.Entities.Teleporter
     {
         public float UseDistance { get; set; } = 64.0f;
         public bool Used { get; set; } = false;
+        private string NextLevelPath { get; set; } = null;
 
         public Teleporter(int x, int y) : base(GraphicsManager.GetTexture("Teleporter"), x, y, 32, 64)
         {
@@ -44,6 +45,15 @@ namespace Hopper.Game.Entities.Teleporter
         {
             Animate.Update();
             (this as Usable).UsableUpdate();
+            if(Animate.Animation == 0 && Animate.Finished)
+            {
+                UIManager.ShowRecap(NextLevelPath);
+            }
+        }
+
+        public override void Configure(string configuration)
+        {
+            this.NextLevelPath = configuration;
         }
 
         public void OnUse()

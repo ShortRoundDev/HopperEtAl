@@ -18,11 +18,12 @@ namespace Hopper.Managers
 
         private static IntPtr MainMenu { get; set; }
         private static IntPtr Numbers { get; set; }
+        private static IntPtr Font { get; set; }
         private static IntPtr BubbleTea { get; set; }
         private static IntPtr EmptyBubbleTea { get; set; }
         private static IntPtr DeathScreen { get; set; }
         private static IntPtr Selector { get; set; }
-
+        private static IntPtr Recap { get; set; }
 
         //Main Menu
         private static List<SDL.SDL_Point> StarField { get; set; } = new();
@@ -31,14 +32,21 @@ namespace Hopper.Managers
         //Death Screen
         private static bool DeathScreenShowing { get; set; } = false;
         private static int DeathScreenSelector { get; set; } = 0;
+
+        //Recap
+        private static float RecapProgress { get; set; } = 0.0f;
+        private static bool RecapShowing { get; set; } = false;
+        private static bool ShowStats { get; set; } = false;
         public static void Init()
         {
             Numbers = GraphicsManager.GetTexture("Numbers");
+            Font = GraphicsManager.GetTexture("Font");
             BubbleTea = GraphicsManager.GetTexture("BubbleTea");
             EmptyBubbleTea = GraphicsManager.GetTexture("BubbleTeaEmpty");
             DeathScreen = GraphicsManager.GetTexture("DeathScreen");
             Selector = GraphicsManager.GetTexture("Selector");
             MainMenu = GraphicsManager.GetTexture("MainMenu");
+            Recap = GraphicsManager.GetTexture("Recap");
 
             var r = new Random();
             for(int i = 0; i < 10; i++)
@@ -65,11 +73,13 @@ namespace Hopper.Managers
             DrawHealthBar();
             DrawDeathScreen();
             DrawMainMenu();
+            DrawRecap();
         }
 
         public static void Update()
         {
             UpdateMainMenu();
+            UpdateRecap();
             HandleDeathScreenInput();
         }
 
@@ -78,14 +88,43 @@ namespace Hopper.Managers
             NumberMessages.Enqueue((message, position));
         }
 
-        private static void DrawNumberString(string message, Point position)
+        private static void DrawString(string message, Point position, float size = 1.0f)
         {
             var r = new SDL.SDL_FRect()
             {
                 x = position.x,
                 y = position.y,
-                w = 28,
-                h = 28
+                w = 12 * size,
+                h = 12 * size
+            };
+            for (int i = 0; i < message.Length; i++)
+            {
+                char c = message[i];
+                if (c < '!' || c > '}')
+                {
+                    continue;
+                }
+                r.x = position.x + i * 10 * size;
+                SDL.SDL_Rect src = new SDL.SDL_Rect()
+                {
+                    x = (c - '!') * 12,
+                    y = 0,
+                    w = 12,
+                    h = 12
+                };
+                SDL.SDL_RenderCopyF(GraphicsManager.Renderer, Font, ref src, ref r);
+                //Render.Box(r, src, Numbers, SDL.SDL_RendererFlip.SDL_FLIP_NONE);
+            }
+        }
+
+        private static void DrawNumberString(string message, Point position, float size = 1.0f)
+        {
+            var r = new SDL.SDL_FRect()
+            {
+                x = position.x,
+                y = position.y,
+                w = 28 * size,
+                h = 28 * size
             };
             for (int i = 0; i < message.Length; i++)
             {
@@ -94,7 +133,7 @@ namespace Hopper.Managers
                 {
                     continue;
                 }
-                r.x = position.x + i * 20;
+                r.x = position.x + i * 20 * size;
                 SDL.SDL_Rect src = new SDL.SDL_Rect()
                 {
                     x = (c - '0') * 28,
@@ -331,6 +370,78 @@ namespace Hopper.Managers
             DeathScreenShowing = true;
         }
 
+        public static void ShowRecap(string nextLevel)
+        {
+            GameManager.NextLevelPath = nextLevel;
+            RecapShowing = true;
+        }
 
+        private static void DrawRecap()
+        {
+            if (!RecapShowing)
+                return;
+            if(RecapProgress < 1.0f)
+            {
+                RecapProgress += 0.01f; // speed of increase
+            } else if(RecapProgress > 1.0f)
+            {
+                RecapProgress = 1.0f;
+                ShowStats = true;
+            }
+
+            var src = new SDL.SDL_Rect()
+            {
+                x = 0,
+                y = 0,
+                w = 256,
+                h = 94
+            };
+
+            var dest = SystemManager.Width / 2 - ((256 * 3)/2);
+            var maxDiff = dest - (-256 * 3);
+
+            var dst = new SDL.SDL_FRect()
+            {
+                x = (-256 * 3) + EaseIn(RecapProgress) * maxDiff,
+                y = SystemManager.Height / 2 - (94 * 3) / 2,
+                w = 256 * 3,
+                h = 94 * 3
+            };
+
+            SDL.SDL_RenderCopyF(GraphicsManager.Renderer, Recap, ref src, ref dst);
+            if (!ShowStats)
+            {
+                return;
+            }
+
+            string collected = $"{GameManager.TotalCollected}".PadRight(2, ' ');
+            string collectible = $"{GameManager.TotalCollectibles}".PadLeft(2, ' ');
+            DrawString($"{collected}/{collectible}", new Point(dst.x + 165 * 3, dst.y + 30), 5.0f);
+
+            string killed = $"{GameManager.TotalKilled}".PadRight(2, ' ');
+            string killable = $"{GameManager.TotalEnemies}".PadLeft(2, ' ');
+            DrawString($"{killed}/{killable}", new Point(dst.x + 165 * 3, dst.y + 150), 5.0f);
+
+            DrawString("Press E to Continue", new Point(dst.x + 118, dst.y + dst.h - 50), 3.0f);
+        }
+
+        public static void UpdateRecap()
+        {
+            if (!ShowStats)
+                return;
+            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_E].Down)
+            {
+                ShowStats = false;
+                RecapProgress = 0.0f;
+                RecapShowing = false;
+
+                GameManager.NewLevel(GameManager.NextLevelPath);
+            }
+        }
+
+        public static float EaseIn(float t)
+        {
+            return -((t - 1) * (t - 1)) + 1.0f;
+        }
     }
 }

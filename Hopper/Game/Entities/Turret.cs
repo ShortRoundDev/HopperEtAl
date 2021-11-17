@@ -116,5 +116,10 @@ namespace Hopper.Game.Entities
                 }
             }
         }
+
+        public void OnDie()
+        {
+            GameManager.TotalKilled++;
+        }
     }
 }
