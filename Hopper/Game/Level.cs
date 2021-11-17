@@ -9,6 +9,7 @@ using SDL2;
 using NLog;
 using Hopper.Managers;
 using LibJohn;
+using Hopper.Game.Entities;
 
 namespace Hopper.Game
 {
@@ -25,6 +26,7 @@ namespace Hopper.Game
         public Level(string path)
         {
             LoadLevel(path);
+            GameManager.CurrentLevelPath = path;
         }
 
         public void Draw()
@@ -56,7 +58,7 @@ namespace Hopper.Game
             }
             foreach (var entity in Entities)
             {
-                if (entity.Deleted)
+                if (entity.Deleted || entity is Player)
                     continue;
                 entity.Draw();
             }
@@ -102,7 +104,8 @@ namespace Hopper.Game
                 var entity = GameManager.MakeEntity(
                     tileMap.Level.Entities[i].EntityId,
                     tileMap.Level.Entities[i].X,
-                    tileMap.Level.Entities[i].Y
+                    tileMap.Level.Entities[i].Y,
+                    tileMap.Level.Entities[i].Config
                 );
                 if (entity != null)
                 {
@@ -174,7 +177,7 @@ namespace Hopper.Game
                     Tiles[x, y] = null;
                 } else
                 {
-                    var entity = GameManager.MakeEntity(code, x, y);
+                    var entity = GameManager.MakeEntity(code, x, y, "");
                     if (entity == null)
                     {
                         Tiles[x, y] = new Tile(x, y, code);

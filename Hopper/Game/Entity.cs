@@ -185,5 +185,10 @@ namespace Hopper.Game
                 }
             }
         }
+
+        public void Configure(string configuration)
+        {
+
+        }
     }
 }

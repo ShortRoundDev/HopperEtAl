@@ -185,5 +185,10 @@ namespace Hopper.Game.Entities
             MoveVec.x = -4;
             MoveVec.y = -4;
         }
+        public void OnDie()
+        {
+            UIManager.ShowDeathScreen();
+            //GameManager.RestartLevel();
+        }
     }
 }

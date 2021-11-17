@@ -30,6 +30,25 @@
 		<Name>Numbers</Name>
 		<Path>Assets\Textures\Engine\Numbers.png</Path>
 	</Texture>
+	<Texture>
+		<Name>Use</Name>
+		<Path>Assets\Textures\Engine\Use.png</Path>
+	</Texture>
+
+	<Texture>
+		<Name>Selector</Name>
+		<Path>Assets\Textures\Engine\Selector.png</Path>
+	</Texture>
+
+	<Texture>
+		<Name>MainMenu</Name>
+		<Path>Assets\Textures\Engine\MainMenu.png</Path>
+	</Texture>
+	<Texture>
+		<Name>DeathScreen</Name>
+		<Path>Assets\Textures\Engine\DeathScreen.png</Path>
+	</Texture>
+	
 	<!-- Game Engine Default Textures -->
 	<Texture>
 		<Name>Missing</Name>
@@ -78,6 +97,11 @@
 	<Texture>
 		<Name>Ammo</Name>
 		<Path>Assets\Textures\Items\Ammo\Ammo.png</Path>
+	</Texture>
+	
+	<Texture>
+		<Name>Teleporter</Name>
+		<Path>Assets\Textures\Teleporter\Teleporter.png</Path>
 	</Texture>
 
 	<Texture>

@@ -19,6 +19,10 @@ namespace Hopper
                 tick = SDL.SDL_GetTicks();
                 Update();
                 Draw();
+                if (GameManager.Quit)
+                {
+                    return;
+                }
             }
 
         }
@@ -49,6 +53,7 @@ namespace Hopper
             InputManager.Update();
             GameManager.Update();
             GraphicsManager.Update();
+            UIManager.Update();
         }
     }
 }

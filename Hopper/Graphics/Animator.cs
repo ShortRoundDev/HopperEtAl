@@ -33,7 +33,7 @@ namespace Hopper.Graphics
                 Frame = Frame % Columns;
             }
             else if(Frame > Columns) {
-                Frame = Columns;
+                Frame = Columns - 1;
                 Finished = true;
             }
         }

@@ -20,23 +20,33 @@ namespace Hopper.Managers
         private static List<Entity> ToAdd { get; set; } = new();
 
         public static Player MainPlayer { get; set; }
+        public static string CurrentLevelPath { get; set; }
+
+        public static GAME_STATE State { get; set; } = GAME_STATE.MAIN_MENU;
+        public static bool Quit { get; set; } = false;
 
         public static void Init()
         {
             InitEntityDefinitions();
-            CurrentLevel = new Level("Assets/Levels/FirstMap.map");
         }
 
         public static void Update()
         {
-            CurrentLevel.Update();
-            ClearEntities();
-            AttachEntities();
+            if (State == GAME_STATE.IN_GAME)
+            {
+                CurrentLevel.Update();
+                ClearEntities();
+                AttachEntities();
+            }
         }
 
         public static void Draw()
         {
-            CurrentLevel.Draw();
+            if (State == GAME_STATE.IN_GAME)
+            {
+                CurrentLevel.Draw();
+                MainPlayer.Draw();
+            }
         }
 
         public static void AttachEntity(Entity entity)
@@ -44,7 +54,7 @@ namespace Hopper.Managers
             
         }
 
-        public static Entity MakeEntity(UInt16 code, int x, int y)
+        public static Entity MakeEntity(UInt16 code, int x, int y, string configuration)
         {
             if(!TypeIds.TryGetValue(code, out var type))
             {
@@ -60,6 +70,7 @@ namespace Hopper.Managers
             try
             {
                 var entity = constructor.Invoke(new object[] { x, y }) as Entity;
+                entity.Configure(configuration);
                 return entity;
             }catch(Exception e)
             {
@@ -109,5 +120,23 @@ namespace Hopper.Managers
             }
         }
 
+        public static void RestartLevel()
+        {
+            ToDelete.Clear();
+            ToAdd.Clear();
+            CurrentLevel = new Level("Assets/Levels/FirstMap.map");
+        }
+
+        public static void NewGame()
+        {
+            CurrentLevel = new Level("Assets/Levels/FirstMap.map");
+            State = GAME_STATE.IN_GAME;
+        }
+    }
+
+    public enum GAME_STATE
+    {
+        IN_GAME = 0,
+        MAIN_MENU = 1
     }
 }

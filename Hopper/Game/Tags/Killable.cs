@@ -28,6 +28,7 @@ namespace Hopper.Game.Tags
             if (Health <= 0)
             {
                 GameManager.DeleteEntity(_this);
+                OnDie();
                 return;
             }
             _this.MoveVec = new Point()
@@ -61,6 +62,11 @@ namespace Hopper.Game.Tags
         }
 
         public void OnDamageHandler(Entity e, int damage)
+        {
+            return;
+        }
+
+        public void OnDie()
         {
             return;
         }
