@@ -2,6 +2,12 @@ Hopper/bin/*
 LibJohn/bin/*
 TestLibJohn/bin/*
 
+Hopper/obj/*
+LibJohn/obj/*
+TestLibJohn/obj/*
+
+.vs/*
+
 *.obj
 
 *~
