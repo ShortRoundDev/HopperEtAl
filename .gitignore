@@ -1,0 +1,7 @@
+Hopper/bin/*
+LibJohn/bin/*
+TestLibJohn/bin/*
+
+*.obj
+
+*~
