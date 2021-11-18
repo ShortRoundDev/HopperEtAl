@@ -14,7 +14,7 @@ namespace Hopper.Game.Entities.Projectiles
         public EnemyBullet(Point start, bool left) : base(
             IntPtr.Zero,
             new Rect() { x = start.x, y = start.y, w = 6, h = 2 },
-            new Point() { x = left ? -8 : 8, y = 0 },
+            new Point() { x = left ? -5 : 5, y = 0 },
             new Type[] { typeof(Player), typeof(PseudoGeometry) }
         )
         {

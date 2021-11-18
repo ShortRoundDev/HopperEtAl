@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Hopper.Game.Tags;
 using Hopper.Geometry;
 using Hopper.Graphics;
 using Hopper.Managers;
@@ -88,6 +89,32 @@ namespace Hopper.Game
 
             float moveX = MoveVec.x;
             Rect intersection = new Rect();
+
+            foreach(var entity in GameManager.CurrentLevel.Entities)
+            {
+                if(entity is not PseudoGeometry || entity == this)
+                {
+                    continue;
+                }
+                var xCollide = hypoX.Intersect(entity.Box);
+
+                if (xCollide)
+                {
+                    if (moveX > 0.0f)
+                    {
+                        hitDirection |= HIT_RIGHT;
+                        Box.x = hypoX.x - ((hypoX.x + hypoX.w) - entity.Box.x);
+                    }
+                    else if (moveX < 0.0f)
+                    {
+                        hitDirection |= HIT_LEFT;
+                        Box.x = entity.Box.x + entity.Box.w;
+                    }
+                    moveX = 0;
+                    break;
+                }
+            }
+
             for (int i = ((int)hypoX.x) / 32; i <= (int)(hypoX.x + hypoX.w) / 32; i++)
             {
                 for (int j = ((int)hypoX.y) / 32; j <= (int)(hypoX.y + hypoX.h) / 32; j++)
@@ -122,6 +149,32 @@ namespace Hopper.Game
             }
 
             float moveY = MoveVec.y;
+
+            foreach (var entity in GameManager.CurrentLevel.Entities)
+            {
+                if (entity is not PseudoGeometry || entity == this)
+                {
+                    continue;
+                }
+                var yCollide = hypoY.Intersect(entity.Box);
+
+                if (yCollide)
+                {
+                    if (moveY > 0.0f)
+                    {
+                        hitDirection |= HIT_BOTTOM;
+                        Box.y = hypoY.y - ((hypoX.y + hypoX.h) - entity.Box.y);
+                    }
+                    else if (moveY < 0.0f)
+                    {
+                        hitDirection |= HIT_TOP;
+                        Box.y = entity.Box.y + entity.Box.h;
+                    }
+                    moveY = 0;
+                    break;
+                }
+            }
+
             for (int i = ((int)hypoY.x) / 32; i <= (int)(hypoY.x + hypoY.w) / 32; i++)
             {
                 for (int j = ((int)hypoY.y) / 32; j <= (int)(hypoY.y + hypoY.h) / 32; j++)

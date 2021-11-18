@@ -43,6 +43,7 @@ namespace Hopper.Game.Entities
                 }
             };
             Animate.Animation = 0;
+            GameManager.TotalEnemies++;
         }
 
         public override void Draw()
@@ -73,7 +74,7 @@ namespace Hopper.Game.Entities
                             RenderFlip
                         ));
                         BulletsFired++;
-                        ShotCooldown = 10;
+                        ShotCooldown = 15;
                     }else
                     {
                         ShotCooldown--;
@@ -81,7 +82,7 @@ namespace Hopper.Game.Entities
                 }
                 else
                 {
-                    VolleyCoolDown = 50;
+                    VolleyCoolDown = 75;
                     Shooting = false;
                 }
                 return;

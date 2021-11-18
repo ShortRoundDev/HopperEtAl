@@ -16,6 +16,7 @@ namespace Hopper.Managers
         public static UInt16 Width { get => Vars.Width; }
         public static UInt16 Height { get => Vars.Height; }
         private static SystemVars Vars { get; set; }
+        public static bool Debug { get; set; }
         public static void Init()
         {
             Vars = new();

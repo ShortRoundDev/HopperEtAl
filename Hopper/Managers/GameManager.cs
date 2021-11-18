@@ -132,7 +132,7 @@ namespace Hopper.Managers
         {
             ToDelete.Clear();
             ToAdd.Clear();
-            CurrentLevel = new Level("Assets/Levels/FirstMap.map");
+            CurrentLevel = new Level(CurrentLevelPath);
         }
 
         public static void NewGame()
@@ -143,9 +143,13 @@ namespace Hopper.Managers
 
         public static void NewLevel(string newLevel)
         {
+            TotalCollected = 0;
+            TotalCollectibles = 0;
+            TotalEnemies = 0;
+            TotalKilled = 0;
+
             CurrentLevel = new Level(newLevel);
             State = GAME_STATE.IN_GAME;
-            
         }
     }
 

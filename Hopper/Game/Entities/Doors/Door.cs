@@ -1,4 +1,5 @@
 ﻿using Hopper.Game.Tags;
+using Hopper.Geometry;
 using Hopper.Graphics;
 using Hopper.Managers;
 using System;
@@ -14,6 +15,7 @@ namespace Hopper.Game.Entities.Doors
         int DoorType { get; set; } // 1 - r, 2 - g, 4 - b
         bool Open { get; set; } = false;
         int OpenProgress { get; set; } = -1;
+        private Rect OpenBox { get; set; }
         public Door(int x, int y, int doorType) : base(
             GraphicsManager.GetTexture(
                 doorType switch
@@ -28,6 +30,7 @@ namespace Hopper.Game.Entities.Doors
         )
         {
             this.DoorType = doorType;
+            OpenBox = new Rect(Box.x - 16, Box.y, Box.w + 32, Box.h);
         }
 
         public override void Draw()
@@ -51,29 +54,12 @@ namespace Hopper.Game.Entities.Doors
                 Open = true;
                 return;
             }
-            foreach (var e in GameManager.CurrentLevel.Entities)
+            if (GameManager.MainPlayer.Box.Intersect(OpenBox))
             {
-                if (e == this)
-                    continue;
-                if (e.Box.Intersect(Box))
+                if (OpenProgress == -1 && (GameManager.MainPlayer.Keys & DoorType) != 0)
                 {
-                    if (e is Player p)
-                    {
-                        if (OpenProgress == -1 && (p.Keys & DoorType) != 0)
-                        {
-                            OpenProgress = 0;
-                            return;
-                        }
-                    }
-                    if (e.Box.x < Box.x)
-                    {
-                        e.Box.x = Box.x - e.Box.w - 1;
-                    }
-                    else if(e.Box.x + e.Box.w > Box.x + Box.w)
-                    {
-                        e.Box.x = Box.x + Box.w + 1;
-                    }
-                    e.MoveVec.x = 0;
+                    OpenProgress = 0;
+                    return;
                 }
             }
         }

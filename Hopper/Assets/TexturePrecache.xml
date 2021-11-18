@@ -130,6 +130,10 @@
 		<Name>BubbleTeaEmpty</Name>
 		<Path>Assets\Textures\Items\Collectibles\BubbleTeaEmpty.png</Path>
 	</Texture>
+	<Texture>
+		<Name>Squid</Name>
+		<Path>Assets\Textures\Enemies\Squid\Squid.png</Path>
+	</Texture>
 
 	<!-- Particles -->
 	<Texture>
