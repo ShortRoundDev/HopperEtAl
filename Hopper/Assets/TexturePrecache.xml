@@ -67,7 +67,7 @@
 	<!-- Entities -->
 	<Texture>
 		<Name>Player</Name>
-		<Path>Assets\Textures\Player\PlayerB.png</Path>
+		<Path>Assets\Textures\Player\Player.png</Path>
 	</Texture>
 	<Texture>
 		<Name>Brainiac</Name>
@@ -134,10 +134,18 @@
 		<Name>Squid</Name>
 		<Path>Assets\Textures\Enemies\Squid\Squid.png</Path>
 	</Texture>
+	<Texture>
+		<Name>Furnace</Name>
+		<Path>Assets\Textures\Enemies\Furnace\Furnace.png</Path>
+	</Texture>
 
 	<!-- Particles -->
 	<Texture>
 		<Name>GreenBubble</Name>
 		<Path>Assets\Textures\Particles\Bubble.png</Path>
+	</Texture>
+	<Texture>
+		<Name>Fire</Name>
+		<Path>Assets\Textures\Particles\Fire.png</Path>
 	</Texture>
 </Textures>

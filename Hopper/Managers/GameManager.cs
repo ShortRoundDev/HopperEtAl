@@ -137,7 +137,7 @@ namespace Hopper.Managers
 
         public static void NewGame()
         {
-            CurrentLevel = new Level("Assets/Levels/FirstMap.map");
+            CurrentLevel = new Level("Assets/Levels/e1m2");
             State = GAME_STATE.IN_GAME;
         }
 
