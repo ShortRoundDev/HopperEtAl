@@ -105,85 +105,197 @@ namespace Hopper.Game.Entities
             Animate.Update();
             MoveAndCollide();
 
-            float gravity = GameManager.Gravity;
-            if(MoveVec.y < 0 && !InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down)
+            string animation = "Standing";
+            bool shooting = false;
+
+            HandleDamageBoost();
+            HandleShooting(out shooting);
+            HandleJump();
+            HandleOnGroundInput(out animation);
+            HandleSwimming();
+            HandleInAir();
+
+            HandleFriction();
+            
+            if(!OnGround && !InWater)
             {
-                gravity *= 2.0f;
+                animation = "Jumping";
             }
 
+            Animate.Animation = animations[(shooting ? "Shooting" : "Default") + animation];
+        }
+
+        private void HandleDamageBoost()
+        {
             if (DamageBoost > 0)
             {
                 DamageBoost--;
             }
+        }
+        
+        private void HandleSwimming()
+        {
+            if (InWater)
+            {
+                Walking = false;
+                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down) {
+                    MoveVec.x -= 0.1f;
+                    Walking = true;
+                }
+                
+                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down)
+                {
+                    MoveVec.x += 0.1f;
+                    Walking = true;
+                }
+                
+                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Edge)
+                {
+                    MoveVec.y -= 2.0f;
+                }
 
-            var moveVec = MoveVec;
-            moveVec.y += gravity;
-            bool shooting = false;
+                if (MoveVec.x > 1.0f)
+                {
+                    MoveVec.x = 1.0f;
+                }
+                
+                if (MoveVec.x < -1.0f)
+                {
+                    MoveVec.x = -1.0f;
+                }
+                
+                if (MoveVec.y < -8.0f)
+                {
+                    MoveVec.y = -8.0f;
+                }
+
+                if (MoveVec.y > 1.0f)
+                {
+                    MoveVec.y = 1.0f;
+                }
+            }
+            else if (FeetInWater && !OnGround)
+            {
+                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Edge)
+                {
+                    Console.WriteLine("Jump out of water");
+                    MoveVec.y -= 4.0f;
+                }
+            }
+        }
+
+        private void HandleInAir()
+        {
+            if (!OnGround && !InWater)
+            {
+                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down)
+                {
+                    MoveVec.x = -2.0f;
+                    Walking = true;
+
+                }
+                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down)
+                {
+                    MoveVec.x = 2.0f;
+                    Walking = true;
+
+                }
+            }
+        }
+
+        private void HandleShooting(out bool shooting)
+        {
+            shooting = false;
             if (shootTimer > 0)
             {
                 shooting = true;
                 shootTimer--;
             }
-            string animation = "Standing";
-            
-            if (Walking && OnGround && MoveVec.x != 0.0f)
-            {
-                animation = "Running";
-            }
 
-            Walking = false;
-
-            if (OnGround)
-            {
-                moveVec.x *= 0.1f;
-            }
-            
-            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down)
-            {
-                moveVec.x = 2.0f;
-                Walking = true;
-            }
-
-            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down)
-            {
-                moveVec.x = -2.0f;
-                Walking = true;
-            }
-            if(InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Edge && OnGround)
-            {
-                Jumping = true;
-                moveVec.y = -8.0f;
-            }
             if (Ammo > 0 && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LCTRL].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LCTRL].Edge && shootTimer <= 10)
             {
                 Ammo--;
                 GameManager.AddEntity(
                     new PlayerBullet(new()
-                        {
-                            x = Box.x + (RenderFlip ? -16 : 16),
-                            y = Box.y + 12
-                        },
+                    {
+                        x = Box.x + (RenderFlip ? -16 : 16),
+                        y = Box.y + 12
+                    },
                         RenderFlip
                     )
                 );
                 shootTimer = 20;
             }
 
-            if(!OnGround)
+        }
+
+        private void HandleJump()
+        {
+            float gravity = !InWater
+                ? GameManager.Gravity
+                : GameManager.Gravity / 4.0f;
+            if (Jumping && MoveVec.y < -4 && !InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down)
             {
-                animation = "Jumping";
+                MoveVec.y = -4;
+//                gravity *= 3.0f;
             }
 
-            Animate.Animation = animations[(shooting ? "Shooting" : "Default") + animation];
+            MoveVec.y += gravity;
+        }
 
-            MoveVec = moveVec;
+        private void HandleOnGroundInput(out string animation)
+        {
+            animation = "Standing";
+
+            if (!OnGround || InWater)
+            {
+                return;
+            }
+
+
+            if (Walking && MoveVec.x != 0.0f)
+            {
+                animation = "Running";
+            }
+
+            Walking = false;
+
+            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down)
+            {
+                MoveVec.x = 2.0f;
+                Walking = true;
+            }
+
+            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down)
+            {
+                MoveVec.x = -2.0f;
+                Walking = true;
+            }
+            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Edge)
+            {
+                Jumping = true;
+                Console.WriteLine("Jump");
+                MoveVec.y = -8.0f;
+            }
+        }
+
+        private void HandleFriction()
+        {
+            if (!Walking)
+            {
+                var friction = 1.0f - GetFriction();
+                 MoveVec.x *= friction;
+            }
         }
 
         public void OnDamageHandler(Entity e, int Damage)
         {
             DamageBoost = 100;
-            MoveVec.x = -4;
-            MoveVec.y = -4;
+            if (!InWater)
+            {
+                MoveVec.x = -4;
+                MoveVec.y = -4;
+            }
         }
         public void OnDie()
         {

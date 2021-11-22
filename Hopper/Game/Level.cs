@@ -21,6 +21,7 @@ namespace Hopper.Game
         public UInt16 Height { get; set; }
         public Tile[,] Background { get; set; }
         public Tile[,] Tiles { get; set; }
+        public Tile[,] Water { get; set; }
         public List<Entity> Entities { get; set; } = new();
 
         public Level(string path)
@@ -62,6 +63,22 @@ namespace Hopper.Game
                     continue;
                 entity.Draw();
             }
+            GameManager.MainPlayer.Draw();
+            SDL.SDL_SetRenderDrawBlendMode(GraphicsManager.Renderer, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
+            
+            for(int i = 0; i < Width; i++)
+            {
+                for(int j = 0; j < Height; j++)
+                {
+                    var water = Water[i, j];
+                    if(water != null)
+                    {
+                        SDL.SDL_SetTextureBlendMode(water.Texture, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
+                        SDL.SDL_SetTextureAlphaMod(water.Texture, 128);
+                        water.Draw();
+                    }
+                }
+            }
         }
 
         public void Update()
@@ -81,6 +98,8 @@ namespace Hopper.Game
 
             Background = new Tile[tileMap.Level.Width, tileMap.Level.Height];
             Tiles = new Tile[tileMap.Level.Width, tileMap.Level.Height];
+            Water = new Tile[tileMap.Level.Width, tileMap.Level.Height];
+
             Width = tileMap.Level.Width;
             Height = tileMap.Level.Height;
             for (int i = 0; i < tileMap.Level.Width; i++)
@@ -89,11 +108,15 @@ namespace Hopper.Game
                 {
                     if (tileMap.Level.Walls[i, j].WallType != 0)
                     {
-                        Tiles[i, j] = new Tile(i, j, tileMap.Level.Walls[i, j].WallType); ;
+                        Tiles[i, j] = GameManager.MakeTile(tileMap.Level.Walls[i, j].WallType, i, j);
                     }
                     if (tileMap.Level.Walls[i, j].Floor != 0)
                     {
-                        Background[i, j] = new Tile(i, j, tileMap.Level.Walls[i, j].Floor);
+                        Background[i, j] = GameManager.MakeTile(tileMap.Level.Walls[i, j].Floor, i, j);
+                    }
+                    if(tileMap.Level.Walls[i, j].Ceiling != 0)
+                    {
+                        Water[i, j] = GameManager.MakeTile(tileMap.Level.Walls[i, j].Ceiling, i, j);
                     }
                 }
             }

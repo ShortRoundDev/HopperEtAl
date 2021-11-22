@@ -25,6 +25,14 @@
 		<Name>6</Name>
 		<Path>Assets\Textures\Tiles\6.png</Path>
 	</Texture>
+	<Texture>
+		<Name>7</Name>
+		<Path>Assets\Textures\Tiles\7.png</Path>
+	</Texture>
+	<Texture>
+		<Name>8</Name>
+		<Path>Assets\Textures\Tiles\8.png</Path>
+	</Texture>
 	<!-- Engine -->
 	<Texture>
 		<Name>Numbers</Name>
@@ -91,6 +99,11 @@
 		<Path>Assets\Textures\Items\Keys\BlueKey.png</Path>
 	</Texture>
 
+	<Texture>
+		<Name>Spikes</Name>
+		<Path>Assets\Textures\PseudoGeometry\Spikes.png</Path>
+	</Texture>
+	
 	<Texture>
 		<Name>RedDoor</Name>
 		<Path>Assets\Textures\Doors\RedDoor.png</Path>

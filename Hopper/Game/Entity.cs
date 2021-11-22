@@ -27,6 +27,8 @@ namespace Hopper.Game
                 : SDL.SDL_RendererFlip.SDL_FLIP_NONE;
         }
         public bool OnGround { get; set; } = false;
+        public bool InWater { get; set; } = false;
+        public bool FeetInWater { get; set; } = false;
         protected Animator Animate { get; set; }
         public SDL.SDL_Rect IntBox
         {
@@ -66,8 +68,9 @@ namespace Hopper.Game
 
         protected byte MoveAndCollide()
         {
-
             byte hitDirection = 0;
+            CheckInWater();
+            CheckFeetInWater();
 
             var hypoX = new Rect()
             {
@@ -242,6 +245,53 @@ namespace Hopper.Game
         public virtual void Configure(string configuration)
         {
 
+        }
+
+        /* Friction -> movevec.x -= (movevec.x * friction) */
+        public float GetFriction()
+        {
+            float friction = 0.0f;
+            if (!OnGround)
+            {
+                friction = 0.0f;
+                goto CheckWater;
+            }
+
+            int tileX = (int)((Box.x) / 32);
+            int tileW = (int)((Box.x + Box.w) / 32);
+            int tileY = (int)((Box.y + Box.h + 1.0f) / 32);
+            if (tileY >= GameManager.CurrentLevel.Height)
+            {
+                friction = 0.0f;
+                goto CheckWater;
+            }
+            for (int i = tileX; i <= tileW; i++)
+            {
+                friction = Math.Max(GameManager.CurrentLevel.Tiles[i, tileY]?.Friction ?? 0.0f, friction);
+            }
+
+        CheckWater:
+            if (InWater)
+            {
+                friction *= 0.1f;
+            }
+
+            return friction;
+        }
+        public void CheckInWater()
+        {
+            int tileX = (int)((Box.x + Box.w / 2) / 32);
+            int tileY = (int)((Box.y + Box.h / 2) / 32);
+
+            InWater = GameManager.GetWater(tileX, tileY) != null;
+        }
+
+        public void CheckFeetInWater()
+        {
+            int tileX = (int)((Box.x + Box.w / 2) / 32);
+            int tileY = (int)((Box.y + Box.h) / 32);
+
+            FeetInWater = GameManager.GetWater(tileX, tileY) != null;
         }
     }
 }

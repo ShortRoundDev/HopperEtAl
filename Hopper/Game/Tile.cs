@@ -13,8 +13,9 @@ namespace Hopper.Game
 {
     public class Tile : Entity
     {
-        public bool Solid { get; set; }
-        public float Friction { get; set; }
+        public bool Solid { get; set; } = true;
+        public float Friction { get; set; } = 1.0f;
+        public bool IsWater { get; set; } = false;
 
         public Tile(int x, int y, UInt16 tileNum) : base(
             GraphicsManager.GetTexture($"{tileNum}"),

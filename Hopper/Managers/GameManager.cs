@@ -15,6 +15,7 @@ namespace Hopper.Managers
         public static Level CurrentLevel { get; set; }
         public static float Gravity { get; set; } = 0.3f;
         private static Dictionary<UInt16, Type> TypeIds { get; set; } = new();
+        private static Dictionary<UInt16, Type> TileTypeIds { get; set; } = new();
 
         private static List<Entity> ToDelete { get; set; } = new();
         private static List<Entity> ToAdd { get; set; } = new();
@@ -36,6 +37,7 @@ namespace Hopper.Managers
         public static void Init()
         {
             InitEntityDefinitions();
+            InitTileDefinitions();
         }
 
         public static void Update()
@@ -53,7 +55,6 @@ namespace Hopper.Managers
             if (State == GAME_STATE.IN_GAME)
             {
                 CurrentLevel.Draw();
-                MainPlayer.Draw();
             }
         }
 
@@ -85,6 +86,50 @@ namespace Hopper.Managers
                 // error;
             }
             return null;
+        }
+
+        public static Tile MakeTile(UInt16 code, int x, int y)
+        {
+            if (!TileTypeIds.TryGetValue(code, out var type))
+            {
+                // error;
+                return new Tile(x, y, code);
+            }
+            var constructor = type.GetConstructor(new Type[] { typeof(int), typeof(int), typeof(UInt16) });
+            if (constructor == null)
+            {
+                // error;
+                return null;
+            }
+            try
+            {
+                var tile = constructor.Invoke(new object[] { x, y }) as Tile;
+                return tile;
+            }
+            catch (Exception e)
+            {
+                // error;
+            }
+            return new Tile(x, y, code);
+        }
+
+        public static Tile GetTile(int x, int y)
+        {
+            if(x < 0 || y < 0 || x >= CurrentLevel.Width || y >= CurrentLevel.Height)
+            {
+                return null;
+            }
+
+            return CurrentLevel.Tiles[x, y];
+        }
+
+        public static Tile GetWater(int x, int y)
+        {
+            if (x < 0 || y < 0 || x >= CurrentLevel.Width || y >= CurrentLevel.Height)
+            {
+                return null;
+            }
+            return CurrentLevel.Water[x, y];
         }
 
         public static void DeleteEntity(Entity entity)
@@ -128,6 +173,25 @@ namespace Hopper.Managers
             }
         }
 
+        private static void InitTileDefinitions()
+        {
+            var tiles = typeof(GameManager)
+                .Assembly
+                .GetTypes()
+                .Where(t => t.IsAssignableTo(typeof(Tile)))
+                .Where(t => t.GetCustomAttributes(typeof(TileIdAttribute), false).Count() > 0);
+            foreach (var t in tiles)
+            {
+                var tileIdRef = (t.GetCustomAttributes(typeof(TileIdAttribute), false).FirstOrDefault() as TileIdAttribute)?.Code;
+                if (!tileIdRef.HasValue)
+                {
+                    // Todo: warn
+                    continue;
+                }
+                TypeIds.TryAdd(tileIdRef.Value, t);
+            }
+        }
+
         public static void RestartLevel()
         {
             ToDelete.Clear();
@@ -137,7 +201,7 @@ namespace Hopper.Managers
 
         public static void NewGame()
         {
-            CurrentLevel = new Level("Assets/Levels/e1m2");
+            CurrentLevel = new Level("Assets/Levels/water");
             State = GAME_STATE.IN_GAME;
         }
 

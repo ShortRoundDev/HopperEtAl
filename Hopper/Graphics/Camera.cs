@@ -25,7 +25,7 @@ namespace Hopper.Graphics
                 return;
             SDL.SDL_FPoint focus = Tracker();
             float x = Position.x + ((focus.x - Position.x) * 0.1f);
-            float y = Position.y + ((focus.y - Position.y) * 0.1f);
+            float y = Position.y + ((focus.y - Position.y) * 0.2f);
 
             Position = new() { x = x, y = y };
         }
