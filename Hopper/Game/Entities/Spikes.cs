@@ -1,5 +1,6 @@
 ﻿using Hopper.Game.Attributes;
 using Hopper.Game.Tags;
+using Hopper.Geometry;
 using Hopper.Graphics;
 using Hopper.Managers;
 using System;
@@ -16,10 +17,11 @@ namespace Hopper.Game.Entities
 
         public int Damage { get; set; } = 3;
         public Type[] CollideWith { get; set; } = new Type[] { typeof(Killable) };
+        public Rect CollisionBox { get; set; }
 
         public Spikes(int x, int y) : base(GraphicsManager.GetTexture("Spikes"), x, y, 32, 32)
         {
-
+            CollisionBox = new Rect(x * 32 + 7, y * 32 + 3, 18, 2);
         }
 
         public override void Draw()
@@ -29,7 +31,7 @@ namespace Hopper.Game.Entities
 
         public override void Update()
         {
-            (this as Enemy).EnemyUpdate();
+            (this as Enemy).EnemyUpdate(CollisionBox);
         }
     }
 }

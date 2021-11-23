@@ -33,6 +33,7 @@ namespace Hopper.Managers
         public static int TotalEnemies { get; set; }
         public static int TotalKilled { get; set; } = 0;
 
+        public static bool Pause { get; set; } = false;
 
         public static void Init()
         {
@@ -42,7 +43,7 @@ namespace Hopper.Managers
 
         public static void Update()
         {
-            if (State == GAME_STATE.IN_GAME)
+            if (State == GAME_STATE.IN_GAME && !Pause)
             {
                 CurrentLevel.Update();
                 ClearEntities();
@@ -201,7 +202,7 @@ namespace Hopper.Managers
 
         public static void NewGame()
         {
-            CurrentLevel = new Level("Assets/Levels/water");
+            CurrentLevel = new Level("Assets/Levels/Screen");
             State = GAME_STATE.IN_GAME;
         }
 

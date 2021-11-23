@@ -152,6 +152,16 @@
 		<Path>Assets\Textures\Enemies\Furnace\Furnace.png</Path>
 	</Texture>
 
+	<Texture>
+		<Name>Screen</Name>
+		<Path>Assets\Textures\Special\Screen.png</Path>
+	</Texture>
+	
+	<Texture>
+		<Name>MessageScreen</Name>
+		<Path>Assets\Textures\Engine\Screen.png</Path>
+	</Texture>
+
 	<!-- Particles -->
 	<Texture>
 		<Name>GreenBubble</Name>

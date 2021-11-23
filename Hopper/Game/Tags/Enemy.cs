@@ -1,4 +1,5 @@
-﻿using Hopper.Managers;
+﻿using Hopper.Geometry;
+using Hopper.Managers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,11 @@ namespace Hopper.Game.Tags
         protected Type[] CollideWith { get; set; }
 
         public bool EnemyUpdate()
+        {
+            var _this = this as Entity;
+            return EnemyUpdate(_this.Box);
+        }
+        public bool EnemyUpdate(Rect box)
         {
             var _this = this as Entity;
             foreach (var entity in GameManager.CurrentLevel.Entities)

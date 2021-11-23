@@ -24,6 +24,7 @@ namespace Hopper.Managers
         private static IntPtr DeathScreen { get; set; }
         private static IntPtr Selector { get; set; }
         private static IntPtr Recap { get; set; }
+        private static IntPtr Screen { get; set; }
 
         //Main Menu
         private static List<SDL.SDL_Point> StarField { get; set; } = new();
@@ -37,6 +38,10 @@ namespace Hopper.Managers
         private static float RecapProgress { get; set; } = 0.0f;
         private static bool RecapShowing { get; set; } = false;
         private static bool ShowStats { get; set; } = false;
+
+        // Screen messages
+        private static string Message { get; set; } = string.Empty;
+        private static bool ShowMessage { get; set; } = false;
         public static void Init()
         {
             Numbers = GraphicsManager.GetTexture("Numbers");
@@ -47,6 +52,7 @@ namespace Hopper.Managers
             Selector = GraphicsManager.GetTexture("Selector");
             MainMenu = GraphicsManager.GetTexture("MainMenu");
             Recap = GraphicsManager.GetTexture("Recap");
+            Screen = GraphicsManager.GetTexture("MessageScreen");
 
             var r = new Random();
             for(int i = 0; i < 10; i++)
@@ -74,6 +80,7 @@ namespace Hopper.Managers
             DrawDeathScreen();
             DrawMainMenu();
             DrawRecap();
+            DrawMesssage();
         }
 
         public static void Update()
@@ -81,6 +88,7 @@ namespace Hopper.Managers
             UpdateMainMenu();
             UpdateRecap();
             HandleDeathScreenInput();
+            UpdateMessage();
         }
 
         public static void DrawNumbers(string message, Point position)
@@ -97,14 +105,22 @@ namespace Hopper.Managers
                 w = 12 * size,
                 h = 12 * size
             };
+            var originalX = position.x;
             for (int i = 0; i < message.Length; i++)
             {
                 char c = message[i];
+                if(c == '\n')
+                {
+                    r.x = originalX;
+                    r.y += 10 * size;
+                    continue;
+                }
+                r.x += 10 * size;
                 if (c < '!' || c > '}')
                 {
                     continue;
                 }
-                r.x = position.x + i * 10 * size;
+                
                 SDL.SDL_Rect src = new SDL.SDL_Rect()
                 {
                     x = (c - '!') * 12,
@@ -437,6 +453,55 @@ namespace Hopper.Managers
 
                 GameManager.NewLevel(GameManager.NextLevelPath);
             }
+        }
+
+        private static void DrawMesssage()
+        {
+            if (!ShowMessage)
+            {
+                return;
+            }
+
+            SDL.SDL_Rect src = new()
+            {
+                x = 0,
+                y = 0,
+                w = 768,
+                h = 384
+            };
+
+            SDL.SDL_Rect r = new()
+            {
+                x = SystemManager.Width / 2 - (768 / 2),
+                y = SystemManager.Height / 2 - (384 / 2),
+                w = 768,
+                h = 384
+            };
+
+            SDL.SDL_RenderCopy(GraphicsManager.Renderer, Screen, ref src, ref r);
+
+            DrawString(Message, new(r.x, r.y + 24), 4.0f);
+        }
+
+        private static void UpdateMessage()
+        {
+            if (!ShowMessage)
+            {
+                return;
+            }
+            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Down)
+            {
+                Message = "";
+                ShowMessage = false;
+                GameManager.Pause = false;
+            }
+        }
+
+        public static void DisplayMessage(string message)
+        {
+            GameManager.Pause = true;
+            ShowMessage = true;
+            Message = message;
         }
 
         public static float EaseIn(float t)
