@@ -37,7 +37,10 @@ namespace Hopper.Game.Entities
             { "ShootingStanding",   2 },
             { "DefaultJumping",     3 },
             { "DefaultRunning",     4 },
-            { "DefaultStanding",    5 }
+            { "DefaultStanding",    5 },
+            { "DefaultSwimming",    6 },
+            { "Wading",             7 },
+            { "ShootingSwimming",   8 },
         };
 
         int shootTimer = 0;
@@ -56,11 +59,11 @@ namespace Hopper.Game.Entities
                 {
                     x = 0,
                     y = 0,
-                    w = 32,
+                    w = 48,
                     h = 48
                 },
                 Columns = 4,
-                Rows = 6,
+                Rows = 9,
                 Speed = 0.1f
             };
         }
@@ -68,8 +71,15 @@ namespace Hopper.Game.Entities
         public override void Draw()
         {
             Look();
+            var dst = new SDL.SDL_FRect()
+            {
+                x = Box.x - 8,
+                y = Box.y,
+                w = 48,
+                h = 48
+            };
             if(DamageBoost == 0 || (DamageBoost/3) % 2 != 0)
-                Render.Box(Box.AsFRect(), Animate.GetUVMap(), Texture, SDLFlip);
+                Render.Box(dst, Animate.GetUVMap(), Texture, SDLFlip);
 
             var ammoBoxSrc = new SDL.SDL_Rect()
             {
@@ -112,7 +122,7 @@ namespace Hopper.Game.Entities
             HandleShooting(out shooting);
             HandleJump();
             HandleOnGroundInput(out animation);
-            HandleSwimming();
+            animation = HandleSwimming() ?? animation;
             HandleInAir();
 
             HandleFriction();
@@ -133,10 +143,14 @@ namespace Hopper.Game.Entities
             }
         }
         
-        private void HandleSwimming()
+        private string HandleSwimming()
         {
+            string animation = null;
             if (InWater)
             {
+                //this line sucks 
+                animation = "Swimming";
+
                 Walking = false;
                 if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down) {
                     MoveVec.x -= 0.1f;
@@ -182,6 +196,7 @@ namespace Hopper.Game.Entities
                     MoveVec.y -= 4.0f;
                 }
             }
+            return animation;
         }
 
         private void HandleInAir()
