@@ -57,7 +57,7 @@ namespace Hopper.Game.Tags
                 r = 0x00,
                 g = 0xff,
                 b = 0x00,
-                a = 0x00
+                a = 0xff
             });
         }
 

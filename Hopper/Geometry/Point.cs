@@ -41,5 +41,12 @@ namespace Hopper.Geometry
         {
             return new Point(a.x * b, a.y * b);
         }
+
+        public float Distance(Point b)
+        {
+            float xD = (x - b.x);
+            float yD = (y - b.y);
+            return (float)Math.Sqrt((xD * xD) + (yD * yD));
+        }
     }
 }

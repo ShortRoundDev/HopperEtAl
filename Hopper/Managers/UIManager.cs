@@ -42,6 +42,45 @@ namespace Hopper.Managers
         // Screen messages
         private static string Message { get; set; } = string.Empty;
         private static bool ShowMessage { get; set; } = false;
+        private static Dictionary<string, IntPtr> FontColors { get; set; } = new();
+
+        private static SDL.SDL_Color[] Colors = new SDL.SDL_Color[]
+        {
+            new SDL.SDL_Color(){ r = 0,   g = 0,   b = 0,   a = 255 },  // Black
+            new SDL.SDL_Color(){ r = 130, g = 0,   b = 0,   a = 255 },  // Dark Red
+            new SDL.SDL_Color(){ r = 0,   g = 130, b = 0,   a = 255 },  // Dark Green
+            new SDL.SDL_Color(){ r = 130, g = 130, b = 0,   a = 255 },  // Dark Yellow
+            new SDL.SDL_Color(){ r = 0,   g = 0,   b = 130, a = 255 },  // Dark Blue
+            new SDL.SDL_Color(){ r = 130, g = 0,   b = 130, a = 255 },  // Dark Magenta
+            new SDL.SDL_Color(){ r = 0,   g = 130, b = 130, a = 255 },  // Dark Teal
+            new SDL.SDL_Color(){ r = 195, g = 195, b = 195, a = 255 },  // Light Grey
+            new SDL.SDL_Color(){ r = 130, g = 130, b = 130, a = 255 },  // Dark Grey
+            new SDL.SDL_Color(){ r = 255, g = 0,   b = 0,   a = 255 },  // Light Red
+            new SDL.SDL_Color(){ r = 0,   g = 255, b = 0,   a = 255 },  // Light Green
+            new SDL.SDL_Color(){ r = 255, g = 255, b = 0,   a = 255 },  // Light Yellow
+            new SDL.SDL_Color(){ r = 0,   g = 0,   b = 255, a = 255 },  // Light Blue
+            new SDL.SDL_Color(){ r = 255, g = 0,   b = 255, a = 255 },  // Light Magenta
+            new SDL.SDL_Color(){ r = 0,   g = 255, b = 255, a = 255 },  // Light Teal
+            new SDL.SDL_Color(){ r = 255, g = 255, b = 255, a = 255 },  // White
+        };
+
+        public static SDL.SDL_Color BLACK   => Colors[0];
+        public static SDL.SDL_Color DK_RED  => Colors[1];
+        public static SDL.SDL_Color DK_GRN  => Colors[2];
+        public static SDL.SDL_Color DK_YLW  => Colors[3];
+        public static SDL.SDL_Color DK_BLU  => Colors[4];
+        public static SDL.SDL_Color DK_MAG  => Colors[5];
+        public static SDL.SDL_Color DK_TEAL => Colors[6];
+        public static SDL.SDL_Color LT_GREY => Colors[7];
+        public static SDL.SDL_Color DK_GREY => Colors[8];
+        public static SDL.SDL_Color LT_RED  => Colors[9];
+        public static SDL.SDL_Color LT_GRN  => Colors[10];
+        public static SDL.SDL_Color LT_YLW  => Colors[11];
+        public static SDL.SDL_Color LT_BLU  => Colors[12];
+        public static SDL.SDL_Color LT_MAG  => Colors[13];
+        public static SDL.SDL_Color LT_TEAL => Colors[14];
+        public static SDL.SDL_Color WHITE   => Colors[15];
+
         public static void Init()
         {
             Numbers = GraphicsManager.GetTexture("Numbers");
@@ -89,6 +128,11 @@ namespace Hopper.Managers
             UpdateRecap();
             HandleDeathScreenInput();
             UpdateMessage();
+        }
+
+        private static void InitFontColors()
+        {
+
         }
 
         public static void DrawNumbers(string message, Point position)

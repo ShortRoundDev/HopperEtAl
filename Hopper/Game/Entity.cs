@@ -293,5 +293,20 @@ namespace Hopper.Game
 
             FeetInWater = GameManager.GetWater(tileX, tileY) != null;
         }
+
+        public Point Midpoint()
+        {
+            return new(Box.x + Box.w / 2, Box.y + Box.h / 2);
+        }
+
+        public Point Origin()
+        {
+            return new(Box.x, Box.y);
+        }
+
+        public float Distance(Entity a)
+        {
+            return Midpoint().Distance(a.Midpoint());
+        }
     }
 }

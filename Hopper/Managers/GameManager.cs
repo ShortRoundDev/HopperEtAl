@@ -35,10 +35,17 @@ namespace Hopper.Managers
 
         public static bool Pause { get; set; } = false;
 
+        
+
         public static void Init()
         {
             InitEntityDefinitions();
-            InitTileDefinitions();
+            InitTileDefinitions();            
+        }
+
+        private static void InitFontColors()
+        {
+            
         }
 
         public static void Update()
@@ -202,7 +209,7 @@ namespace Hopper.Managers
 
         public static void NewGame()
         {
-            CurrentLevel = new Level("Assets/Levels/Screen");
+            CurrentLevel = new Level("Assets/Levels/water");
             State = GAME_STATE.IN_GAME;
         }
 

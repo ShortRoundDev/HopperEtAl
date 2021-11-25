@@ -85,6 +85,11 @@
 		<Name>Turret</Name>
 		<Path>Assets\Textures\Enemies\Turret\Turret.png</Path>
 	</Texture>
+
+	<Texture>
+		<Name>Worm</Name>
+		<Path>Assets\Textures\Enemies\Worm\Worm.png</Path>
+	</Texture>
 	
 	<Texture>
 		<Name>RedKey</Name>
