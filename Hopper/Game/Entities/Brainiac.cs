@@ -3,6 +3,7 @@ using Hopper.Game.Entities.Particle;
 using Hopper.Game.Tags;
 using Hopper.Graphics;
 using Hopper.Managers;
+using SDL2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace Hopper.Game.Entities
         public int Damage { get; set; } = 1;
         public int DamageBoost { get; set; } = 0;
 
-        public Brainiac(int x, int y) : base(GraphicsManager.GetTexture("Brainiac"), x, y, 48, 48)
+        public Brainiac(int x, int y) : base(GraphicsManager.GetTexture("Brainiac"), x, y, 24, 48)
         {
             MoveVec.x = 1;
             Animate = new Animator()
@@ -41,7 +42,14 @@ namespace Hopper.Game.Entities
         public override void Draw()
         {
             Look();
-            Render.Box(Box.AsFRect(), Animate.GetUVMap(), Texture, SDLFlip);
+            var dst = new SDL.SDL_FRect()
+            {
+                x = Box.x - 12,
+                y = Box.y,
+                w = 48,
+                h = 48
+            };
+            Render.Box(dst, Animate.GetUVMap(), Texture, SDLFlip);
             Killable k = this;
             k.KillableDraw();
         }

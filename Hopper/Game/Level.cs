@@ -46,7 +46,16 @@ namespace Hopper.Game
                     }
                 }
             }
-            for(int i = 0; i < Width; i++)
+
+            foreach (var entity in Entities)
+            {
+                if (entity.Deleted || entity is Player)
+                    continue;
+                entity.Draw();
+            }
+            GameManager.MainPlayer.Draw();
+
+            for (int i = 0; i < Width; i++)
             {
                 for(int j = 0; j < Height; j++)
                 {
@@ -57,13 +66,6 @@ namespace Hopper.Game
                     }
                 }
             }
-            foreach (var entity in Entities)
-            {
-                if (entity.Deleted || entity is Player)
-                    continue;
-                entity.Draw();
-            }
-            GameManager.MainPlayer.Draw();
             SDL.SDL_SetRenderDrawBlendMode(GraphicsManager.Renderer, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
             
             for(int i = 0; i < Width; i++)
