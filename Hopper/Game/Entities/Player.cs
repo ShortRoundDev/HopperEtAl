@@ -48,7 +48,7 @@ namespace Hopper.Game.Entities
         public Player(int x, int y) : base(
             GraphicsManager.GetTexture("Player"),
             x, y,
-            32, 48
+            30, 48
         )
         {
             GameManager.MainPlayer = this;
@@ -89,7 +89,7 @@ namespace Hopper.Game.Entities
 
             var ammoBox = new SDL.SDL_Rect()
             {
-                x = 10,
+                x = 11,
                 y = SystemManager.Height - 56,
                 w = 42,
                 h = 42
@@ -168,24 +168,24 @@ namespace Hopper.Game.Entities
                     MoveVec.y -= 2.0f;
                 }
 
-                if (MoveVec.x > 1.0f)
+                if (MoveVec.x > 2.0f)
                 {
-                    MoveVec.x = 1.0f;
+                    MoveVec.x = 2.0f;
                 }
                 
-                if (MoveVec.x < -1.0f)
+                if (MoveVec.x < -2.0f)
                 {
-                    MoveVec.x = -1.0f;
+                    MoveVec.x = -2.0f;
                 }
                 
-                if (MoveVec.y < -8.0f)
+                if (MoveVec.y < -6.0f)
                 {
-                    MoveVec.y = -8.0f;
+                    MoveVec.y = -6.0f;
                 }
 
-                if (MoveVec.y > 1.0f)
+                if (MoveVec.y > 1.5f)
                 {
-                    MoveVec.y = 1.0f;
+                    MoveVec.y = 1.5f;
                 }
             }
             else if (FeetInWater && !OnGround)
@@ -277,13 +277,13 @@ namespace Hopper.Game.Entities
 
             if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down)
             {
-                MoveVec.x = 2.0f;
+                MoveVec.x = 2.5f;
                 Walking = true;
             }
 
             if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down)
             {
-                MoveVec.x = -2.0f;
+                MoveVec.x = -2.5f;
                 Walking = true;
             }
             if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Edge)

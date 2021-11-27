@@ -33,6 +33,55 @@
 		<Name>8</Name>
 		<Path>Assets\Textures\Tiles\8.png</Path>
 	</Texture>
+	<Texture>
+		<Name>9</Name>
+		<Path>Assets\Textures\Tiles\9.png</Path>
+	</Texture>
+	<Texture>
+		<Name>10</Name>
+		<Path>Assets\Textures\Tiles\10.png</Path>
+	</Texture>
+
+	<Texture>
+		<Name>11</Name>
+		<Path>Assets\Textures\Tiles\11.png</Path>
+	</Texture>
+
+	<Texture>
+		<Name>12</Name>
+		<Path>Assets\Textures\Tiles\12.png</Path>
+	</Texture>
+
+	<Texture>
+		<Name>13</Name>
+		<Path>Assets\Textures\Tiles\13.png</Path>
+	</Texture>
+
+	<Texture>
+		<Name>14</Name>
+		<Path>Assets\Textures\Tiles\14.png</Path>
+	</Texture>
+
+	<Texture>
+		<Name>15</Name>
+		<Path>Assets\Textures\Tiles\15.png</Path>
+	</Texture>
+
+	<Texture>
+		<Name>16</Name>
+		<Path>Assets\Textures\Tiles\16.png</Path>
+	</Texture>
+
+	<Texture>
+		<Name>17</Name>
+		<Path>Assets\Textures\Tiles\17.png</Path>
+	</Texture>
+
+	<Texture>
+		<Name>18</Name>
+		<Path>Assets\Textures\Tiles\18.png</Path>
+	</Texture>
+
 	<!-- Engine -->
 	<Texture>
 		<Name>Numbers</Name>
@@ -107,6 +156,10 @@
 	<Texture>
 		<Name>Spikes</Name>
 		<Path>Assets\Textures\PseudoGeometry\Spikes.png</Path>
+	</Texture>
+	<Texture>
+		<Name>Barnacles</Name>
+		<Path>Assets\Textures\Enemies\Barnacles\Barnacles.png</Path>
 	</Texture>
 	
 	<Texture>

@@ -21,7 +21,7 @@ namespace Hopper.Game.Entities
         public int MaxHealth { get; set; } = 1;
         public int DamageBoost { get; set; } = 0;
 
-        public Worm(int x, int y) : base(GraphicsManager.GetTexture("Worm"), x, y, 24, 6)
+        public Worm(int x, int y) : base(GraphicsManager.GetTexture("Worm"), x, y, 24, 24)
         {
             Animate = new Animator()
             {
@@ -30,7 +30,7 @@ namespace Hopper.Game.Entities
                     x = 0,
                     y = 0,
                     w = 24,
-                    h = 6
+                    h = 24
                 },
                 Columns = 2,
                 Rows = 1,
