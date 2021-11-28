@@ -13,7 +13,7 @@ namespace Hopper.Game.Tiles
     {
         public Ice(int x, int y, ushort tileNum) : base(x, y, tileNum)
         {
-
+            Friction = 0.0f;
         }
     }
 }

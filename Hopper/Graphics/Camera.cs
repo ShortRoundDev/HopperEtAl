@@ -33,7 +33,6 @@ namespace Hopper.Graphics
             var scale = Scale;
             scale.x = Scale.x + ((ScaleTarget.x - Scale.x) * 0.01f);
             scale.y = Scale.y + ((ScaleTarget.y - Scale.y) * 0.01f);
-            Console.WriteLine(scale.x);
             Scale = scale;
         }
 

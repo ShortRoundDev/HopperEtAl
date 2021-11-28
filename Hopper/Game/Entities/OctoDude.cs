@@ -47,7 +47,7 @@ namespace Hopper.Game.Entities
         public override void Draw()
         {
             Render.Box(Box.AsFRect(), Animate.GetUVMap(), Texture, SDLFlip);
-
+            (this as Killable).KillableDraw();
         }
 
         public override void Update()
@@ -77,15 +77,15 @@ namespace Hopper.Game.Entities
                     //shoot left
                     if (GameManager.MainPlayer.Box.x < Box.x)
                     {
-                        GameManager.AddEntity(new Ink((int)Box.x - 8, (int)(Box.y + (Box.h / 2)), new Point(-COS_PI_4, COS_PI_4) * 2.5f)); // down left
-                        GameManager.AddEntity(new Ink((int)Box.x - 8, (int)(Box.y + (Box.h / 2)), new Point(-2.5f, 0))); // left
-                        GameManager.AddEntity(new Ink((int)Box.x - 8, (int)(Box.y + (Box.h / 2)), new Point(-COS_PI_4, -COS_PI_4) * 2.5f)); // up left
+                        GameManager.AddEntity(new Ink((int)Box.x - 8, (int)(Box.y + (Box.h / 2)), new Point(-COS_PI_4, COS_PI_4) * 1.5f)); // down left
+                        GameManager.AddEntity(new Ink((int)Box.x - 8, (int)(Box.y + (Box.h / 2)), new Point(-1.5f, 0))); // left
+                        GameManager.AddEntity(new Ink((int)Box.x - 8, (int)(Box.y + (Box.h / 2)), new Point(-COS_PI_4, -COS_PI_4) * 1.5f)); // up left
                     }
                     else // shoot right
                     {
-                        GameManager.AddEntity(new Ink((int)(Box.x + Box.w), (int)(Box.y + (Box.h / 2)), new Point(COS_PI_4, COS_PI_4) * 2.5f)); // down right
-                        GameManager.AddEntity(new Ink((int)(Box.x + Box.w), (int)(Box.y + (Box.h / 2)), new Point(2.5f, 0))); // right
-                        GameManager.AddEntity(new Ink((int)(Box.x + Box.w), (int)(Box.y + (Box.h / 2)), new Point(COS_PI_4, -COS_PI_4) * 2.5f)); // up right
+                        GameManager.AddEntity(new Ink((int)(Box.x + Box.w), (int)(Box.y + (Box.h / 2)), new Point(COS_PI_4, COS_PI_4) * 1.5f)); // down right
+                        GameManager.AddEntity(new Ink((int)(Box.x + Box.w), (int)(Box.y + (Box.h / 2)), new Point(1.5f, 0))); // right
+                        GameManager.AddEntity(new Ink((int)(Box.x + Box.w), (int)(Box.y + (Box.h / 2)), new Point(COS_PI_4, -COS_PI_4) * 1.5f)); // up right
                     }
                     ShootCooldown = 200;
                 }

@@ -53,6 +53,7 @@ namespace Hopper.Managers
         {
             if (State == GAME_STATE.IN_GAME && !Pause)
             {
+                UIManager.UpdateStars();
                 CurrentLevel.Update();
                 ClearEntities();
                 AttachEntities();
@@ -63,6 +64,7 @@ namespace Hopper.Managers
         {
             if (State == GAME_STATE.IN_GAME)
             {
+                UIManager.DrawStars();
                 CurrentLevel.Draw();
             }
         }
@@ -112,7 +114,7 @@ namespace Hopper.Managers
             }
             try
             {
-                var tile = constructor.Invoke(new object[] { x, y }) as Tile;
+                var tile = constructor.Invoke(new object[] { x, y, code }) as Tile;
                 return tile;
             }
             catch (Exception e)
@@ -197,7 +199,7 @@ namespace Hopper.Managers
                     // Todo: warn
                     continue;
                 }
-                TypeIds.TryAdd(tileIdRef.Value, t);
+                TileTypeIds.TryAdd(tileIdRef.Value, t);
             }
         }
 
@@ -210,7 +212,7 @@ namespace Hopper.Managers
 
         public static void NewGame()
         {
-            CurrentLevel = new Level("Assets/Levels/Shotgun");
+            CurrentLevel = new Level("Assets/Levels/SpaceCamp");
             State = GAME_STATE.IN_GAME;
         }
 

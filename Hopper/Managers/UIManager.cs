@@ -319,11 +319,8 @@ namespace Hopper.Managers
             }
         }
 
-        private static void DrawMainMenu()
+        public static void DrawStars()
         {
-            if (GameManager.State != GAME_STATE.MAIN_MENU)
-                return;
-
             foreach (var star in StarField)
             {
                 var dot = new SDL.SDL_Rect()
@@ -336,7 +333,14 @@ namespace Hopper.Managers
                 SDL.SDL_SetRenderDrawColor(GraphicsManager.Renderer, 0xff, 0xff, 0xff, 0xff);
                 SDL.SDL_RenderFillRect(GraphicsManager.Renderer, ref dot);
             }
+        }
 
+        private static void DrawMainMenu()
+        {
+            if (GameManager.State != GAME_STATE.MAIN_MENU)
+                return;
+
+            DrawStars();
 
             var src = new SDL.SDL_Rect()
             {
@@ -408,12 +412,16 @@ namespace Hopper.Managers
                 }
             }
 
+            UpdateStars();
+        }
+        public static void UpdateStars()
+        {
             for (int i = 0; i < StarField.Count; i++)
             {
                 var star = StarField[i];
                 star.x -= 1;
                 star.y += 1;
-                if(star.x < -3)
+                if (star.x < -3)
                 {
                     star.x = SystemManager.Width;
                 }
