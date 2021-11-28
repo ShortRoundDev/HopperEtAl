@@ -209,6 +209,11 @@
 	</Texture>
 
 	<Texture>
+		<Name>Crosshair</Name>
+		<Path>Assets\Textures\PowerUp\Crosshair.png</Path>
+	</Texture>
+
+	<Texture>
 		<Name>Snacks</Name>
 		<Path>Assets\Textures\Engine\Snacks.png</Path>
 	</Texture>

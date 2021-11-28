@@ -307,7 +307,6 @@ namespace Hopper.Game.Entities
                 }
                 shootTimer = 20;
             }
-
         }
 
         private void HandleJump()

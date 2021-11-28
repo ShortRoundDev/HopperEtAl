@@ -1,4 +1,5 @@
-﻿using Hopper.Geometry;
+﻿using Hopper.Game.Entities;
+using Hopper.Geometry;
 using Hopper.Graphics;
 using Hopper.Managers;
 using SDL2;
@@ -59,6 +60,11 @@ namespace Hopper.Game.Tags
                 b = 0x00,
                 a = 0xff
             });
+
+            if(this is not Player p && GameManager.MainPlayer.CrossHair)
+            {
+                Render.BoxDraw(_this.Box.AsFRect(), new() { r = 0xff, g = 0, b = 0, a = 0xff });
+            }
         }
 
         public void OnDamageHandler(Entity e, int damage)
