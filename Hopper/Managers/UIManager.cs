@@ -140,7 +140,7 @@ namespace Hopper.Managers
             NumberMessages.Enqueue((message, position));
         }
 
-        private static void DrawString(string message, Point position, float size = 1.0f)
+        public static void DrawString(string message, Point position, float size = 1.0f)
         {
             var r = new SDL.SDL_FRect()
             {

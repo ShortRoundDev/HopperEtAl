@@ -28,6 +28,12 @@ namespace Hopper.Game.Entities
         public int Keys { get; set; }
         public int Health { get; set; } = 3;
         public int MaxHealth { get; set; } = 3;
+        private byte LastZoom { get; set; } = 3;
+        public bool Shotgun { get; set; } = false;
+        public bool CrossHair { get; set; } = false;
+
+        private const float COS_ANGLE = 0.965925f;
+        private const float SIN_ANGLE = 0.258819f;
 
         //animations
         private Dictionary<string, int> animations = new()
@@ -108,12 +114,36 @@ namespace Hopper.Game.Entities
             SDL.SDL_RenderFillRect(GraphicsManager.Renderer, ref blackBox);
 
             UIManager.DrawNumbers($"{Ammo}", new Point(64, SystemManager.Height - 46));
+
+            var snackBoxSrc = new SDL.SDL_Rect()
+            {
+                x = 0,
+                y = 0,
+                w = 24,
+                h = 24
+            };
+
+            var snackBoxDst = new SDL.SDL_Rect()
+            {
+                x = SystemManager.Width - 256,
+                y = 5,
+                w = 72,
+                h = 72
+            };
+            SDL.SDL_RenderCopy(GraphicsManager.Renderer, GraphicsManager.GetTexture("Snacks"), ref snackBoxSrc, ref snackBoxDst);
+            blackBox.x = SystemManager.Width - 256 + 100;
+            blackBox.w = 128;
+            blackBox.y = 24;
+            SDL.SDL_SetRenderDrawColor(GraphicsManager.Renderer, 0, 0, 0, 0xff);
+            SDL.SDL_RenderFillRect(GraphicsManager.Renderer, ref blackBox);
+            UIManager.DrawString($"{(Score)}", new Point(SystemManager.Width - 256 + 84, 24), 3.0f);
         }
 
         public override void Update()
         {
             Animate.Update();
             MoveAndCollide();
+            CheckZoom();
 
             string animation = "Standing";
             bool shooting = false;
@@ -230,15 +260,51 @@ namespace Hopper.Game.Entities
             if (Ammo > 0 && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LCTRL].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LCTRL].Edge && shootTimer <= 10)
             {
                 Ammo--;
-                GameManager.AddEntity(
-                    new PlayerBullet(new()
-                    {
-                        x = Box.x + (RenderFlip ? -16 : 16),
-                        y = Box.y + 12
-                    },
-                        RenderFlip
-                    )
-                );
+                if (!Shotgun)
+                {
+                    GameManager.AddEntity(
+                        new PlayerBullet(new()
+                        {
+                            x = Box.x + (RenderFlip ? -16 : 16),
+                            y = Box.y + 12
+                        },
+                            RenderFlip
+                        )
+                    );
+                } else
+                {
+                    float dir = RenderFlip ? -1 : 1;
+                    GameManager.AddEntity(
+                        new PlayerBullet(
+                            new()
+                            {
+                                x = Box.x + (RenderFlip ? -16 : 16),
+                                y = Box.y + 12
+                            },
+                            new Point(COS_ANGLE * dir, -SIN_ANGLE) * 8
+                        )
+                    );
+                    GameManager.AddEntity(
+                        new PlayerBullet(
+                            new()
+                            {
+                                x = Box.x + (RenderFlip ? -16 : 16),
+                                y = Box.y + 12
+                            },
+                            new Point(dir, 0) * 8
+                        )
+                    );
+                    GameManager.AddEntity(
+                        new PlayerBullet(
+                            new()
+                            {
+                                x = Box.x + (RenderFlip ? -16 : 16),
+                                y = Box.y + 12
+                            },
+                            new Point(COS_ANGLE * dir, SIN_ANGLE) * 8
+                        )
+                    );
+                }
                 shootTimer = 20;
             }
 
@@ -316,6 +382,12 @@ namespace Hopper.Game.Entities
         {
             UIManager.ShowDeathScreen();
             //GameManager.RestartLevel();
+        }
+
+        private void CheckZoom()
+        {
+            var zoom = GameManager.CurrentLevel.Zoom[(int)(Box.x / 32), (int)(Box.y / 32)];
+            GraphicsManager.MainCamera.ScaleTarget = ((float)zoom, (float)zoom);
         }
     }
 }

@@ -16,6 +16,8 @@ namespace Hopper.Game.Entities.Doors
         bool Open { get; set; } = false;
         int OpenProgress { get; set; } = -1;
         private Rect OpenBox { get; set; }
+        public byte CollisionDirectionMask { get; set; } = 0b1111;
+
         public Door(int x, int y, int doorType) : base(
             GraphicsManager.GetTexture(
                 doorType switch

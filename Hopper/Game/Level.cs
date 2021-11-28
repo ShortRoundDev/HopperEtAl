@@ -22,6 +22,7 @@ namespace Hopper.Game
         public Tile[,] Background { get; set; }
         public Tile[,] Tiles { get; set; }
         public Tile[,] Water { get; set; }
+        public byte[,] Zoom { get; set; }
         public List<Entity> Entities { get; set; } = new();
 
         public Level(string path)
@@ -101,6 +102,7 @@ namespace Hopper.Game
             Background = new Tile[tileMap.Level.Width, tileMap.Level.Height];
             Tiles = new Tile[tileMap.Level.Width, tileMap.Level.Height];
             Water = new Tile[tileMap.Level.Width, tileMap.Level.Height];
+            Zoom = new byte[tileMap.Level.Width, tileMap.Level.Height];
 
             Width = tileMap.Level.Width;
             Height = tileMap.Level.Height;
@@ -120,6 +122,12 @@ namespace Hopper.Game
                     {
                         Water[i, j] = GameManager.MakeTile(tileMap.Level.Walls[i, j].Ceiling, i, j);
                     }
+                    var zoom = tileMap.Level.Walls[i, j].Zone;
+                    if(zoom == 0)
+                    {
+                        zoom = 3;
+                    }
+                    Zoom[i, j] = zoom;
                 }
             }
 

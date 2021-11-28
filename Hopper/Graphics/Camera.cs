@@ -14,6 +14,8 @@ namespace Hopper.Graphics
         public SDL.SDL_FPoint Position { get; set; } = new SDL.SDL_FPoint() { x = 0, y = 0 };
         public Func<SDL.SDL_FPoint> Tracker { get; set; }
         public SDL.SDL_FPoint Scale { get; set; }
+        public (float x, float y) ScaleTarget { get; set; } = (3.0f, 3.0f);
+
         public void Draw()
         {
             
@@ -28,6 +30,11 @@ namespace Hopper.Graphics
             float y = Position.y + ((focus.y - Position.y) * 0.2f);
 
             Position = new() { x = x, y = y };
+            var scale = Scale;
+            scale.x = Scale.x + ((ScaleTarget.x - Scale.x) * 0.01f);
+            scale.y = Scale.y + ((ScaleTarget.y - Scale.y) * 0.01f);
+            Console.WriteLine(scale.x);
+            Scale = scale;
         }
 
         public void Track(Entity entity)

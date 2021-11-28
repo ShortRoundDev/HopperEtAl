@@ -40,7 +40,8 @@ namespace Hopper.Managers
         public static void Init()
         {
             InitEntityDefinitions();
-            InitTileDefinitions();            
+            InitTileDefinitions();
+            SDL2.SDL_mixer.Mix_OpenAudio(44100, SDL2.SDL_mixer.MIX_DEFAULT_FORMAT, 2, 2048);
         }
 
         private static void InitFontColors()
@@ -209,7 +210,7 @@ namespace Hopper.Managers
 
         public static void NewGame()
         {
-            CurrentLevel = new Level("Assets/Levels/waterleveltmp");
+            CurrentLevel = new Level("Assets/Levels/Shotgun");
             State = GAME_STATE.IN_GAME;
         }
 

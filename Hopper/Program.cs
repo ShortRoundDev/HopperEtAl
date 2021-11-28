@@ -30,6 +30,7 @@ namespace Hopper
         private static void Init()
         {
             SystemManager.Init();
+            SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_AUDIO);
             GraphicsManager.Init(SystemManager.Width, SystemManager.Height);
             InputManager.Init();
             GameManager.Init();

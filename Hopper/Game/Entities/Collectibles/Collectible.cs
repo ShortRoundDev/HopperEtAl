@@ -24,10 +24,9 @@ namespace Hopper.Game.Entities.Collectibles
         {
             if (GameManager.MainPlayer.Box.Intersect(Box))
             {
-                GameManager.MainPlayer.Score += 100;
+                GameManager.MainPlayer.Score += 10;
                 GameManager.DeleteEntity(this);
                 Deleted = true;
-                Console.WriteLine("Collected! " + GetType().Name);
                 GameManager.TotalCollected++;
             }
         }

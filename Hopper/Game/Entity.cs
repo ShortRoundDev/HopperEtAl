@@ -30,6 +30,7 @@ namespace Hopper.Game
         public bool InWater { get; set; } = false;
         public bool FeetInWater { get; set; } = false;
         protected Animator Animate { get; set; }
+        protected float FrameFriction { get; set; }
         public SDL.SDL_Rect IntBox
         {
             get => new SDL.SDL_Rect()
@@ -72,6 +73,8 @@ namespace Hopper.Game
             CheckInWater();
             CheckFeetInWater();
 
+            FrameFriction = 0.0f;
+
             var hypoX = new Rect()
             {
                 x = (Box.x + MoveVec.x),
@@ -93,9 +96,11 @@ namespace Hopper.Game
             float moveX = MoveVec.x;
             Rect intersection = new Rect();
 
+            //========== Check pseudoGeometry
+
             foreach(var entity in GameManager.CurrentLevel.Entities)
             {
-                if(entity is not PseudoGeometry || entity == this)
+                if(entity is not PseudoGeometry p || entity == this)
                 {
                     continue;
                 }
@@ -103,18 +108,20 @@ namespace Hopper.Game
 
                 if (xCollide)
                 {
-                    if (moveX > 0.0f)
+                    if (moveX > 0.0f && (Box.x + Box.w <= entity.Box.x) && (p.CollisionDirectionMask & HIT_RIGHT) != 0)
                     {
                         hitDirection |= HIT_RIGHT;
                         Box.x = hypoX.x - ((hypoX.x + hypoX.w) - entity.Box.x);
+                        moveX = 0;
+                        break;
                     }
-                    else if (moveX < 0.0f)
+                    else if (moveX < 0.0f && (Box.x >= entity.Box.x + entity.Box.w) && (p.CollisionDirectionMask & HIT_LEFT) != 0)
                     {
                         hitDirection |= HIT_LEFT;
                         Box.x = entity.Box.x + entity.Box.w;
+                        moveX = 0;
+                        break;
                     }
-                    moveX = 0;
-                    break;
                 }
             }
 
@@ -132,7 +139,7 @@ namespace Hopper.Game
                     }
 
                     var xCollide = hypoX.Intersect(tile.Box);
-                    
+
                     if (xCollide)
                     {
                         if(moveX > 0.0f)
@@ -155,26 +162,31 @@ namespace Hopper.Game
 
             foreach (var entity in GameManager.CurrentLevel.Entities)
             {
-                if (entity is not PseudoGeometry || entity == this)
+                if (entity is not PseudoGeometry p || entity == this)
                 {
                     continue;
                 }
+
                 var yCollide = hypoY.Intersect(entity.Box);
 
                 if (yCollide)
                 {
-                    if (moveY > 0.0f)
+                    if (moveY > 0.0f && (Box.y + Box.h <= entity.Box.y) && (p.CollisionDirectionMask & HIT_BOTTOM) != 0)
                     {
                         hitDirection |= HIT_BOTTOM;
-                        Box.y = hypoY.y - ((hypoX.y + hypoX.h) - entity.Box.y);
+                        Box.y = hypoY.y - ((hypoY.y + hypoY.h) - entity.Box.y);
+                        moveY = 0;
+                        OnGround = true;
+                        FrameFriction = 1.0f;
+                        break;
                     }
-                    else if (moveY < 0.0f)
+                    else if (moveY < 0.0f && (Box.y > entity.Box.y + entity.Box.h) && (p.CollisionDirectionMask & HIT_TOP) != 0)
                     {
                         hitDirection |= HIT_TOP;
                         Box.y = entity.Box.y + entity.Box.h;
+                        moveY = 0;
+                        break;
                     }
-                    moveY = 0;
-                    break;
                 }
             }
 
@@ -253,7 +265,7 @@ namespace Hopper.Game
             float friction = 0.0f;
             if (!OnGround)
             {
-                friction = 0.0f;
+                friction = FrameFriction;
                 goto CheckWater;
             }
 
@@ -262,12 +274,12 @@ namespace Hopper.Game
             int tileY = (int)((Box.y + Box.h + 1.0f) / 32);
             if (tileY >= GameManager.CurrentLevel.Height)
             {
-                friction = 0.0f;
+                friction = FrameFriction;
                 goto CheckWater;
             }
             for (int i = tileX; i <= tileW; i++)
             {
-                friction = Math.Max(GameManager.CurrentLevel.Tiles[i, tileY]?.Friction ?? 0.0f, friction);
+                friction = Math.Max(GameManager.CurrentLevel.Tiles[i, tileY]?.Friction ?? FrameFriction, friction);
             }
 
         CheckWater:

@@ -92,7 +92,7 @@ namespace LibJohn
                     wall.LockType = data[iOff + 3];
                     wall.Floor = BitConverter.ToUInt16(data, iOff + 4);
                     wall.Ceiling = BitConverter.ToUInt16(data, iOff + 6);
-                    wall.Zone = data[8];
+                    wall.Zone = data[iOff + 8];
                     wall.Message = BitConverter.ToUInt64(data, iOff + 16);
 
                     _RawWalls[idx] = wall;

@@ -11,14 +11,19 @@ namespace Hopper.Game.Entities.Projectiles
 {
     public class PlayerBullet : Projectile
     {
-        public PlayerBullet(Point start, bool left) : base(
-            IntPtr.Zero,
-            new Rect() { x = start.x, y = start.y, w = 6, h = 2},
-            new Point() { x = left ? -8 : 8, y = 0 },
-            new Type[] { typeof(Enemy), typeof(PseudoGeometry) }
+
+        public PlayerBullet(Point start, Point move) : base(
+            IntPtr.Zero, new() { x = start.x, y = start.y, w =6, h = 2 }, move,
+            new Type[] {typeof(Enemy), typeof(PseudoGeometry)}
         )
         {
             Damage = 1;
+        }
+        public PlayerBullet(Point start, bool left) : this(
+            start,
+            new Point() { x = left ? -8 : 8, y = 0 }
+        )
+        {
         }
 
         public override void Draw()

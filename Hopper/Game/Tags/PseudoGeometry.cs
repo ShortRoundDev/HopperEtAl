@@ -8,5 +8,6 @@ namespace Hopper.Game.Tags
 {
     public interface PseudoGeometry
     {
+        public byte CollisionDirectionMask { get; set; }
     }
 }

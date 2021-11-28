@@ -139,6 +139,11 @@
 		<Name>Worm</Name>
 		<Path>Assets\Textures\Enemies\Worm\Worm.png</Path>
 	</Texture>
+
+	<Texture>
+		<Name>OctoDude</Name>
+		<Path>Assets\Textures\Enemies\OctoDude\OctoDude.png</Path>
+	</Texture>
 	
 	<Texture>
 		<Name>RedKey</Name>
@@ -156,6 +161,10 @@
 	<Texture>
 		<Name>Spikes</Name>
 		<Path>Assets\Textures\PseudoGeometry\Spikes.png</Path>
+	</Texture>
+	<Texture>
+		<Name>Barrel</Name>
+		<Path>Assets\Textures\PseudoGeometry\Barrel.png</Path>
 	</Texture>
 	<Texture>
 		<Name>Barnacles</Name>
@@ -193,6 +202,17 @@
 		<Name>Burrito</Name>
 		<Path>Assets\Textures\Items\Collectibles\Burrito.png</Path>
 	</Texture>
+
+	<Texture>
+		<Name>ShotGun</Name>
+		<Path>Assets\Textures\PowerUp\ShotGun.png</Path>
+	</Texture>
+
+	<Texture>
+		<Name>Snacks</Name>
+		<Path>Assets\Textures\Engine\Snacks.png</Path>
+	</Texture>
+	
 	<Texture>
 		<Name>BubbleTea</Name>
 		<Path>Assets\Textures\Items\Collectibles\BubbleTea.png</Path>
@@ -228,5 +248,9 @@
 	<Texture>
 		<Name>Fire</Name>
 		<Path>Assets\Textures\Particles\Fire.png</Path>
+	</Texture>
+	<Texture>
+		<Name>Ink</Name>
+		<Path>Assets\Textures\Particles\Ink.png</Path>
 	</Texture>
 </Textures>
