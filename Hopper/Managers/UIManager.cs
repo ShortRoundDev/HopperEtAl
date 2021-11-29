@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Hopper.Game.Entities;
 using Hopper.Geometry;
 using Hopper.Graphics;
 using SDL2;
@@ -16,6 +16,8 @@ namespace Hopper.Managers
     {
         public static Queue<(string Message, Point Position)> NumberMessages { get; set; } = new();
 
+        private static IntPtr Renderer => GraphicsManager.Renderer;
+
         private static IntPtr MainMenu { get; set; }
         private static IntPtr Numbers { get; set; }
         private static IntPtr Font { get; set; }
@@ -25,6 +27,12 @@ namespace Hopper.Managers
         private static IntPtr Selector { get; set; }
         private static IntPtr Recap { get; set; }
         private static IntPtr Screen { get; set; }
+
+        private static IntPtr RedKey { get; set; }
+        private static IntPtr GreenKey { get; set; }
+        private static IntPtr BlueKey { get; set; }
+        private static IntPtr Crosshair { get; set; }
+        private static IntPtr Shotgun { get; set; }
 
         //Main Menu
         private static List<SDL.SDL_Point> StarField { get; set; } = new();
@@ -92,6 +100,11 @@ namespace Hopper.Managers
             MainMenu = GraphicsManager.GetTexture("MainMenu");
             Recap = GraphicsManager.GetTexture("Recap");
             Screen = GraphicsManager.GetTexture("MessageScreen");
+            RedKey = GraphicsManager.GetTexture("RedKey");
+            GreenKey = GraphicsManager.GetTexture("GreenKey");
+            BlueKey = GraphicsManager.GetTexture("BlueKey");
+            Crosshair = GraphicsManager.GetTexture("Crosshair");
+            Shotgun = GraphicsManager.GetTexture("ShotGun");
 
             var r = new Random();
             for(int i = 0; i < 10; i++)
@@ -115,11 +128,11 @@ namespace Hopper.Managers
                 var message = NumberMessages.Dequeue();
                 DrawNumberString(message.Message, message.Position);
             }
-            DrawHealthBar();
             DrawDeathScreen();
             DrawMainMenu();
             DrawRecap();
             DrawMesssage();
+            DrawPlayerUI();
         }
 
         public static void Update()
@@ -533,6 +546,162 @@ namespace Hopper.Managers
             SDL.SDL_RenderCopy(GraphicsManager.Renderer, Screen, ref src, ref r);
 
             DrawString(Message, new(r.x, r.y + 24), 4.0f);
+        }
+
+        private static void DrawPlayerUI()
+        {
+            if (GameManager.State != GAME_STATE.IN_GAME)
+                return;
+
+            DrawHealthBar();
+            DrawAmmoUI();
+            DrawScoreUI();
+            DrawKeysUI();
+            DrawPowerupUI();
+        }
+
+        private static void DrawAmmoUI()
+        {
+            var ammoBoxSrc = new SDL.SDL_Rect()
+            {
+                x = 0,
+                y = 0,
+                w = 12,
+                h = 12
+            };
+
+            var ammoBox = new SDL.SDL_Rect()
+            {
+                x = 11,
+                y = SystemManager.Height - 56,
+                w = 42,
+                h = 42
+            };
+
+            SDL.SDL_RenderCopy(GraphicsManager.Renderer, GraphicsManager.GetTexture("Ammo"), ref ammoBoxSrc, ref ammoBox);
+
+            var blackBox = new SDL.SDL_Rect()
+            {
+                x = 60,
+                y = SystemManager.Height - 48,
+                w = 64,
+                h = 36
+            };
+            SDL.SDL_SetRenderDrawColor(GraphicsManager.Renderer, 0, 0, 0, 0xff);
+            SDL.SDL_RenderFillRect(GraphicsManager.Renderer, ref blackBox);
+
+            DrawString($"{GameManager.MainPlayer.Ammo}", new Point(36, SystemManager.Height - 48), 3.0f);
+        }
+
+        private static void DrawScoreUI()
+        {
+            var snackBoxSrc = new SDL.SDL_Rect()
+            {
+                x = 0,
+                y = 0,
+                w = 24,
+                h = 24
+            };
+
+            var snackBoxDst = new SDL.SDL_Rect()
+            {
+                x = SystemManager.Width - 256,
+                y = 5,
+                w = 72,
+                h = 72
+            };
+            SDL.SDL_RenderCopy(GraphicsManager.Renderer, GraphicsManager.GetTexture("Snacks"), ref snackBoxSrc, ref snackBoxDst);
+            var blackBox = new SDL.SDL_Rect()
+            {
+                x = SystemManager.Width - 256 + 100,
+                y = 24,
+                w = 128,
+                h = 36
+            };
+            SDL.SDL_SetRenderDrawColor(GraphicsManager.Renderer, 0, 0, 0, 0xff);
+            SDL.SDL_RenderFillRect(GraphicsManager.Renderer, ref blackBox);
+            DrawString($"{(GameManager.MainPlayer.Score)}", new Point(SystemManager.Width - 256 + 84, 24), 3.0f);
+        }
+
+        private static void DrawKeysUI()
+        {
+            var player = GameManager.MainPlayer;
+            var keys = player.Keys;
+
+            var keySrc = new SDL.SDL_Rect()
+            {
+                x = 0,
+                y = 0,
+                w = 8,
+                h = 8
+            };
+
+            var keyDst = new SDL.SDL_FRect()
+            {
+                x = 16,
+                y = 0,
+                w = 24,
+                h = 24
+            };
+
+            //Red key
+            if((keys & 1) != 0)
+            {
+                keyDst.y = 96;
+                SDL.SDL_RenderCopyF(GraphicsManager.Renderer, RedKey, ref keySrc, ref keyDst);
+            }
+            if((keys & 2) != 0)
+            {
+                keyDst.y = 128;
+                SDL.SDL_RenderCopyF(GraphicsManager.Renderer, GreenKey, ref keySrc, ref keyDst);
+            }
+            if((keys & 4) != 0)
+            {
+                keyDst.y = 160;
+                SDL.SDL_RenderCopyF(GraphicsManager.Renderer, BlueKey, ref keySrc, ref keyDst);
+            }
+        }
+
+        private static void DrawPowerupUI()
+        {
+            var player = GameManager.MainPlayer;
+            if (player.CrossHair)
+            {
+                var src = new SDL.SDL_Rect()
+                {
+                    x = 0,
+                    y = 0,
+                    w = 32,
+                    h = 32
+                };
+                var dst = new SDL.SDL_Rect()
+                {
+                    x = (SystemManager.Width/2) - 80,
+                    y = SystemManager.Height - 80,
+                    w = 64,
+                    h = 64
+                };
+                SDL.SDL_RenderCopy(Renderer, Crosshair, ref src, ref dst);
+            }
+
+            if (player.Shotgun)
+            {
+                var src = new SDL.SDL_Rect()
+                {
+                    x = 0,
+                    y = 0,
+                    w = 64,
+                    h = 24
+                };
+                var dst = new SDL.SDL_Rect()
+                {
+                    x = (SystemManager.Width / 2) + 16,
+                    y = SystemManager.Height - 64,
+                    w = 128,
+                    h = 48
+                };
+                SDL.SDL_RenderCopy(Renderer, Shotgun, ref src, ref dst);
+            }
         }
 
         private static void UpdateMessage()

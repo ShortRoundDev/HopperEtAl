@@ -86,57 +86,6 @@ namespace Hopper.Game.Entities
             };
             if(DamageBoost == 0 || (DamageBoost/3) % 2 != 0)
                 Render.Box(dst, Animate.GetUVMap(), Texture, SDLFlip);
-
-            var ammoBoxSrc = new SDL.SDL_Rect()
-            {
-                x = 0, y = 0,
-                w = 12, h = 12
-            };
-
-            var ammoBox = new SDL.SDL_Rect()
-            {
-                x = 11,
-                y = SystemManager.Height - 56,
-                w = 42,
-                h = 42
-            };
-
-            SDL.SDL_RenderCopy(GraphicsManager.Renderer, GraphicsManager.GetTexture("Ammo"), ref ammoBoxSrc, ref ammoBox);
-
-            var blackBox = new SDL.SDL_Rect()
-            {
-                x = 60,
-                y = SystemManager.Height - 48,
-                w = 64,
-                h = 36
-            };
-            SDL.SDL_SetRenderDrawColor(GraphicsManager.Renderer, 0, 0, 0, 0xff);
-            SDL.SDL_RenderFillRect(GraphicsManager.Renderer, ref blackBox);
-
-            UIManager.DrawNumbers($"{Ammo}", new Point(64, SystemManager.Height - 46));
-
-            var snackBoxSrc = new SDL.SDL_Rect()
-            {
-                x = 0,
-                y = 0,
-                w = 24,
-                h = 24
-            };
-
-            var snackBoxDst = new SDL.SDL_Rect()
-            {
-                x = SystemManager.Width - 256,
-                y = 5,
-                w = 72,
-                h = 72
-            };
-            SDL.SDL_RenderCopy(GraphicsManager.Renderer, GraphicsManager.GetTexture("Snacks"), ref snackBoxSrc, ref snackBoxDst);
-            blackBox.x = SystemManager.Width - 256 + 100;
-            blackBox.w = 128;
-            blackBox.y = 24;
-            SDL.SDL_SetRenderDrawColor(GraphicsManager.Renderer, 0, 0, 0, 0xff);
-            SDL.SDL_RenderFillRect(GraphicsManager.Renderer, ref blackBox);
-            UIManager.DrawString($"{(Score)}", new Point(SystemManager.Width - 256 + 84, 24), 3.0f);
         }
 
         public override void Update()
@@ -235,15 +184,22 @@ namespace Hopper.Game.Entities
             {
                 if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down)
                 {
-                    MoveVec.x = -2.0f;
+                    MoveVec.x -= 0.4f;
                     Walking = true;
 
                 }
                 if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down)
                 {
-                    MoveVec.x = 2.0f;
+                    MoveVec.x += 0.4f;
                     Walking = true;
-
+                }
+                if(MoveVec.x > 2.0f)
+                {
+                    MoveVec.x = 2.0f;
+                }
+                if(MoveVec.x < -2.0f)
+                {
+                    MoveVec.x = -2.0f;
                 }
             }
         }
