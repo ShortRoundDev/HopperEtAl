@@ -52,6 +52,10 @@ namespace Hopper.Managers
         private static bool ShowMessage { get; set; } = false;
         private static Dictionary<string, IntPtr> FontColors { get; set; } = new();
 
+        //Level name
+        private static string LevelName { get; set; }
+        private static int ShowLevelNameCounter { get; set; } = 400;
+
         private static SDL.SDL_Color[] Colors = new SDL.SDL_Color[]
         {
             new SDL.SDL_Color(){ r = 0,   g = 0,   b = 0,   a = 255 },  // Black
@@ -132,6 +136,7 @@ namespace Hopper.Managers
             DrawMainMenu();
             DrawRecap();
             DrawMesssage();
+            DrawLevelName();
             DrawPlayerUI();
         }
 
@@ -141,6 +146,7 @@ namespace Hopper.Managers
             UpdateRecap();
             HandleDeathScreenInput();
             UpdateMessage();
+            UpdateLevelName();
         }
 
         private static void InitFontColors()
@@ -723,6 +729,53 @@ namespace Hopper.Managers
             GameManager.Pause = true;
             ShowMessage = true;
             Message = message;
+        }
+
+        public static void ShowLevelName(string name)
+        {
+            LevelName = name;
+            ShowLevelNameCounter = 400;
+        }
+
+        public static void DrawLevelName()
+        {
+            if(GameManager.State != GAME_STATE.IN_GAME)
+            {
+                return;
+            }
+            if (string.IsNullOrEmpty(LevelName) || ShowLevelNameCounter <= 0)
+            {
+                return;
+            }
+            float size = 5.0f;
+            var width = LevelName.Length * 10.0f * size;
+
+            float _alpha = Math.Min(1.0f, ((float)ShowLevelNameCounter) / 100.0f);
+            byte alpha = (byte)(_alpha * 255.0f);
+
+            SDL.SDL_SetTextureAlphaMod(Font, alpha);
+            DrawString(
+                LevelName,
+                new Point(SystemManager.Width/2 - width / 2, SystemManager.Height / 4),
+                size
+            );
+            SDL.SDL_SetTextureAlphaMod(Font, 255);
+        }
+
+        public static void UpdateLevelName()
+        {
+            if(GameManager.State != GAME_STATE.IN_GAME)
+            {
+                return;
+            }
+            if (ShowLevelNameCounter > 0)
+            {
+                ShowLevelNameCounter--;
+            }
+            else
+            {
+                LevelName = null;
+            }
         }
 
         public static float EaseIn(float t)

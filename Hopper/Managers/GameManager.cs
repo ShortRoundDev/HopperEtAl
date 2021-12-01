@@ -35,8 +35,6 @@ namespace Hopper.Managers
 
         public static bool Pause { get; set; } = false;
 
-        
-
         public static void Init()
         {
             InitEntityDefinitions();
