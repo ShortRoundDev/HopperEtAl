@@ -20,7 +20,7 @@ namespace Hopper.Game.Entities
     {
 
         bool Walking { get; set; } = false;
-        bool Jumping { get; set; } = false;
+        public bool Jumping { get; set; } = false;
 
         public int DamageBoost { get; set; } = 0;
         public int Ammo { get; set; } = 0;
@@ -92,6 +92,7 @@ namespace Hopper.Game.Entities
         {
             Animate.Update();
             MoveAndCollide();
+            Console.WriteLine(MoveVec.y);
             CheckZoom();
 
             string animation = "Standing";
@@ -272,6 +273,7 @@ namespace Hopper.Game.Entities
                 : GameManager.Gravity / 4.0f;
             if (Jumping && MoveVec.y < -4 && !InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down)
             {
+                Console.WriteLine("Jumping");
                 MoveVec.y = -4;
 //                gravity *= 3.0f;
             }

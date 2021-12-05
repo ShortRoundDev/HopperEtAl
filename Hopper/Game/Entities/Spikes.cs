@@ -3,6 +3,7 @@ using Hopper.Game.Tags;
 using Hopper.Geometry;
 using Hopper.Graphics;
 using Hopper.Managers;
+using SDL2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,21 @@ namespace Hopper.Game.Entities
 
         public override void Draw()
         {
-            Render.Box(Box.AsFRect(), Texture);
+            SDL.SDL_RendererFlip flip = SDL.SDL_RendererFlip.SDL_FLIP_NONE;
+            if (GameManager.CurrentLevel.Tiles[(int)Box.x / 32, (int)(Box.y / 32) - 1] != null)
+            {
+                flip = SDL.SDL_RendererFlip.SDL_FLIP_VERTICAL;
+            }
+
+            SDL.SDL_Rect uv = new SDL.SDL_Rect()
+            {
+                x = 0,
+                y = 0,
+                w = 32,
+                h = 32
+            };
+
+            Render.Box(Box.AsFRect(), uv, Texture, flip);
         }
 
         public override void Update()

@@ -163,6 +163,14 @@
 		<Path>Assets\Textures\PseudoGeometry\Spikes.png</Path>
 	</Texture>
 	<Texture>
+		<Name>Spring</Name>
+		<Path>Assets\Textures\PseudoGeometry\Spring.png</Path>
+	</Texture>
+	<Texture>
+		<Name>Splitter</Name>
+		<Path>Assets\Textures\PseudoGeometry\Splitter.png</Path>
+	</Texture>
+	<Texture>
 		<Name>Barrel</Name>
 		<Path>Assets\Textures\PseudoGeometry\Barrel.png</Path>
 	</Texture>
