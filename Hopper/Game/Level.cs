@@ -10,6 +10,7 @@ using NLog;
 using Hopper.Managers;
 using LibJohn;
 using Hopper.Game.Entities;
+using Hopper.Game.Tags;
 
 namespace Hopper.Game
 {
@@ -149,6 +150,21 @@ namespace Hopper.Game
                     Console.Out.WriteLine("Warning: Couldn't instantiate entity!");
                 }
             }
+
+            Entities.Sort((a, b) =>
+            {
+                var _a = a is PseudoGeometry;
+                var _b = b is PseudoGeometry;
+                if (_a && !_b)
+                {
+                    return -1;
+                }
+                if (!_a && _b)
+                {
+                    return 1;
+                }
+                return 0;
+            });
             
             return;
         }

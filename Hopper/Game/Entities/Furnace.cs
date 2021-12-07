@@ -1,4 +1,5 @@
 ﻿using Hopper.Game.Attributes;
+using Hopper.Game.Tags;
 using Hopper.Graphics;
 using Hopper.Managers;
 using SDL2;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 namespace Hopper.Game.Entities
 {
     [EntityId(3007)]
-    public class Furnace : Entity
+    public class Furnace : Entity, PseudoGeometry
     {
         public int CountDown { get; set; }
         public int MaxCountDown { get; set; } = 500;
@@ -23,6 +24,7 @@ namespace Hopper.Game.Entities
         public int Direction { get; set; } = 1;
         public int ResetTimer { get; set; } = 500;
         public int FireLength { get; set; } = 100;
+        public byte CollisionDirectionMask { get; set; } = 15; // all
 
         public Furnace(int x, int y) : base(GraphicsManager.GetTexture("Furnace"), x, y, 32, 32)
         {
@@ -41,9 +43,19 @@ namespace Hopper.Game.Entities
                 Loop = false
             };
         }
-
+        /*
+         * Direction
+         * Initial Countdown
+         * Total fireballs
+         * Max countdown
+         * Lifetime of fireball
+         */
         public override void Configure(string configuration)
         {
+            if(configuration == null)
+            {
+                return;
+            }
             string[] parts = configuration.Split("\n");
             if (parts.Count() < 4)
             {
@@ -78,6 +90,7 @@ namespace Hopper.Game.Entities
             if(Int32.TryParse(parts[3], out Int32 fireInterval))
             {
                 MaxCountDown = fireInterval;
+                ResetTimer = MaxCountDown;
             }else
             {
                 MaxCountDown = 500;

@@ -92,7 +92,6 @@ namespace Hopper.Game.Entities
         {
             Animate.Update();
             MoveAndCollide();
-            Console.WriteLine(MoveVec.y);
             CheckZoom();
 
             string animation = "Standing";

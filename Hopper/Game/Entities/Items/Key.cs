@@ -18,7 +18,7 @@ namespace Hopper.Game.Entities.Items
                 2 => "GreenKey",
                 4 => "BlueKey"
             }),
-            x, y, 12, 12
+            new Rect((x * 32) + 10, (y * 32) + 10, 12, 12)
         )
         {
             KeyType = keyType;

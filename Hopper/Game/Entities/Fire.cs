@@ -39,6 +39,7 @@ namespace Hopper.Game.Entities
             Animate.Update();
             if(Timer > 0)
             {
+                (this as Enemy).EnemyUpdate();
                 Timer--;
             } else
             {

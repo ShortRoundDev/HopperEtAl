@@ -210,7 +210,7 @@ namespace Hopper.Managers
 
         public static void NewGame()
         {
-            CurrentLevel = new Level("Assets/Levels/Keys");
+            CurrentLevel = new Level("Assets/Levels/Splashdown");
             State = GAME_STATE.IN_GAME;
         }
 
