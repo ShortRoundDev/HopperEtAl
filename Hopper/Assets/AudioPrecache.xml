@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Chunks>
+	<Audio>
+		<Name>Squish1</Name>
+		<Path>Assets/Audio/Squish/Squish1.ogg</Path>
+	</Audio>
+	<Audio>
+		<Name>Squish2</Name>
+		<Path>Assets/Audio/Squish/Squish2.ogg</Path>
+	</Audio>
+	<Audio>
+		<Name>Squish3</Name>
+		<Path>Assets/Audio/Squish/Squish3.ogg</Path>
+	</Audio>
+	<Audio>
+		<Name>Squish4</Name>
+		<Path>Assets/Audio/Squish/Squish4.ogg</Path>
+	</Audio>
+	
+	<!-- Player -->
+	<Audio>
+		<Name>Death1</Name>
+		<Path>Assets/Audio/Player/Death1.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>Death2</Name>
+		<Path>Assets/Audio/Player/Death2.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>Fall1</Name>
+		<Path>Assets/Audio/Player/Fall1.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>Fall2</Name>
+		<Path>Assets/Audio/Player/Fall2.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>Grunt1</Name>
+		<Path>Assets/Audio/Player/Grunt1.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>Grunt2</Name>
+		<Path>Assets/Audio/Player/Grunt2.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>Grunt3</Name>
+		<Path>Assets/Audio/Player/Grunt3.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>Hurt1</Name>
+		<Path>Assets/Audio/Player/Hurt1.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>Hurt2</Name>
+		<Path>Assets/Audio/Player/Hurt2.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>AlienDeath1</Name>
+		<Path>Assets/Audio/Aliens/AlienDeath1.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>AlienDeath2</Name>
+		<Path>Assets/Audio/Aliens/AlienDeath2.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>AlienHurt1</Name>
+		<Path>Assets/Audio/Aliens/AlienHurt1.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>AlienHurt2</Name>
+		<Path>Assets/Audio/Aliens/AlienHurt2.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>Ammo</Name>
+		<Path>Assets/Audio/Sfx/Ammo.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>Pickup</Name>
+		<Path>Assets/Audio/Sfx/Pickup.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>Rifle</Name>
+		<Path>Assets/Audio/Sfx/Rifle.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>Shoot</Name>
+		<Path>Assets/Audio/Sfx/Shoot.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>Fire</Name>
+		<Path>Assets/Audio/Sfx/Fire.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>Bubble</Name>
+		<Path>Assets/Audio/Sfx/Bubble.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>Crunch</Name>
+		<Path>Assets/Audio/Sfx/Crunch.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>DoorOpen</Name>
+		<Path>Assets/Audio/Sfx/DoorOpen.ogg</Path>
+	</Audio>
+</Chunks>

@@ -25,11 +25,13 @@ namespace Hopper.Game
         public Tile[,] Water { get; set; }
         public byte[,] Zoom { get; set; }
         public List<Entity> Entities { get; set; } = new();
+        public int DeathTimer = -1;
 
         public Level(string path)
         {
             LoadLevel(path);
             GameManager.CurrentLevelPath = path;
+            DeathTimer = -1;
         }
 
         public void Draw()
@@ -55,7 +57,10 @@ namespace Hopper.Game
                     continue;
                 entity.Draw();
             }
-            GameManager.MainPlayer.Draw();
+            if (!GameManager.MainPlayer.Dead)
+            {
+                GameManager.MainPlayer.Draw();
+            }
 
             for (int i = 0; i < Width; i++)
             {
@@ -92,6 +97,16 @@ namespace Hopper.Game
                 if (entity.Deleted)
                     continue;
                 entity.Update();
+            }
+
+            if (DeathTimer > 0)
+            {
+                DeathTimer--;
+            }
+            else if (DeathTimer == 0)
+            {
+                DeathTimer = -1;
+                UIManager.ShowDeathScreen();
             }
         }
 

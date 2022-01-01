@@ -28,6 +28,7 @@ namespace Hopper.Game.Entities.Items
             {
                 GameManager.MainPlayer.Health++;
                 GameManager.DeleteEntity(this);
+                GameManager.PlayChunk("Bubble");
                 Deleted = true;
             }
         }

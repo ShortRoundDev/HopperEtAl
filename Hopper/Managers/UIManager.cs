@@ -33,6 +33,7 @@ namespace Hopper.Managers
         private static IntPtr BlueKey { get; set; }
         private static IntPtr Crosshair { get; set; }
         private static IntPtr Shotgun { get; set; }
+        private static IntPtr DemoEnd { get; set; }
 
         //Main Menu
         private static List<SDL.SDL_Point> StarField { get; set; } = new();
@@ -44,7 +45,7 @@ namespace Hopper.Managers
 
         //Recap
         private static float RecapProgress { get; set; } = 0.0f;
-        private static bool RecapShowing { get; set; } = false;
+        public static bool RecapShowing { get; set; } = false;
         private static bool ShowStats { get; set; } = false;
 
         // Screen messages
@@ -109,6 +110,7 @@ namespace Hopper.Managers
             BlueKey = GraphicsManager.GetTexture("BlueKey");
             Crosshair = GraphicsManager.GetTexture("Crosshair");
             Shotgun = GraphicsManager.GetTexture("ShotGun");
+            DemoEnd = GraphicsManager.GetTexture("DemoEnd");
 
             var r = new Random();
             for(int i = 0; i < 10; i++)
@@ -138,6 +140,7 @@ namespace Hopper.Managers
             DrawMesssage();
             DrawLevelName();
             DrawPlayerUI();
+            DrawDemoEnd();
         }
 
         public static void Update()
@@ -147,6 +150,7 @@ namespace Hopper.Managers
             HandleDeathScreenInput();
             UpdateMessage();
             UpdateLevelName();
+            UpdateDemoEnd();
         }
 
         private static void InitFontColors()
@@ -332,6 +336,7 @@ namespace Hopper.Managers
                 } else if (DeathScreenSelector == 1) // quit
                 {
                     GameManager.CurrentLevel = null;
+                    GameManager.PlayMusic("Assets/Music/CreepyWhistle.ogg");
                     GameManager.State = GAME_STATE.MAIN_MENU;
                 }
 
@@ -503,11 +508,11 @@ namespace Hopper.Managers
 
             string collected = $"{GameManager.TotalCollected}".PadRight(2, ' ');
             string collectible = $"{GameManager.TotalCollectibles}".PadLeft(2, ' ');
-            DrawString($"{collected}/{collectible}", new Point(dst.x + 165 * 3, dst.y + 30), 5.0f);
+            DrawString($"{collected}/{collectible}", new Point(dst.x + 155 * 3, dst.y + 30), 5.0f);
 
             string killed = $"{GameManager.TotalKilled}".PadRight(2, ' ');
             string killable = $"{GameManager.TotalEnemies}".PadLeft(2, ' ');
-            DrawString($"{killed}/{killable}", new Point(dst.x + 165 * 3, dst.y + 150), 5.0f);
+            DrawString($"{killed}/{killable}", new Point(dst.x + 155 * 3, dst.y + 150), 5.0f);
 
             DrawString("Press E to Continue", new Point(dst.x + 118, dst.y + dst.h - 50), 3.0f);
         }
@@ -565,6 +570,32 @@ namespace Hopper.Managers
             DrawKeysUI();
             DrawPowerupUI();
         }
+
+        private static void DrawDemoEnd()
+        {
+            if(GameManager.State != GAME_STATE.DEMO_END)
+            {
+                return;
+            }
+
+            var src = new SDL.SDL_Rect()
+            {
+                x = 0,
+                y = 0,
+                w = 768,
+                h = 768
+            };
+            var dst = new SDL.SDL_Rect()
+            {
+                x = SystemManager.Width / 2 - 768 / 2,
+                y = 0,
+                w = 768,
+                h = 768
+            };
+
+            SDL.SDL_RenderCopy(Renderer, DemoEnd, ref src, ref dst);
+        }
+
 
         private static void DrawAmmoUI()
         {
@@ -775,6 +806,21 @@ namespace Hopper.Managers
             else
             {
                 LevelName = null;
+            }
+        }
+
+        private static void UpdateDemoEnd()
+        {
+            if(GameManager.State != GAME_STATE.DEMO_END)
+            {
+                return;
+            }
+
+            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Down)
+            {
+                GameManager.PlayMusic("Assets/Music/CreepyWhistle.ogg");
+
+                GameManager.State = GAME_STATE.MAIN_MENU;
             }
         }
 

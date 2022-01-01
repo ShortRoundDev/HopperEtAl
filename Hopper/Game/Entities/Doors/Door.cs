@@ -60,6 +60,7 @@ namespace Hopper.Game.Entities.Doors
             {
                 if (OpenProgress == -1 && (GameManager.MainPlayer.Keys & DoorType) != 0)
                 {
+                    GameManager.PlayChunk("DoorOpen");
                     OpenProgress = 0;
                     return;
                 }

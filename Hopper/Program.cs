@@ -35,6 +35,8 @@ namespace Hopper
             InputManager.Init();
             GameManager.Init();
             UIManager.Init();
+
+            GameManager.PlayMusic("Assets/Music/CreepyWhistle.ogg");
         }
 
         private static void Draw()

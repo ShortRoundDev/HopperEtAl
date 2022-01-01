@@ -1,6 +1,7 @@
 ﻿using Hopper.Game.Tags;
 using Hopper.Geometry;
 using Hopper.Graphics;
+using Hopper.Managers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace Hopper.Game.Entities.Projectiles
         )
         {
             Damage = 1;
+            GameManager.PlayChunk("Shoot");
         }
         public PlayerBullet(Point start, bool left) : this(
             start,

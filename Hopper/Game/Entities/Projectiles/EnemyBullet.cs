@@ -1,6 +1,7 @@
 ﻿using Hopper.Game.Tags;
 using Hopper.Geometry;
 using Hopper.Graphics;
+using Hopper.Managers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,11 @@ namespace Hopper.Game.Entities.Projectiles
             new Type[] { typeof(Player), typeof(PseudoGeometry) }
         )
         {
+            Console.WriteLine("Shooting!!!!!!!");
+            if (Distance(GameManager.MainPlayer) < 256)
+            {
+                GameManager.PlayChunk("Shoot");
+            }
             Damage = 1;
         }
 

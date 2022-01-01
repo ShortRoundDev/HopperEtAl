@@ -1,4 +1,5 @@
 ﻿using Hopper.Game.Attributes;
+using Hopper.Game.Entities.Particle;
 using Hopper.Game.Entities.Projectiles;
 using Hopper.Game.Tags;
 using Hopper.Geometry;
@@ -26,9 +27,9 @@ namespace Hopper.Game.Entities
         public int DamageBoost { get; set; } = 0;
 
         public int VolleyCoolDown { get; set; } = 0;
-        public int ShotCooldown { get; set; } = 0;
+        public int ShotCooldown { get; set; } = 25;
         public int BulletsFired { get; set; } = 0;
-        public bool Shooting { get; set; } = true;
+        public bool Shooting { get; set; } = false;
 
         public Squid(int x, int y) : base(GraphicsManager.GetTexture("Squid"), x, y, 32, 48)
         {
@@ -182,5 +183,35 @@ namespace Hopper.Game.Entities
                 return;
             }
         }
+
+        public void OnDamageHandler(Entity e, int damage)
+        {
+            GameManager.PlayRandomChunk("AlienHurt", 1, 3);
+            return;
+        }
+
+        public void OnDie()
+        {
+            GameManager.PlayRandomChunk("AlienDeath", 1, 3);
+
+            Random r = new Random();
+            for (int i = 0; i < 10; i++)
+            {
+                float dir = (float)(2 * (r.Next() % 2)) - 1;
+                GameManager.AddEntity(new Gib(
+                    this.Box.x,
+                    this.Box.y,
+                    new()
+                    {
+                        x = (float)(r.NextDouble() * 2.0) * dir,
+                        y = -(float)((r.NextDouble() * 2.0) + 2.0)
+                    }
+                ));
+            }
+
+            GameManager.TotalKilled++;
+            return;
+        }
+
     }
 }

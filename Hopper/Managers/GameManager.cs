@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Hopper.Game;
 using Hopper.Game.Entities;
 using Hopper.Game.Attributes;
+using System.Xml;
+using SDL2;
 
 namespace Hopper.Managers
 {
@@ -16,6 +18,10 @@ namespace Hopper.Managers
         public static float Gravity { get; set; } = 0.3f;
         private static Dictionary<UInt16, Type> TypeIds { get; set; } = new();
         private static Dictionary<UInt16, Type> TileTypeIds { get; set; } = new();
+        private static Dictionary<string, IntPtr> AudioChunks { get; set; } = new();
+
+        private static string SongName { get; set; } = null;
+        private static IntPtr Music { get; set; } = IntPtr.Zero;
 
         private static List<Entity> ToDelete { get; set; } = new();
         private static List<Entity> ToAdd { get; set; } = new();
@@ -37,9 +43,11 @@ namespace Hopper.Managers
 
         public static void Init()
         {
+            SDL2.SDL_mixer.Mix_OpenAudio(44100, SDL2.SDL_mixer.MIX_DEFAULT_FORMAT, 2, 2048);
+
             InitEntityDefinitions();
             InitTileDefinitions();
-            SDL2.SDL_mixer.Mix_OpenAudio(44100, SDL2.SDL_mixer.MIX_DEFAULT_FORMAT, 2, 2048);
+            InitAudioChunks();
         }
 
         private static void InitFontColors()
@@ -201,6 +209,101 @@ namespace Hopper.Managers
             }
         }
 
+        private static void InitAudioChunks()
+        {
+            var doc = new XmlDocument();
+            try
+            {
+                doc.Load("Assets/AudioPrecache.xml");
+            }catch(Exception e)
+            {
+                return;
+            }
+
+            var audioPrecacheNodes = doc
+                ?.ChildNodes
+                ?.Cast<XmlNode>()
+                .FirstOrDefault(node => node.Name == "Chunks")
+                ?.ChildNodes
+                .Cast<XmlNode>()
+                .Where(node => node is XmlElement)
+                .Select(node => node as XmlElement)
+                .Select(element => new AudioPrecacheNode()
+                {
+                    Name = element
+                        .ChildNodes
+                        .Cast<XmlNode>()
+                        .FirstOrDefault(node => node is XmlElement e && e.Name == "Name")
+                        ?.InnerText,
+                    Path = element
+                        .ChildNodes
+                        .Cast<XmlNode>()
+                        .FirstOrDefault(node => node is XmlElement e && e.Name == "Path")
+                        ?.InnerText,
+                });
+            if(audioPrecacheNodes == null)
+            {
+                return;
+            }
+            foreach(var node in audioPrecacheNodes)
+            {
+                var audio = SDL_mixer.Mix_LoadWAV(node.Path);
+                if(audio == IntPtr.Zero)
+                {
+                    // error
+                    Console.WriteLine(SDL.SDL_GetError());
+                    continue;
+                }
+                AudioChunks[node.Name] = audio;
+            }
+        }
+
+        public static IntPtr GetAudio(string name)
+        {
+            if(!AudioChunks.TryGetValue(name, out IntPtr value))
+            {
+                return IntPtr.Zero;
+            }
+            return value;
+        }
+
+        public static int PlayChunk(string Name)
+        {
+            var chunk = GetAudio(Name);
+            if (chunk != IntPtr.Zero)
+            {
+                return SDL_mixer.Mix_PlayChannel(-1, chunk, 0);
+            }
+            return -1;
+        }
+
+        public static void PlayMusic(string name)
+        {
+            if(name == SongName)
+            {
+                return;
+            }
+            if(Music != IntPtr.Zero)
+            {
+                SDL_mixer.Mix_HaltMusic();
+            }
+            SongName = name;
+            Music = SDL_mixer.Mix_LoadMUS(name);
+            SDL_mixer.Mix_PlayMusic(Music, -1);
+        }
+
+        public static int PlayRandomChunk(string Name, int min, int max)
+        {
+            var r = new Random();
+            int rand = r.Next(min, max);
+            var chunk = GetAudio(Name + rand);
+            if (chunk != IntPtr.Zero)
+            {
+                return SDL_mixer.Mix_PlayChannel(-1, chunk, 0);
+            }
+            return -1;
+        }
+
         public static void RestartLevel()
         {
             ToDelete.Clear();
@@ -210,7 +313,7 @@ namespace Hopper.Managers
 
         public static void NewGame()
         {
-            CurrentLevel = new Level("Assets/Levels/Splashdown");
+            CurrentLevel = new Level("Assets/Levels/Kierkegaard");
             State = GAME_STATE.IN_GAME;
         }
 
@@ -221,14 +324,27 @@ namespace Hopper.Managers
             TotalEnemies = 0;
             TotalKilled = 0;
 
+            if(string.IsNullOrEmpty(newLevel))
+            {
+                CurrentLevel = null;
+                State = GAME_STATE.DEMO_END;
+                return;
+            }
+
             CurrentLevel = new Level(newLevel);
             State = GAME_STATE.IN_GAME;
+        }
+        private struct AudioPrecacheNode
+        {
+            public string Name { get; set; }
+            public string Path { get; set; }
         }
     }
 
     public enum GAME_STATE
     {
         IN_GAME = 0,
-        MAIN_MENU = 1
+        MAIN_MENU = 1,
+        DEMO_END = 2
     }
 }

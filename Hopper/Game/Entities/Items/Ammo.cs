@@ -25,6 +25,7 @@ namespace Hopper.Game.Entities.Items
         {
             if (GameManager.MainPlayer.Box.Intersect(Box))
             {
+                GameManager.PlayChunk("Ammo");
                 GameManager.MainPlayer.Ammo += 5;
                 GameManager.DeleteEntity(this);
             }

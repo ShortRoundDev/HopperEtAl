@@ -28,6 +28,7 @@ namespace Hopper.Game.Entities.Collectibles
                 GameManager.DeleteEntity(this);
                 Deleted = true;
                 GameManager.TotalCollected++;
+                GameManager.PlayChunk("Crunch");
             }
         }
     }

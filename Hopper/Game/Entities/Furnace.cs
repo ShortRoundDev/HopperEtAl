@@ -127,6 +127,10 @@ namespace Hopper.Game.Entities
                 }
                 else
                 {
+                    if(Distance(GameManager.MainPlayer) < 256)
+                    {
+                        GameManager.PlayChunk("Fire");
+                    }
                     Console.WriteLine("Shooting " + Direction);
                     Shooting = true;
                 }

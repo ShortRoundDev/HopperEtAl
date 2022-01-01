@@ -86,11 +86,31 @@ namespace Hopper.Game.Entities
             int x = (int)Box.x + rand.Next((int)Box.w);
             var pop = new GreenBubble(x, y);
             GameManager.AddEntity(pop);
+            GameManager.PlayRandomChunk("AlienHurt", 1, 3);
+
         }
 
         public void OnDie()
         {
             GameManager.TotalKilled++;
+
+            Random r = new Random();
+            for (int i = 0; i < 10; i++)
+            {
+                float dir = (float)(2 * (r.Next() % 2)) - 1;
+                GameManager.AddEntity(new Gib(
+                    this.Box.x,
+                    this.Box.y,
+                    new()
+                    {
+                        x = (float)(r.NextDouble() * 2.0) * dir,
+                        y = -(float)((r.NextDouble() * 2.0) + 2.0)
+                    }
+                ));
+            }
+
+            GameManager.PlayRandomChunk("AlienDeath", 1, 3);
+
         }
     }
 }

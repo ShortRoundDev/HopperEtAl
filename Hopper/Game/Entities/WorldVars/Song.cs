@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Hopper.Game.Attributes;
+using Hopper.Managers;
 using SDL2;
 
 namespace Hopper.Game.Entities.WorldVars
@@ -22,14 +23,10 @@ namespace Hopper.Game.Entities.WorldVars
                 Console.Error.WriteLine("Failed to load song [" + configuration + "]! FNF!");
                 return;
             }
+
             configuration = configuration.Replace("\\", "/");
-            var music = SDL_mixer.Mix_LoadMUS(configuration);
-            if(music == IntPtr.Zero)
-            {
-                Console.Error.WriteLine("Failed to load song [" + configuration + "]! Got\n" + SDL.SDL_GetError());
-                return;
-            }
-           // SDL_mixer.Mix_PlayMusic(music, -1);
+
+            GameManager.PlayMusic(configuration);
         }
 
         public override void Draw()

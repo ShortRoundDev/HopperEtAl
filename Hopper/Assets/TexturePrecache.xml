@@ -266,4 +266,9 @@
 		<Name>Ink</Name>
 		<Path>Assets\Textures\Particles\Ink.png</Path>
 	</Texture>
+
+	<Texture>
+		<Name>DemoEnd</Name>
+		<Path>Assets\Textures\Engine\DemoEnd.png</Path>
+	</Texture>
 </Textures>

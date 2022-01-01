@@ -53,6 +53,10 @@ namespace Hopper.Managers
 
         private static void KeyDown(SDL.SDL_Scancode scanCode)
         {
+            if((int)scanCode > Keys.Count())
+            {
+                return;
+            }
             var state = Keys[(int)scanCode];
             if(state.Down)
             {
@@ -66,6 +70,11 @@ namespace Hopper.Managers
 
         private static void KeyUp(SDL.SDL_Scancode scanCode)
         {
+            if ((int)scanCode > Keys.Count())
+            {
+                return;
+            }
+
             var state = Keys[(int)scanCode];
             if (!state.Down)
             {

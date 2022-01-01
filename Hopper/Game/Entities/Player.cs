@@ -1,4 +1,5 @@
 ﻿using Hopper.Game.Attributes;
+using Hopper.Game.Entities.Particle;
 using Hopper.Game.Entities.Projectiles;
 using Hopper.Game.Tags;
 using Hopper.Geometry;
@@ -31,6 +32,10 @@ namespace Hopper.Game.Entities
         private byte LastZoom { get; set; } = 3;
         public bool Shotgun { get; set; } = false;
         public bool CrossHair { get; set; } = false;
+
+        private int FallingScream { get; set; } = -1;
+
+        public bool Dead { get; set; } = false;
 
         private const float COS_ANGLE = 0.965925f;
         private const float SIN_ANGLE = 0.258819f;
@@ -76,6 +81,10 @@ namespace Hopper.Game.Entities
 
         public override void Draw()
         {
+            if (Dead)
+            {
+                return;
+            }
             Look();
             var dst = new SDL.SDL_FRect()
             {
@@ -90,9 +99,27 @@ namespace Hopper.Game.Entities
 
         public override void Update()
         {
+            if (UIManager.RecapShowing)
+            {
+                return;
+            }
             Animate.Update();
             MoveAndCollide();
             CheckZoom();
+
+            if (OnGround)
+            {
+                if(FallingScream != -1)
+                {
+                    SDL_mixer.Mix_HaltChannel(FallingScream);
+                }
+                FallingScream = -1;
+            }
+
+            if(MoveVec.y > 15 && FallingScream == -1)
+            {
+                FallingScream = GameManager.PlayRandomChunk("Fall", 1, 3);
+            }
 
             string animation = "Standing";
             bool shooting = false;
@@ -313,6 +340,7 @@ namespace Hopper.Game.Entities
                 Jumping = true;
                 Console.WriteLine("Jump");
                 MoveVec.y = -8.0f;
+                GameManager.PlayRandomChunk("Grunt", 1, 4);
             }
         }
 
@@ -328,6 +356,10 @@ namespace Hopper.Game.Entities
         public void OnDamageHandler(Entity e, int Damage)
         {
             DamageBoost = 100;
+            if (Health > 0)
+            {
+                GameManager.PlayRandomChunk("Hurt", 1, 3);
+            }
             if (!InWater)
             {
                 MoveVec.x = -4;
@@ -336,8 +368,23 @@ namespace Hopper.Game.Entities
         }
         public void OnDie()
         {
-            UIManager.ShowDeathScreen();
-            //GameManager.RestartLevel();
+            Random r = new Random();
+            for (int i = 0; i < 10; i++)
+            {
+                float dir = (float)(2 * (r.Next() % 2)) - 1;
+                GameManager.AddEntity(new Gib(
+                    this.Box.x,
+                    this.Box.y,
+                    new()
+                    {
+                        x = (float)(r.NextDouble() * 2.0) * dir,
+                        y = -(float)((r.NextDouble() * 2.0) + 2.0)
+                    }
+                ));
+            }
+            Dead = true;
+            GameManager.CurrentLevel.DeathTimer = 150;
+            GameManager.PlayRandomChunk("Death", 1, 3);
         }
 
         private void CheckZoom()

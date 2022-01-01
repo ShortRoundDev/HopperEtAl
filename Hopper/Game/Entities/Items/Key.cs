@@ -33,6 +33,7 @@ namespace Hopper.Game.Entities.Items
         {
             if (GameManager.MainPlayer.Box.Intersect(Box))
             {
+                GameManager.PlayChunk("Pickup");
                 GameManager.MainPlayer.Keys |= KeyType;
                 GameManager.DeleteEntity(this);
                 // play sound?

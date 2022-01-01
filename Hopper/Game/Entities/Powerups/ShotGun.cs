@@ -26,6 +26,7 @@ namespace Hopper.Game.Entities.Powerups
         {
             if (Box.Intersect(GameManager.MainPlayer.Box))
             {
+                GameManager.PlayChunk("Rifle");
                 this.Deleted = true;
                 GameManager.DeleteEntity(this);
                 GameManager.MainPlayer.Shotgun = true;

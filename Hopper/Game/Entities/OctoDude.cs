@@ -1,4 +1,5 @@
 ﻿using Hopper.Game.Attributes;
+using Hopper.Game.Entities.Particle;
 using Hopper.Game.Entities.Projectiles;
 using Hopper.Game.Tags;
 using Hopper.Geometry;
@@ -93,6 +94,19 @@ namespace Hopper.Game.Entities
             {
                 MoveVec.y += GameManager.Gravity;
             }
+        }
+
+        public void OnDamageHandler(Entity e, int damage)
+        {
+            GameManager.PlayRandomChunk("AlienHurt", 1, 3);
+            return;
+        }
+
+        public void OnDie()
+        {
+            GameManager.PlayRandomChunk("AlienDeath", 1, 3);
+
+            return;
         }
     }
 }
