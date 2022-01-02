@@ -98,6 +98,22 @@ namespace Hopper.Game.Entities
             int x = (int)Box.x + rand.Next((int)Box.w);
             var pop = new GreenBubble(x, y);
             GameManager.AddEntity(pop);
+
+            int dir = (e.Box.x - Box.x) > 0 ? -1 : 1;
+            Random r = new Random();
+            for (int i = 0; i < 3; i++)
+            {
+                GameManager.AddEntity(new Gib(
+                    this.Box.x,
+                    this.Box.y,
+                    new()
+                    {
+                        x = (float)((r.NextDouble() * 2.0) + 2) * dir,
+                        y = -(float)((r.NextDouble()) + 1.0)
+                    }
+                ));
+            }
+
             GameManager.PlayRandomChunk("AlienHurt", 1, 3, out _);
         }
 

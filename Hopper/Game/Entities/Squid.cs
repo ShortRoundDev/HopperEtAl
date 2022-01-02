@@ -203,6 +203,22 @@ namespace Hopper.Game.Entities
         public void OnDamageHandler(Entity e, int damage)
         {
             GameManager.PlayRandomChunk("AlienHurt", 1, 3);
+
+            int dir = (e.Box.x - Box.x) > 0 ? -1 : 1;
+            Random r = new Random();
+            for (int i = 0; i < 3; i++)
+            {
+                GameManager.AddEntity(new Gib(
+                    this.Box.x,
+                    this.Box.y,
+                    new()
+                    {
+                        x = (float)((r.NextDouble() * 2.0) + 2) * dir,
+                        y = -(float)((r.NextDouble()) + 1.0)
+                    }
+                ));
+            }
+
             return;
         }
 

@@ -116,9 +116,13 @@ namespace Hopper.Game.Entities
             var direction = Math.Sign(GameManager.MainPlayer.Box.x - Box.x);
             int i = (int)(Box.x / 32);
             int j = (int)(Box.y / 32);
+
+            int di = Math.Abs(i) - (int)(Box.x / 32);
+
             Rect r = new Rect(i * 32, j * 32, 32, 32);
-            while(i != (int)(GameManager.MainPlayer.Box.x / 32))
+            while(i != (int)(GameManager.MainPlayer.Box.x / 32) && di < Math.Floor(512/32/GraphicsManager.MainCamera.Scale.x) - 1)
             {
+                di = Math.Abs(i - (int)(Box.x / 32));
                 i += direction;
                 if(GameManager.CurrentLevel.Tiles[i, j] != null)
                 {
@@ -133,6 +137,7 @@ namespace Hopper.Game.Entities
                     Shooting = true;
                     Telegraph = 30;
                     Animate.Animation = 2;
+                    Console.WriteLine(di);
                     return;
                 }
             }
