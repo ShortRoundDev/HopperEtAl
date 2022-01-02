@@ -7,17 +7,28 @@ namespace Hopper
     public class Program
     {
         static uint tick = 0;
+        public static long TickTime = DateTime.Now.Ticks;
+
+        public static long Acc = 0;
+
+        public static long TickRate = 166666;
         public static void Main(string[] args)
         {
-            tick = SDL.SDL_GetTicks();
+            //tick = SDL.SDL_GetTicks();
             Init();
             while (!InputManager.Quit)
             {
-                if(SDL.SDL_GetTicks() - tick < 16){
-                    continue;
+                long NewTime = DateTime.Now.Ticks;
+                long FrameTime = NewTime - TickTime;
+                if (FrameTime >= 2500000)
+                    FrameTime = 2500000;
+                TickTime = NewTime;
+                Acc += FrameTime;
+                while (Acc >= 161290)
+                {
+                    Update();
+                    Acc -= TickRate;
                 }
-                tick = SDL.SDL_GetTicks();
-                Update();
                 Draw();
                 if (GameManager.Quit)
                 {

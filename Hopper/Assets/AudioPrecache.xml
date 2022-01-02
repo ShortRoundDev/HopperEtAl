@@ -122,4 +122,24 @@
 		<Name>DoorOpen</Name>
 		<Path>Assets/Audio/Sfx/DoorOpen.ogg</Path>
 	</Audio>
+
+	<Audio>
+		<Name>TurretDie1</Name>
+		<Path>Assets/Audio/Turret/TurretDie1.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>TurretDie2</Name>
+		<Path>Assets/Audio/Turret/TurretDie2.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>TurretDie3</Name>
+		<Path>Assets/Audio/Turret/TurretDie3.ogg</Path>
+	</Audio>
+
+	<Audio>
+		<Name>Explode</Name>
+		<Path>Assets/Audio/Sfx/Explode.ogg</Path>
+	</Audio>
 </Chunks>

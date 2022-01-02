@@ -9,6 +9,7 @@ using Hopper.Game.Entities;
 using Hopper.Game.Attributes;
 using System.Xml;
 using SDL2;
+using Hopper.Geometry;
 
 namespace Hopper.Managers
 {
@@ -272,9 +273,33 @@ namespace Hopper.Managers
             var chunk = GetAudio(Name);
             if (chunk != IntPtr.Zero)
             {
-                return SDL_mixer.Mix_PlayChannel(-1, chunk, 0);
+                int channel = SDL_mixer.Mix_PlayChannel(-1, chunk, 0);
+                SDL_mixer.Mix_SetDistance(channel, 0);
             }
             return -1;
+        }
+
+        public static int PlayChunkAtt(string Name, int x, int y)
+        {
+            var chunk = GetAudio(Name);
+            if (chunk != IntPtr.Zero)
+            {
+                var a = new Point(x, y);
+                var distance = a.Distance(new Point(MainPlayer.Box.x, MainPlayer.Box.y));
+                if(distance > 512)
+                {
+                    return -1;
+                }
+                int channel = SDL_mixer.Mix_PlayChannel(-1, chunk, 0);
+                SDL_mixer.Mix_SetDistance(channel, (byte)(Math.Max(0, Math.Min(distance / 2.0f, 255))));
+            }
+            return -1;
+
+        }
+
+        public static int PlayChunkAtt(string Name, Entity source)
+        {
+            return PlayChunkAtt(Name, (int)source.Box.x, (int)source.Box.y);
         }
 
         public static void PlayMusic(string name)
@@ -292,10 +317,38 @@ namespace Hopper.Managers
             SDL_mixer.Mix_PlayMusic(Music, -1);
         }
 
+        public static int PlayRandomChunkAtt(string Name, int min, int max, int x, int y, out int rand)
+        {
+            var a = new Point(x, y);
+            var distance = (a.Distance(new Point(MainPlayer.Box.x, MainPlayer.Box.y)));
+            if (distance > 512)
+            {
+                rand = -1;
+                return -1;
+            }
+            var channel = PlayRandomChunk(Name, min, max, out rand);
+            if(channel != -1)
+            {
+                SDL_mixer.Mix_SetDistance(channel, (byte)(Math.Max(0, Math.Min(distance / 2.0f, 255))));
+            }
+            return channel;
+        }
+
+
+        public static int PlayRandomChunkAtt(string Name, int min, int max, Entity e, out int rand)
+        {
+            return PlayRandomChunkAtt(Name, min, max, (int)e.Box.x, (int)e.Box.y, out rand);
+        }
+
         public static int PlayRandomChunk(string Name, int min, int max)
         {
+            return PlayRandomChunk(Name, min, max, out _);
+        }
+
+        public static int PlayRandomChunk(string Name, int min, int max, out int rand)
+        {
             var r = new Random();
-            int rand = r.Next(min, max);
+            rand = r.Next(min, max);
             var chunk = GetAudio(Name + rand);
             if (chunk != IntPtr.Zero)
             {
@@ -308,12 +361,16 @@ namespace Hopper.Managers
         {
             ToDelete.Clear();
             ToAdd.Clear();
+            TotalCollectibles = 0;
+            TotalCollected = 0;
+
             CurrentLevel = new Level(CurrentLevelPath);
         }
 
         public static void NewGame()
         {
-            CurrentLevel = new Level("Assets/Levels/Kierkegaard");
+            //CurrentLevel = new Level("Assets/Levels/Spacecamp");
+            CurrentLevel = new Level("Assets/Levels/TurretTest");
             State = GAME_STATE.IN_GAME;
         }
 

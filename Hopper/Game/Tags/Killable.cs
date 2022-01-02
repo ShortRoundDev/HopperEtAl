@@ -20,6 +20,10 @@ namespace Hopper.Game.Tags
         public void OnDamage(Entity entity, int damage)
         {
             var _this = this as Entity;
+            if (_this.Deleted || Health == -0xff)
+            {
+                return;
+            }
             Health -= damage;
             OnDamageHandler(entity, damage);
             if (_this == null)
@@ -28,6 +32,7 @@ namespace Hopper.Game.Tags
             }
             if (Health <= 0)
             {
+                _this.Deleted = true;
                 GameManager.DeleteEntity(_this);
                 OnDie();
                 return;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Hopper.Game.Entities;
@@ -52,6 +53,8 @@ namespace Hopper.Managers
         private static string Message { get; set; } = string.Empty;
         private static bool ShowMessage { get; set; } = false;
         private static Dictionary<string, IntPtr> FontColors { get; set; } = new();
+
+        private static List<(string Message, Point Pos, int Length)> TextBubbles = new();
 
         //Level name
         private static string LevelName { get; set; }
@@ -141,6 +144,7 @@ namespace Hopper.Managers
             DrawLevelName();
             DrawPlayerUI();
             DrawDemoEnd();
+            DrawTextBubbles();
         }
 
         public static void Update()
@@ -151,6 +155,8 @@ namespace Hopper.Managers
             UpdateMessage();
             UpdateLevelName();
             UpdateDemoEnd();
+
+            CheckTextBubbleDelete();
         }
 
         private static void InitFontColors()
@@ -827,6 +833,45 @@ namespace Hopper.Managers
         public static float EaseIn(float t)
         {
             return -((t - 1) * (t - 1)) + 1.0f;
+        }
+
+        public static void TextBubble(string text, Point position, int length)
+        {
+            TextBubbles.Add((text, position, length));
+        }
+
+        private static void CheckTextBubbleDelete()
+        {
+            for(int i = 0; i < TextBubbles.Count; i++)
+            {
+                var bubble = TextBubbles[i];
+                bubble.Length--;
+                TextBubbles[i] = bubble;
+            }
+            TextBubbles.RemoveAll(bubble => bubble.Length <= 0);
+        }
+
+        private static void DrawTextBubbles()
+        {
+            foreach(var bubble in TextBubbles)
+            {
+
+                var width = bubble.Message.Length * (10.0f / GraphicsManager.MainCamera.Scale.x);
+
+                var pos = new Vector2(bubble.Pos.x, bubble.Pos.y);
+                pos.X -= width / 2;
+                pos.X -= GraphicsManager.MainCamera.Position.x - (SystemManager.Width / (2 * GraphicsManager.MainCamera.Scale.x));
+                pos.Y -= GraphicsManager.MainCamera.Position.y - (SystemManager.Height / (2 * GraphicsManager.MainCamera.Scale.y));
+
+                pos *= new Vector2(
+                    GraphicsManager.MainCamera.Scale.x,
+                    GraphicsManager.MainCamera.Scale.y
+                );
+
+                var position = new Point(pos.X, pos.Y);
+
+                DrawString(bubble.Message, position, 1.0f);
+            }
         }
     }
 }

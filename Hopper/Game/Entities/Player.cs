@@ -27,7 +27,7 @@ namespace Hopper.Game.Entities
         public int Ammo { get; set; } = 0;
         public int Score { get; set; } = 0;
         public int Keys { get; set; }
-        public int Health { get; set; } = 3;
+        public int Health { get; set; } = 0;
         public int MaxHealth { get; set; } = 3;
         private byte LastZoom { get; set; } = 3;
         public bool Shotgun { get; set; } = false;
@@ -39,6 +39,28 @@ namespace Hopper.Game.Entities
 
         private const float COS_ANGLE = 0.965925f;
         private const float SIN_ANGLE = 0.258819f;
+
+        private static string[] DeathMessages = new string[]
+        {
+            "Mommy!",
+            "I'm too young to die!",
+            "I didn't fill out my life insurance!",
+            "Someone feed my cat!",
+            "I die a virgin!",
+            "I never got to see spain!",
+            "Why, god, why!",
+            "Ow",
+            "Why, Buddha, why!",
+            "Jesus save me!",
+            "Save me, L Ron Hubbard!",
+            "Don't let me die, Vishnu!",
+            "Save my life, Neil Degrasse Tyson!",
+            "Science damn it!",
+            "Don't blame me, I voted for Kodos!",
+            "Por que!",
+            "Ach! Mein Leben!",
+            "Clear my browser history!"
+        };
 
         //animations
         private Dictionary<string, int> animations = new()
@@ -109,10 +131,6 @@ namespace Hopper.Game.Entities
 
             if (OnGround)
             {
-                if(FallingScream != -1)
-                {
-                    SDL_mixer.Mix_HaltChannel(FallingScream);
-                }
                 FallingScream = -1;
             }
 
@@ -243,20 +261,9 @@ namespace Hopper.Game.Entities
             if (Ammo > 0 && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LCTRL].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LCTRL].Edge && shootTimer <= 10)
             {
                 Ammo--;
+                GameManager.PlayChunk("Shoot");
                 if (!Shotgun)
                 {
-                    GameManager.AddEntity(
-                        new PlayerBullet(new()
-                        {
-                            x = Box.x + (RenderFlip ? -16 : 16),
-                            y = Box.y + 12
-                        },
-                            RenderFlip
-                        )
-                    );
-                } else
-                {
-                    float dir = RenderFlip ? -1 : 1;
                     GameManager.AddEntity(
                         new PlayerBullet(
                             new()
@@ -264,10 +271,26 @@ namespace Hopper.Game.Entities
                                 x = Box.x + (RenderFlip ? -16 : 16),
                                 y = Box.y + 12
                             },
-                            new Point(COS_ANGLE * dir, -SIN_ANGLE) * 8
+                            RenderFlip
                         )
                     );
-                    GameManager.AddEntity(
+                } else
+                {
+                    float dir = RenderFlip ? -1 : 1;
+                    for (int i = -1; i < 2; i++)
+                    {
+                        GameManager.AddEntity(
+                            new PlayerBullet(
+                                new()
+                                {
+                                    x = Box.x + (RenderFlip ? -16 : 16),
+                                    y = Box.y + (i * 6) + 12
+                                },
+                                RenderFlip
+                            )
+                        );
+                    }
+                   /* GameManager.AddEntity(
                         new PlayerBullet(
                             new()
                             {
@@ -286,7 +309,7 @@ namespace Hopper.Game.Entities
                             },
                             new Point(COS_ANGLE * dir, SIN_ANGLE) * 8
                         )
-                    );
+                    );*/
                 }
                 shootTimer = 20;
             }
@@ -383,6 +406,7 @@ namespace Hopper.Game.Entities
                 ));
             }
             Dead = true;
+            UIManager.TextBubble(DeathMessages[r.Next(DeathMessages.Length)], Top, 150);
             GameManager.CurrentLevel.DeathTimer = 150;
             GameManager.PlayRandomChunk("Death", 1, 3);
         }

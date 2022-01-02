@@ -21,6 +21,18 @@ namespace Hopper.Game.Entities
         public int Damage { get; set; } = 1;
         public int DamageBoost { get; set; } = 0;
 
+        private static string[] DeathMessages = new string[]
+        {
+            "Et tu, brute?",
+            "Remember me as a hero",
+            "How could this happen to me?",
+            "Blork!",
+            "Frunklebean!",
+            "FUCK",
+            "Goodbye, cruel world",
+            "Aggydaggy!"
+        };
+
         public Brainiac(int x, int y) : base(GraphicsManager.GetTexture("Brainiac"), x, y, 24, 48)
         {
             MoveVec.x = 1;
@@ -86,8 +98,7 @@ namespace Hopper.Game.Entities
             int x = (int)Box.x + rand.Next((int)Box.w);
             var pop = new GreenBubble(x, y);
             GameManager.AddEntity(pop);
-            GameManager.PlayRandomChunk("AlienHurt", 1, 3);
-
+            GameManager.PlayRandomChunk("AlienHurt", 1, 3, out _);
         }
 
         public void OnDie()
@@ -108,9 +119,8 @@ namespace Hopper.Game.Entities
                     }
                 ));
             }
-
-            GameManager.PlayRandomChunk("AlienDeath", 1, 3);
-
+            GameManager.PlayRandomChunk("AlienDeath", 1, 3, out _);
+            UIManager.TextBubble(DeathMessages[r.Next(0, DeathMessages.Count())], Top, 100);
         }
     }
 }

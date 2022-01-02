@@ -22,16 +22,25 @@ namespace Hopper.Game.Entities
         bool Shooting { get; set; } = false;
         int VolleyCoolDown { get; set; } = 0;
         int ShotCooldown { get; set; } = 0;
+        int Telegraph { get; set; } = -1;
         int BulletsFired { get; set; } = 0;
         public int Damage { get; set; } = 0;
         public Type[] CollideWith { get; set; } = null;
         public int DamageBoost { get; set; } = 0;
 
+        private static string[] DeathMesages = new string[]
+        {
+            "I don't want to die",
+            "Oh no",
+            "Father why have you forsaken me"
+        };
+
+
         public Turret(int x, int y) : base(GraphicsManager.GetTexture("Turret"), x, y, 32, 32)
         {
             Animate = new Animator()
             {
-                Rows = 2,
+                Rows = 3,
                 Columns = 4,
                 Speed = 0.1f,
                 SrcRect = new SDL.SDL_Rect()
@@ -65,6 +74,16 @@ namespace Hopper.Game.Entities
 
             if (Shooting)
             {
+                if(Telegraph > 0)
+                {
+                    Telegraph--;
+                    return;
+                }
+                if(Telegraph == 0)
+                {
+                    Animate.Animation = 1;
+                    Telegraph = -1;
+                }
                 if (BulletsFired < 3)
                 {
                     if(ShotCooldown <= 0)
@@ -108,11 +127,12 @@ namespace Hopper.Game.Entities
                 r.x = i * 32;
                 if (GameManager.MainPlayer.Box.Intersect(r))
                 {
-                    Animate.Animation = 1;
                     VolleyCoolDown = 0;
                     ShotCooldown = 0;
                     BulletsFired = 0;
                     Shooting = true;
+                    Telegraph = 30;
+                    Animate.Animation = 2;
                     return;
                 }
             }
@@ -121,6 +141,13 @@ namespace Hopper.Game.Entities
         public void OnDie()
         {
             GameManager.TotalKilled++;
+            GameManager.PlayRandomChunkAtt("TurretDie", 1, 4, this, out int rand);
+            if(rand == -1 || rand == 0)
+            {
+                return;
+            }
+            UIManager.TextBubble(DeathMesages[rand - 1], Top, 100);
+            GameManager.PlayChunkAtt("Explode", this);
         }
     }
 }

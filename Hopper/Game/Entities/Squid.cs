@@ -31,6 +31,20 @@ namespace Hopper.Game.Entities
         public int BulletsFired { get; set; } = 0;
         public bool Shooting { get; set; } = false;
 
+        private static string[] DeathMessages = new string[]
+        {
+            "Fleeglbrogl!",
+            "Akhr'a'ghlacha'nach'ra'glach!",
+            "Damn you infidel!",
+            "Whyyyy",
+            "Nooooo",
+            "Ack!",
+            "I die",
+            "Raglachnach!",
+            "Jirinkleblach!",
+            "GLORCHNOP-!"
+        };
+
         public Squid(int x, int y) : base(GraphicsManager.GetTexture("Squid"), x, y, 32, 48)
         {
             Animate = new Animator()
@@ -46,6 +60,8 @@ namespace Hopper.Game.Entities
                 Columns = 4,
                 Animation = 0
             };
+
+            GameManager.TotalEnemies++;
         }
 
         public override void Draw()
@@ -208,6 +224,8 @@ namespace Hopper.Game.Entities
                     }
                 ));
             }
+
+            UIManager.TextBubble(DeathMessages[r.Next(DeathMessages.Length)], Top, 100);
 
             GameManager.TotalKilled++;
             return;

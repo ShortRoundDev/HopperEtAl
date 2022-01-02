@@ -41,6 +41,8 @@ namespace Hopper.Game
                 h = (int)Box.h
             };
         }
+
+        public Point Top => new Point(Box.x + Box.w / 2, Box.y);
         public Point MoveVec { get; set; }
 
         public bool Deleted { get; set; } = false;
