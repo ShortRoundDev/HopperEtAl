@@ -65,15 +65,29 @@ namespace Hopper.Game.Entities
         //animations
         private Dictionary<string, int> animations = new()
         {
-            { "ShootingJumping",    0 },
-            { "ShootingRunning",    1 },
-            { "ShootingStanding",   2 },
-            { "DefaultJumping",     3 },
-            { "DefaultRunning",     4 },
-            { "DefaultStanding",    5 },
-            { "DefaultSwimming",    6 },
-            { "Wading",             7 },
-            { "ShootingSwimming",   8 },
+            { "ShootingPistolJumping",    0  },
+            { "ShootingPistolRunning",    1  },
+            { "ShootingPistolStanding",   2  },
+            { "DefaultPistolJumping",     3  },
+            { "DefaultPistolRunning",     4  },
+            { "DefaultPistolStanding",    5  },
+            { "DefaultPistolSwimming",    6  },
+            { "PistolWading",             7  },
+            { "ShootingPistolSwimming",   8  },
+
+            { "ShootingShotgunRunning",   9  },
+            { "DefaultShotgunRunning",    9  },
+
+            { "ShootingShotgunStanding",  10 },
+            { "DefaultShotgunStanding",   10 },
+
+            { "ShootingShotgunJumping",   11 },
+            { "DefaultShotgunJumping",    11 },
+
+            { "ShootingShotgunSwimming",  12 },
+            { "DefaultShotgunSwimming",   12 },
+
+            { "ShotgunWading",            13 },
         };
 
         int shootTimer = 0;
@@ -107,7 +121,7 @@ namespace Hopper.Game.Entities
             {
                 return;
             }
-            Look();
+            //Look();
             var dst = new SDL.SDL_FRect()
             {
                 x = Box.x - 8,
@@ -115,8 +129,10 @@ namespace Hopper.Game.Entities
                 w = 48,
                 h = 48
             };
-            if(DamageBoost == 0 || (DamageBoost/3) % 2 != 0)
+            if (DamageBoost == 0 || (DamageBoost / 3) % 2 != 0)
+            {
                 Render.Box(dst, Animate.GetUVMap(), Texture, SDLFlip);
+            }
         }
 
         public override void Update()
@@ -156,7 +172,9 @@ namespace Hopper.Game.Entities
                 animation = "Jumping";
             }
 
-            Animate.Animation = animations[(shooting ? "Shooting" : "Default") + animation];
+            var gun = Shotgun ? "Shotgun" : "Pistol";
+
+            Animate.Animation = animations[((shooting ? "Shooting" : "Default") + gun) + animation];
         }
 
         private void HandleDamageBoost()
@@ -179,12 +197,14 @@ namespace Hopper.Game.Entities
                 if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down) {
                     MoveVec.x -= 0.1f;
                     Walking = true;
+                    RenderFlip = true;
                 }
                 
                 if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down)
                 {
                     MoveVec.x += 0.1f;
                     Walking = true;
+                    RenderFlip = false;
                 }
                 
                 if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Edge)
@@ -231,12 +251,13 @@ namespace Hopper.Game.Entities
                 {
                     MoveVec.x -= 0.4f;
                     Walking = true;
-
+                    RenderFlip = true;
                 }
                 if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down)
                 {
                     MoveVec.x += 0.4f;
                     Walking = true;
+                    RenderFlip = false;
                 }
                 if(MoveVec.x > 2.0f)
                 {
@@ -261,9 +282,9 @@ namespace Hopper.Game.Entities
             if (Ammo > 0 && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LCTRL].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LCTRL].Edge && shootTimer <= 10)
             {
                 Ammo--;
-                GameManager.PlayChunk("Shoot");
                 if (!Shotgun)
                 {
+                    GameManager.PlayChunk("Shoot");
                     GameManager.AddEntity(
                         new PlayerBullet(
                             new()
@@ -276,7 +297,10 @@ namespace Hopper.Game.Entities
                     );
                 } else
                 {
+                    GameManager.PlayChunk("ShotgunShoot");
+
                     float dir = RenderFlip ? -1 : 1;
+                    MoveVec.x -= dir * 10;
                     for (int i = -1; i < 2; i++)
                     {
                         GameManager.AddEntity(
@@ -351,12 +375,14 @@ namespace Hopper.Game.Entities
             {
                 MoveVec.x = 2.5f;
                 Walking = true;
+                RenderFlip = false;
             }
 
             if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down)
             {
                 MoveVec.x = -2.5f;
                 Walking = true;
+                RenderFlip = true;
             }
             if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Edge)
             {
@@ -369,10 +395,16 @@ namespace Hopper.Game.Entities
 
         private void HandleFriction()
         {
+            float modifier = 0.0f;
+            if(Shotgun && shootTimer > 0)
+            {
+                modifier = 0.8f;
+            }
+
             if (!Walking)
             {
-                var friction = 1.0f - GetFriction();
-                 MoveVec.x *= friction;
+                var friction = 1.0f - Math.Max(0, (GetFriction() - modifier));
+                MoveVec.x *= friction;
             }
         }
 

@@ -142,4 +142,9 @@
 		<Name>Explode</Name>
 		<Path>Assets/Audio/Sfx/Explode.ogg</Path>
 	</Audio>
+
+	<Audio>
+		<Name>ShotgunShoot</Name>
+		<Path>Assets/Audio/Sfx/ShotgunShoot.ogg</Path>
+	</Audio>
 </Chunks>

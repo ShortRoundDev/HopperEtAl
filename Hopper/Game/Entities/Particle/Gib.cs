@@ -59,6 +59,19 @@ namespace Hopper.Game.Entities.Particle
                 h = Box.h - Math.Min(WidthDelta / 2, 3) + (HeightDelta/2)
             };
 
+            if (WidthDelta > 0)
+            {
+                int leftXlimit = (int)(Box.x / 32.0f) * 32;
+                DrawBox.x = Math.Max(DrawBox.x, leftXlimit);
+
+                int widthLimit = leftXlimit + 32;
+                if(DrawBox.x + DrawBox.w > widthLimit)
+                {
+                    DrawBox.w = widthLimit - DrawBox.x;
+                }
+
+            }
+
             Render.BoxFill(DrawBox, new SDL.SDL_Color() { r = 0xdd, g = 0, b = 0, a = alpha });
         }
 
