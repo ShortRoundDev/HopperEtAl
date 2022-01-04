@@ -27,6 +27,22 @@ namespace Hopper.Game.Entities
 
         protected int ShootCooldown { get; set; } = 0;
 
+        private static string[] DeathMessages = new string[]
+        {
+            "I blame Usurpuron-6!",
+            "Damn you, biped!",
+            "May your tentacles rot!",
+            "I ascend to Octo-heaven!",
+            "I die for the tentacled one!",
+            "Your Octopotence is weak, infidel!",
+            "Your flagella is showing!",
+            "You will fail, pink infidel!",
+            "Burn in Octo-hell, pink one!",
+            "Arrgh!",
+            "Mutti!",
+            "Tell my wives... I loved them..."
+        };
+
         public OctoDude(int x, int y) : base(GraphicsManager.GetTexture("OctoDude"), x, y, 32, 32)
         {
             Animate = new()
@@ -42,7 +58,7 @@ namespace Hopper.Game.Entities
                 Columns = 2,
                 Speed = 0.05f
             };
-
+            GameManager.TotalEnemies++;
         }
 
         public override void Draw()
@@ -99,12 +115,48 @@ namespace Hopper.Game.Entities
         public void OnDamageHandler(Entity e, int damage)
         {
             GameManager.PlayRandomChunk("AlienHurt", 1, 3);
+            int dir = (e.Box.x - Box.x) > 0 ? -1 : 1;
+
+            Random r = new Random();
+            for (int i = 0; i < 3; i++)
+            {
+                GameManager.AddEntity(new Gib(
+                    this.Box.x,
+                    this.Box.y,
+                    new()
+                    {
+                        x = (float)((r.NextDouble() * 2.0) + 2) * dir,
+                        y = -(float)((r.NextDouble()) + 1.0)
+                    },
+                    UIManager.LT_MAG
+                ));
+            }
+
             return;
         }
 
         public void OnDie()
         {
             GameManager.PlayRandomChunk("AlienDeath", 1, 3);
+            Random r = new Random();
+            for (int i = 0; i < 10; i++)
+            {
+                float dir = (float)(2 * (r.Next() % 2)) - 1;
+                GameManager.AddEntity(new Gib(
+                    this.Box.x,
+                    this.Box.y,
+                    new()
+                    {
+                        x = (float)(r.NextDouble() * 2.0) * dir,
+                        y = -(float)((r.NextDouble() * 2.0) + 2.0),
+                    },
+                    UIManager.LT_MAG
+                ));
+            }
+
+            UIManager.TextBubble(DeathMessages[r.Next(DeathMessages.Length)], Top, 100);
+
+            GameManager.TotalKilled++;
 
             return;
         }

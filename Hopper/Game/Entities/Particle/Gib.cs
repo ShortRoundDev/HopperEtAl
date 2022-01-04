@@ -25,8 +25,16 @@ namespace Hopper.Game.Entities.Particle
 
         byte WhichWall = 0;
 
-        public Gib(float x, float y, Point MoveVec) : base(IntPtr.Zero, new Rect(x, y, 4, 4))
+        SDL.SDL_Color color { get; set; } = UIManager.LT_RED;
+
+        public Gib(float x, float y, Point MoveVec) : this(x, y, MoveVec, UIManager.LT_RED)
         {
+
+        }
+
+        public Gib(float x, float y, Point MoveVec, SDL.SDL_Color color) : base(IntPtr.Zero, new Rect(x, y, 4, 4))
+        {
+            this.color = color;
             this.MoveVec = MoveVec;
             Random r = new Random();
             float scale = (float)r.NextDouble() + 1.0f;
@@ -72,7 +80,7 @@ namespace Hopper.Game.Entities.Particle
 
             }
 
-            Render.BoxFill(DrawBox, new SDL.SDL_Color() { r = 0xdd, g = 0, b = 0, a = alpha });
+            Render.BoxFill(DrawBox, new SDL.SDL_Color() { r = color.r, g = color.g, b = color.b, a = alpha });
         }
 
         public override void Update()
@@ -120,7 +128,10 @@ namespace Hopper.Game.Entities.Particle
             }
             else
             {
-                MoveVec.y += GameManager.Gravity * 0.5f;
+                if (InWater)
+                    MoveVec.y = 0.8f;
+                else
+                    MoveVec.y += GameManager.Gravity * 0.5f;
             }
         }
     }

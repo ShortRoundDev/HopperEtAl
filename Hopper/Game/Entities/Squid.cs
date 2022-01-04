@@ -226,23 +226,6 @@ namespace Hopper.Game.Entities
         {
             GameManager.PlayRandomChunk("AlienDeath", 1, 3);
 
-            Random r = new Random();
-            for (int i = 0; i < 10; i++)
-            {
-                float dir = (float)(2 * (r.Next() % 2)) - 1;
-                GameManager.AddEntity(new Gib(
-                    this.Box.x,
-                    this.Box.y,
-                    new()
-                    {
-                        x = (float)(r.NextDouble() * 2.0) * dir,
-                        y = -(float)((r.NextDouble() * 2.0) + 2.0)
-                    }
-                ));
-            }
-
-            UIManager.TextBubble(DeathMessages[r.Next(DeathMessages.Length)], Top, 100);
-
             GameManager.TotalKilled++;
             return;
         }
