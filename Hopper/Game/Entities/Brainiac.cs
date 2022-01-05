@@ -74,10 +74,10 @@ namespace Hopper.Game.Entities
             Think(hitSide);
             (this as Enemy).EnemyUpdate();
 
-    }
+        }
 
-    public void Think(byte hitSide)
-        {
+        public void Think(byte hitSide)
+        { 
             if((hitSide & (HIT_LEFT)) != 0) {
                 MoveVec.x = 1;
             }
@@ -88,6 +88,11 @@ namespace Hopper.Game.Entities
             if (OnGround)
             {
                 MoveVec.x = Math.Sign(MoveVec.x);
+            }
+
+            if (AtEdge((int)MoveVec.x))
+            {
+                MoveVec.x *= -1;
             }
         }
 

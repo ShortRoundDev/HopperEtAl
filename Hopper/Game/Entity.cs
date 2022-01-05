@@ -93,9 +93,22 @@ namespace Hopper.Game
                 h = Box.h
             };
 
+            var hypoBoth = new Rect()
+            {
+                x = Box.x + MoveVec.x,
+                y = Box.y + MoveVec.y,
+                w = Box.w,
+                h = Box.h
+            };
+
             OnGround = false;
 
             float moveX = MoveVec.x;
+            float moveY = MoveVec.y;
+
+            bool xHit = false;
+            bool yHit = false;
+
             Rect intersection = new Rect();
 
             //========== Check pseudoGeometry
@@ -106,6 +119,16 @@ namespace Hopper.Game
                 {
                     continue;
                 }
+
+                if(xHit && yHit)
+                {
+                    break;
+                }
+
+                if (xHit)
+                {
+                    goto CheckEntityYCollide;
+                }
                 var xCollide = hypoX.Intersect(entity.Box);
 
                 if (xCollide)
@@ -115,17 +138,84 @@ namespace Hopper.Game
                         hitDirection |= HIT_RIGHT;
                         Box.x = hypoX.x - ((hypoX.x + hypoX.w) - entity.Box.x);
                         moveX = 0;
-                        break;
+                        xHit = true;
                     }
                     else if (moveX < 0.0f && (Box.x >= entity.Box.x + entity.Box.w) && (p.CollisionDirectionMask & HIT_LEFT) != 0)
                     {
                         hitDirection |= HIT_LEFT;
                         Box.x = entity.Box.x + entity.Box.w;
                         moveX = 0;
-                        break;
+                        xHit = true;
+                    }
+                }
+
+            CheckEntityYCollide:
+                if(yHit)
+                {
+                    goto CheckEntityBothCollide;
+                }
+                var yCollide = hypoY.Intersect(entity.Box);
+
+                if (yCollide)
+                {
+                    if (moveY > 0.0f && (Box.y + Box.h <= entity.Box.y) && (p.CollisionDirectionMask & HIT_BOTTOM) != 0)
+                    {
+                        hitDirection |= HIT_BOTTOM;
+                        Box.y = hypoY.y - ((hypoY.y + hypoY.h) - entity.Box.y);
+                        moveY = 0;
+                        OnGround = true;
+                        FrameFriction = 1.0f;
+                        yHit = true;
+                    }
+                    else if (moveY < 0.0f && (Box.y > entity.Box.y + entity.Box.h) && (p.CollisionDirectionMask & HIT_TOP) != 0)
+                    {
+                        hitDirection |= HIT_TOP;
+                        Box.y = entity.Box.y + entity.Box.h;
+                        moveY = 0;
+                        yHit = true;
+                    }
+                }
+            CheckEntityBothCollide:
+                var bothCollide = hypoBoth.Intersect(entity.Box);
+
+                if (bothCollide)
+                {
+                    if (moveY > 0.0f && (Box.y + Box.h <= entity.Box.y) && (p.CollisionDirectionMask & HIT_BOTTOM) != 0)
+                    {
+                        hitDirection |= HIT_BOTTOM;
+                        Box.y = hypoY.y - ((hypoY.y + hypoY.h) - entity.Box.y);
+                        moveY = 0;
+                        OnGround = true;
+                        FrameFriction = 1.0f;
+                        yHit = true;
+                    }
+                    else if (moveY < 0.0f && (Box.y > entity.Box.y + entity.Box.h) && (p.CollisionDirectionMask & HIT_TOP) != 0)
+                    {
+                        hitDirection |= HIT_TOP;
+                        Box.y = entity.Box.y + entity.Box.h;
+                        moveY = 0;
+                        yHit = true;
+                    }
+
+                    if (moveX > 0.0f && (Box.x + Box.w <= entity.Box.x) && (p.CollisionDirectionMask & HIT_RIGHT) != 0)
+                    {
+                        hitDirection |= HIT_RIGHT;
+                        Box.x = hypoX.x - ((hypoX.x + hypoX.w) - entity.Box.x);
+                        moveX = 0;
+                        xHit = true;
+                    }
+                    else if (moveX < 0.0f && (Box.x >= entity.Box.x + entity.Box.w) && (p.CollisionDirectionMask & HIT_LEFT) != 0)
+                    {
+                        hitDirection |= HIT_LEFT;
+                        Box.x = entity.Box.x + entity.Box.w;
+                        moveX = 0;
+                        xHit = true;
                     }
                 }
             }
+
+            xHit = false;
+            yHit = false;
 
             for (int i = ((int)hypoX.x) / 32; i <= (int)(hypoX.x + hypoX.w) / 32; i++)
             {
@@ -140,6 +230,15 @@ namespace Hopper.Game
                         continue;
                     }
 
+                    if(xHit && yHit)
+                    {
+                        goto End;
+                    }
+
+                    if (xHit)
+                    {
+                        goto CheckYTileHit;
+                    }
                     var xCollide = hypoX.Intersect(tile.Box);
 
                     if (xCollide)
@@ -154,15 +253,60 @@ namespace Hopper.Game
                             hitDirection |= HIT_LEFT;
                             Box.x = tile.Box.x + tile.Box.w;
                         }
-                        moveX = 0;
-                        break;
+                        xHit = true;
                     }
+
+                CheckYTileHit:
+
+                    if (yHit)
+                    {
+                        //goto CheckBothTileHit;
+                        continue;
+                    }
+
+                    var yCollide = hypoY.Intersect(tile.Box);
+
+                    if (yCollide)
+                    {
+                        if (moveY > 0.0f)
+                        {
+                            hitDirection |= HIT_BOTTOM;
+                            OnGround = true;
+                            Box.y = hypoY.y - ((hypoY.y + hypoY.h) - tile.Box.y);
+                        }
+                        else if (moveY < 0.0f)
+                        {
+                            hitDirection |= HIT_TOP;
+                            Box.y = tile.Box.y + tile.Box.h;
+                        }
+                        moveY = 0;
+                        yHit = true;
+                    }
+                //CheckBothTileHit:
+                    /*if(xHit && yHit)
+                    {
+                        goto End;
+                    }
+                    if(xHit || yHit)
+                    {
+                        continue;
+                    }
+                    var bothCollide = hypoBoth.Intersect(tile.Box);
+
+                    if (bothCollide)
+                    {
+                        moveX = 0;
+                        moveY = 0;
+
+                        moveX = 0;
+                        yHit = true;
+                        xHit = true;
+                    }*/
                 }
             }
 
-            float moveY = MoveVec.y;
 
-            foreach (var entity in GameManager.CurrentLevel.Entities)
+           /*foreach (var entity in GameManager.CurrentLevel.Entities)
             {
                 if (entity is not PseudoGeometry p || entity == this)
                 {
@@ -191,8 +335,8 @@ namespace Hopper.Game
                     }
                 }
             }
-
-            for (int i = ((int)hypoY.x) / 32; i <= (int)(hypoY.x + hypoY.w) / 32; i++)
+           */
+            /*for (int i = ((int)hypoY.x) / 32; i <= (int)(hypoY.x + hypoY.w) / 32; i++)
             {
                 for (int j = ((int)hypoY.y) / 32; j <= (int)(hypoY.y + hypoY.h) / 32; j++)
                 {
@@ -222,8 +366,9 @@ namespace Hopper.Game
                         break;
                     }
                 }
-            }
+            }*/
 
+        End:
             Box.x += moveX;
             Box.y += moveY;
 
@@ -321,6 +466,19 @@ namespace Hopper.Game
         public float Distance(Entity a)
         {
             return Midpoint().Distance(a.Midpoint());
+        }
+        public bool AtEdge(int dir)
+        {
+            if(dir < 1)
+            {
+                dir = 0;
+            }
+            int x = (int)Box.x / 32;
+            int y = (int)((Box.y + Box.h) / 32);
+
+            var tile = GameManager.GetTile(x + dir, y);
+
+            return tile == null;
         }
     }
 }

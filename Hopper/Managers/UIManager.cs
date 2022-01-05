@@ -142,9 +142,9 @@ namespace Hopper.Managers
             DrawRecap();
             DrawMesssage();
             DrawLevelName();
+            DrawTextBubbles();
             DrawPlayerUI();
             DrawDemoEnd();
-            DrawTextBubbles();
         }
 
         public static void Update()
@@ -575,6 +575,8 @@ namespace Hopper.Managers
             DrawScoreUI();
             DrawKeysUI();
             DrawPowerupUI();
+
+            DrawString($"{GameManager.Frame}", new Point(1024 - 128, 768 - 32), 2.0f);
         }
 
         private static void DrawDemoEnd()
