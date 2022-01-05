@@ -27,7 +27,7 @@ namespace Hopper.Game.Entities
         public int Ammo { get; set; } = 0;
         public int Score { get; set; } = 0;
         public int Keys { get; set; }
-        public int Health { get; set; } = -0xff;
+        public int Health { get; set; } = 3;
         public int MaxHealth { get; set; } = 3;
         private byte LastZoom { get; set; } = 3;
         public bool Shotgun { get; set; } = false;

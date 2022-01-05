@@ -370,7 +370,7 @@ namespace Hopper.Managers
         public static void NewGame()
         {
             //CurrentLevel = new Level("Assets/Levels/Spacecamp");
-            CurrentLevel = new Level("Assets/Levels/water");
+            CurrentLevel = new Level("Assets/Levels/Kierkegaard");
             State = GAME_STATE.IN_GAME;
         }
 
