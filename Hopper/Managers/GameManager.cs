@@ -42,6 +42,8 @@ namespace Hopper.Managers
 
         public static bool Pause { get; set; } = false;
 
+        public static int Frame { get; set; } = 0;
+
         public static void Init()
         {
             SDL2.SDL_mixer.Mix_OpenAudio(44100, SDL2.SDL_mixer.MIX_DEFAULT_FORMAT, 2, 2048);
@@ -60,6 +62,11 @@ namespace Hopper.Managers
         {
             if (State == GAME_STATE.IN_GAME && !Pause)
             {
+                Frame++;
+                if(Frame == 1000)
+                {
+                    Frame = 0;
+                }
                 UIManager.UpdateStars();
                 CurrentLevel.Update();
                 ClearEntities();
@@ -370,7 +377,7 @@ namespace Hopper.Managers
         public static void NewGame()
         {
             //CurrentLevel = new Level("Assets/Levels/Spacecamp");
-            CurrentLevel = new Level("Assets/Levels/Kierkegaard");
+            CurrentLevel = new Level("Assets/Levels/LedgeTest");
             State = GAME_STATE.IN_GAME;
         }
 

@@ -130,6 +130,12 @@ namespace Hopper.Game.Entities
                     StandCoolDown = 200;
                 }
             }
+
+            if(WalkCoolDown > 0 && AtEdge(Direction))
+            {
+                Direction *= -1;
+                MoveVec.x = Direction;
+            }
         }
 
         private void CheckShoot()
