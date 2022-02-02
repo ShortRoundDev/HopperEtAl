@@ -369,6 +369,7 @@ namespace Hopper.Managers
             ToDelete.Clear();
             ToAdd.Clear();
             TotalCollectibles = 0;
+            TotalEnemies = 0;
             TotalCollected = 0;
 
             CurrentLevel = new Level(CurrentLevelPath);
@@ -376,8 +377,8 @@ namespace Hopper.Managers
 
         public static void NewGame()
         {
-            //CurrentLevel = new Level("Assets/Levels/Spacecamp");
-            CurrentLevel = new Level("Assets/Levels/LedgeTest");
+            CurrentLevel = new Level("Assets/Levels/Platform");
+           // CurrentLevel = new Level("Assets/Levels/Lava");
             State = GAME_STATE.IN_GAME;
         }
 
@@ -409,6 +410,7 @@ namespace Hopper.Managers
     {
         IN_GAME = 0,
         MAIN_MENU = 1,
-        DEMO_END = 2
+        DEMO_END = 2,
+        HOW_TO = 3
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Hopper.Game.Attributes;
+using Hopper.Game.Entities.Geometry;
 using Hopper.Game.Entities.Particle;
 using Hopper.Game.Entities.Projectiles;
 using Hopper.Game.Tags;
@@ -34,6 +35,7 @@ namespace Hopper.Game.Entities
         public bool CrossHair { get; set; } = false;
 
         private int FallingScream { get; set; } = -1;
+        Platform PlatformParent { get; set; }
 
         public bool Dead { get; set; } = false;
 
@@ -145,6 +147,8 @@ namespace Hopper.Game.Entities
             MoveAndCollide();
             CheckZoom();
 
+            HandlePlatform();
+
             if (OnGround)
             {
                 FallingScream = -1;
@@ -177,6 +181,33 @@ namespace Hopper.Game.Entities
             Animate.Animation = animations[((shooting ? "Shooting" : "Default") + gun) + animation];
         }
 
+        private void HandlePlatform()
+        {
+            var platform = HitEntitiesThisFrame.Where(ent => ent is Platform).FirstOrDefault() as Platform;
+
+            //remove platform
+            if (platform == null && PlatformParent != null)
+            {
+                PlatformParent.Captured.Remove(this);
+                PlatformParent = null;
+                Console.WriteLine("Freed!");
+                Impulse.x = 0;
+                Impulse.y = 0;
+            } else if(platform != null && PlatformParent == null)
+            {
+                Console.WriteLine("Captured1!");
+                platform.Captured.Add(this);
+                PlatformParent = platform;
+            } else if(platform != null && PlatformParent != null && platform != PlatformParent)
+            {
+                PlatformParent.Captured.Remove(this);
+                Console.WriteLine("Captured2!");
+                platform.Captured.Add(this);
+                PlatformParent = platform;
+            }
+        }
+
+
         private void HandleDamageBoost()
         {
             if (DamageBoost > 0)
@@ -194,13 +225,13 @@ namespace Hopper.Game.Entities
                 animation = "Swimming";
 
                 Walking = false;
-                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down) {
+                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down && MoveVec.x > -2.0f) {
                     MoveVec.x -= 0.1f;
                     Walking = true;
                     RenderFlip = true;
                 }
                 
-                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down)
+                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down && MoveVec.x < 2.0f)
                 {
                     MoveVec.x += 0.1f;
                     Walking = true;
@@ -211,7 +242,7 @@ namespace Hopper.Game.Entities
                 {
                     MoveVec.y -= 2.0f;
                 }
-
+                /*
                 if (MoveVec.x > 2.0f)
                 {
                     MoveVec.x = 2.0f;
@@ -225,7 +256,7 @@ namespace Hopper.Game.Entities
                 if (MoveVec.y < -6.0f)
                 {
                     MoveVec.y = -6.0f;
-                }
+                }*/
 
                 if (MoveVec.y > 1.5f)
                 {
@@ -247,25 +278,18 @@ namespace Hopper.Game.Entities
         {
             if (!OnGround && !InWater)
             {
-                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down)
+                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down && MoveVec.x > -2.0f)
                 {
                     MoveVec.x -= 0.4f;
                     Walking = true;
                     RenderFlip = true;
                 }
-                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down)
+                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down && MoveVec.x < 2.0f)
                 {
+                    Console.WriteLine(MoveVec.x);
                     MoveVec.x += 0.4f;
                     Walking = true;
                     RenderFlip = false;
-                }
-                if(MoveVec.x > 2.0f)
-                {
-                    MoveVec.x = 2.0f;
-                }
-                if(MoveVec.x < -2.0f)
-                {
-                    MoveVec.x = -2.0f;
                 }
             }
         }
@@ -290,7 +314,7 @@ namespace Hopper.Game.Entities
                             new()
                             {
                                 x = Box.x + (RenderFlip ? -16 : 16),
-                                y = Box.y + 12
+                                y = Box.y + 16
                             },
                             RenderFlip
                         )
@@ -300,7 +324,7 @@ namespace Hopper.Game.Entities
                     GameManager.PlayChunk("ShotgunShoot");
 
                     float dir = RenderFlip ? -1 : 1;
-                    MoveVec.x -= dir * 10;
+                    MoveVec.x -= dir * 3;
                     for (int i = -1; i < 2; i++)
                     {
                         GameManager.AddEntity(
@@ -351,6 +375,7 @@ namespace Hopper.Game.Entities
 //                gravity *= 3.0f;
             }
 
+
             MoveVec.y += gravity;
         }
 
@@ -376,6 +401,7 @@ namespace Hopper.Game.Entities
                 MoveVec.x = 2.5f;
                 Walking = true;
                 RenderFlip = false;
+                Console.WriteLine(MoveVec.x);
             }
 
             if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down)
@@ -417,7 +443,8 @@ namespace Hopper.Game.Entities
             }
             if (!InWater)
             {
-                MoveVec.x = -4;
+                
+                MoveVec.x = -Math.Sign(MoveVec.x) * 4;
                 MoveVec.y = -4;
             }
         }

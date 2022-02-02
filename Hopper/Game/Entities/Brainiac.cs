@@ -90,7 +90,7 @@ namespace Hopper.Game.Entities
                 MoveVec.x = Math.Sign(MoveVec.x);
             }
 
-            if (AtEdge((int)MoveVec.x))
+            if (OnGround && AtEdge((int)MoveVec.x))
             {
                 MoveVec.x *= -1;
             }
@@ -120,6 +120,9 @@ namespace Hopper.Game.Entities
             }
 
             GameManager.PlayRandomChunk("AlienHurt", 1, 3, out _);
+            
+            MoveVec.x = 3 * Math.Sign(e.MoveVec.x);
+            MoveVec.y = -3;
         }
 
         public void OnDie()

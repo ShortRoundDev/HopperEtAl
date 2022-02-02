@@ -82,6 +82,7 @@
 		<Path>Assets\Textures\Tiles\18.png</Path>
 	</Texture>
 
+
 	<!-- Engine -->
 	<Texture>
 		<Name>Numbers</Name>
@@ -107,6 +108,12 @@
 		<Name>MainMenu</Name>
 		<Path>Assets\Textures\Engine\MainMenu.png</Path>
 	</Texture>
+
+	<Texture>
+		<Name>HowTo</Name>
+		<Path>Assets\Textures\Engine\HowTo.png</Path>
+	</Texture>
+	
 	<Texture>
 		<Name>DeathScreen</Name>
 		<Path>Assets\Textures\Engine\DeathScreen.png</Path>
@@ -163,9 +170,28 @@
 		<Path>Assets\Textures\PseudoGeometry\Spikes.png</Path>
 	</Texture>
 	<Texture>
+		<Name>SpikesR</Name>
+		<Path>Assets\Textures\PseudoGeometry\SpikesR.png</Path>
+	</Texture>
+	<Texture>
+		<Name>LaunchPad</Name>
+		<Path>Assets\Textures\PseudoGeometry\LaunchPad.png</Path>
+	</Texture>
+	<Texture>
 		<Name>Spring</Name>
 		<Path>Assets\Textures\PseudoGeometry\Spring.png</Path>
 	</Texture>
+
+	<Texture>
+		<Name>Lava</Name>
+		<Path>Assets\Textures\PseudoGeometry\Lava.png</Path>
+	</Texture>
+
+    <Texture>
+        <Name>Platform</Name>
+        <Path>Assets\Textures\PseudoGeometry\Platform.png</Path>
+    </Texture>
+    
 	<Texture>
 		<Name>Splitter</Name>
 		<Path>Assets\Textures\PseudoGeometry\Splitter.png</Path>
@@ -178,6 +204,15 @@
 		<Name>Barnacles</Name>
 		<Path>Assets\Textures\Enemies\Barnacles\Barnacles.png</Path>
 	</Texture>
+
+	<Texture>
+		<Name>Easterman</Name>
+		<Path>Assets\Textures\Enemies\Easterman\Easterman.png</Path>
+	</Texture>
+    <Texture>
+        <Name>LilGuy</Name>
+        <Path>Assets\Textures\Enemies\LilGuy\LilGuy.png</Path>
+    </Texture>
 	
 	<Texture>
 		<Name>RedDoor</Name>

@@ -84,7 +84,7 @@ namespace Hopper.Game.Entities
                     Animate.Animation = 1;
                     Telegraph = -1;
                 }
-                if (BulletsFired < 3)
+                if (BulletsFired < 2)
                 {
                     if(ShotCooldown <= 0)
                     {

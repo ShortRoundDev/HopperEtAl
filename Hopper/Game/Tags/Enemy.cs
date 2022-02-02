@@ -13,12 +13,12 @@ namespace Hopper.Game.Tags
         public int Damage { get; set; }
         protected Type[] CollideWith { get; set; }
 
-        public bool EnemyUpdate()
+        public bool EnemyUpdate(bool IgnoreBoost = false)
         {
             var _this = this as Entity;
-            return EnemyUpdate(_this.Box);
+            return EnemyUpdate(_this.Box, IgnoreBoost);
         }
-        public bool EnemyUpdate(Rect box)
+        public bool EnemyUpdate(Rect box, bool IgnoreBoost = false)
         {
             var _this = this as Entity;
             foreach (var entity in GameManager.CurrentLevel.Entities)
@@ -33,7 +33,7 @@ namespace Hopper.Game.Tags
                     {
                         if (entity.Box.Intersect(_this.Box))
                         {
-                            if (entity is Killable k && k.DamageBoost == 0)
+                            if (entity is Killable k && (k.DamageBoost == 0 || IgnoreBoost))
                             {
                                 k.OnDamage(_this, Damage);
                             }

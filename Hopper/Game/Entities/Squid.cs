@@ -30,6 +30,7 @@ namespace Hopper.Game.Entities
         public int ShotCooldown { get; set; } = 25;
         public int BulletsFired { get; set; } = 0;
         public bool Shooting { get; set; } = false;
+        bool Jumping = false;
 
         private static string[] DeathMessages = new string[]
         {
@@ -77,10 +78,15 @@ namespace Hopper.Game.Entities
             Animate.Update();
             CheckShoot();
             var hit = MoveAndCollide();
+            if (OnGround)
+            {
+                Jumping = false;
+            }
             if((hit & HIT_LEFT) != 0 && OnGround)
             {
-                if (GameManager.CurrentLevel.Tiles[(int)(Box.x / 32) - 1, (int)(Box.y / 32)] == null)
+                if (GameManager.CurrentLevel.Tiles[(int)(Box.x / 32) - 1, (int)(Box.y / 32)] == null && !HitEntitiesThisFrame.Any(e => e is PseudoGeometry))
                 {
+                    Jumping = true;
                     MoveVec.y = -6;
                 } else
                 {
@@ -89,8 +95,9 @@ namespace Hopper.Game.Entities
             }
             else if ((hit & HIT_RIGHT) != 0 && OnGround)
             {
-                if (GameManager.CurrentLevel.Tiles[(int)(Box.x / 32) + 1, (int)(Box.y / 32)] == null)
+                if (GameManager.CurrentLevel.Tiles[(int)(Box.x / 32) + 1, (int)(Box.y / 32)] == null && !HitEntitiesThisFrame.Any(e => e is PseudoGeometry))
                 {
+                    Jumping = true;
                     MoveVec.y = -6;
                 }
                 else
@@ -123,18 +130,15 @@ namespace Hopper.Game.Entities
             if (WalkCoolDown > 0)
             {
                 Animate.Animation = 1;
-                MoveVec.x = Direction;
+                if (OnGround || Jumping)
+                {
+                    MoveVec.x = Direction;
+                }
                 WalkCoolDown--;
                 if(WalkCoolDown == 0)
                 {
                     StandCoolDown = 200;
                 }
-            }
-
-            if(WalkCoolDown > 0 && AtEdge(Direction))
-            {
-                Direction *= -1;
-                MoveVec.x = Direction;
             }
         }
 
@@ -229,6 +233,10 @@ namespace Hopper.Game.Entities
                     }
                 ));
             }
+
+            MoveVec.x = 3 * Math.Sign(e.MoveVec.x);
+            MoveVec.y = -3;
+
 
             return;
         }

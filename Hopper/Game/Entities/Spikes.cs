@@ -27,10 +27,10 @@ namespace Hopper.Game.Entities
 
         public override void Draw()
         {
-            SDL.SDL_RendererFlip flip = SDL.SDL_RendererFlip.SDL_FLIP_NONE;
-            if (GameManager.CurrentLevel.Tiles[(int)Box.x / 32, (int)(Box.y / 32) - 1] != null)
+            SDL.SDL_RendererFlip flip = SDL.SDL_RendererFlip.SDL_FLIP_VERTICAL;
+            if (GameManager.CurrentLevel.Tiles[(int)Box.x / 32, (int)(Box.y / 32) + 1] != null)
             {
-                flip = SDL.SDL_RendererFlip.SDL_FLIP_VERTICAL;
+                flip = SDL.SDL_RendererFlip.SDL_FLIP_NONE;
             }
 
             SDL.SDL_Rect uv = new SDL.SDL_Rect()

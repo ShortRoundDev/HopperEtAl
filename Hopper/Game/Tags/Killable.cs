@@ -37,11 +37,11 @@ namespace Hopper.Game.Tags
                 OnDie();
                 return;
             }
-            _this.MoveVec = new Point()
+            /*_this.MoveVec = new Point()
             {
                 x = Math.Sign(entity.MoveVec.x) * 3,
                 y = -3
-            };
+            };*/
         }
 
         public void KillableDraw()

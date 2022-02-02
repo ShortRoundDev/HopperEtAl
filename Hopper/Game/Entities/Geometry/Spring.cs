@@ -29,7 +29,7 @@ namespace Hopper.Game.Entities.Geometry
         {
             if (Box.Intersect(GameManager.MainPlayer.Box))
             {
-                GameManager.MainPlayer.MoveVec.x *= 5;
+                GameManager.MainPlayer.MoveVec.x *= 2;
                 GameManager.MainPlayer.MoveVec.y = -15;
                 GameManager.MainPlayer.Jumping = false;
             }

@@ -20,6 +20,7 @@ namespace Hopper.Managers
         private static IntPtr Renderer => GraphicsManager.Renderer;
 
         private static IntPtr MainMenu { get; set; }
+        private static IntPtr HowTo { get; set; }
         private static IntPtr Numbers { get; set; }
         private static IntPtr Font { get; set; }
         private static IntPtr BubbleTea { get; set; }
@@ -106,6 +107,7 @@ namespace Hopper.Managers
             DeathScreen = GraphicsManager.GetTexture("DeathScreen");
             Selector = GraphicsManager.GetTexture("Selector");
             MainMenu = GraphicsManager.GetTexture("MainMenu");
+            HowTo = GraphicsManager.GetTexture("HowTo");
             Recap = GraphicsManager.GetTexture("Recap");
             Screen = GraphicsManager.GetTexture("MessageScreen");
             RedKey = GraphicsManager.GetTexture("RedKey");
@@ -139,6 +141,7 @@ namespace Hopper.Managers
             }
             DrawDeathScreen();
             DrawMainMenu();
+            DrawHowTo();
             DrawRecap();
             DrawMesssage();
             DrawLevelName();
@@ -149,6 +152,8 @@ namespace Hopper.Managers
 
         public static void Update()
         {
+            UpdateHowTo();
+
             UpdateMainMenu();
             UpdateRecap();
             HandleDeathScreenInput();
@@ -407,6 +412,32 @@ namespace Hopper.Managers
             SDL.SDL_RenderCopy(GraphicsManager.Renderer, BubbleTea, ref selectorSrc, ref selectorDst);
         }
 
+        private static void DrawHowTo()
+        {
+            if (GameManager.State != GAME_STATE.HOW_TO)
+                return;
+
+            DrawStars();
+
+            var src = new SDL.SDL_Rect()
+            {
+                x = 0,
+                y = 0,
+                w = 256,
+                h = 256
+            };
+            var dst = new SDL.SDL_Rect()
+            {
+                x = SystemManager.Width / 2 - (src.w * 3) / 2,
+                y = SystemManager.Height / 2 - (src.h * 3) / 2,
+                w = src.w * 3,
+                h = src.h * 3
+            };
+            SDL.SDL_RenderCopy(GraphicsManager.Renderer, HowTo, ref src, ref dst);
+        }
+
+
+
         public static void UpdateMainMenu()
         {
             if(GameManager.State != GAME_STATE.MAIN_MENU)
@@ -435,6 +466,7 @@ namespace Hopper.Managers
                         GameManager.NewGame();
                         break;
                     case 1:
+                        GameManager.State = GAME_STATE.HOW_TO;
                         break;
                     case 2:
                         GameManager.Quit = true;
@@ -442,6 +474,21 @@ namespace Hopper.Managers
                 }
             }
 
+            UpdateStars();
+        }
+
+        public static void UpdateHowTo()
+        {
+            if(GameManager.State != GAME_STATE.HOW_TO)
+            {
+                return;
+            }
+            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Edge)
+            {
+                GameManager.State = GAME_STATE.MAIN_MENU;
+
+                InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Edge = false; //ugh
+            }
             UpdateStars();
         }
         public static void UpdateStars()

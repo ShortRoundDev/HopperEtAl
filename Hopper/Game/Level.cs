@@ -108,6 +108,13 @@ namespace Hopper.Game
                 DeathTimer = -1;
                 UIManager.ShowDeathScreen();
             }
+            for(int i = 0; i < Width; i++)
+            {
+                for(int j = 0; j < Height; j++)
+                {
+                    Tiles[i, j]?.Update();
+                }
+            }
         }
 
         private void LoadLevel(string path)
