@@ -113,6 +113,16 @@
 		<Name>HowTo</Name>
 		<Path>Assets\Textures\Engine\HowTo.png</Path>
 	</Texture>
+
+    <Texture>
+        <Name>LeftArrow</Name>
+        <Path>Assets\Textures\Engine\LeftArrow.png</Path>
+    </Texture>
+
+    <Texture>
+        <Name>RightArrow</Name>
+        <Path>Assets\Textures\Engine\RightArrow.png</Path>
+    </Texture>
 	
 	<Texture>
 		<Name>DeathScreen</Name>

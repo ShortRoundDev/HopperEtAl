@@ -35,7 +35,7 @@ namespace Hopper.Game.Entities
         public bool CrossHair { get; set; } = false;
 
         private int FallingScream { get; set; } = -1;
-        Platform PlatformParent { get; set; }
+        public Platform PlatformParent { get; set; }
 
         public bool Dead { get; set; } = false;
 
@@ -190,18 +190,17 @@ namespace Hopper.Game.Entities
             {
                 PlatformParent.Captured.Remove(this);
                 PlatformParent = null;
-                Console.WriteLine("Freed!");
                 Impulse.x = 0;
                 Impulse.y = 0;
             } else if(platform != null && PlatformParent == null)
             {
-                Console.WriteLine("Captured1!");
+                OnGround = true;
                 platform.Captured.Add(this);
                 PlatformParent = platform;
             } else if(platform != null && PlatformParent != null && platform != PlatformParent)
             {
+                OnGround = true;
                 PlatformParent.Captured.Remove(this);
-                Console.WriteLine("Captured2!");
                 platform.Captured.Add(this);
                 PlatformParent = platform;
             }

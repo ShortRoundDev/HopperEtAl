@@ -112,7 +112,8 @@ namespace Hopper.Game.Entities.Particle
                 WhichWall = hit;
                 if (!PlayedSound && chunk != IntPtr.Zero)
                 {
-                    SDL_mixer.Mix_PlayChannel(-1, chunk, 0);
+                    int channel = SDL_mixer.Mix_PlayChannel(-1, chunk, 0);
+                    SDL_mixer.Mix_Volume(channel, (byte)(SystemManager.SfxVolume / 10.0f * 128.0f));
                     PlayedSound = true;
                 }
             }
@@ -121,10 +122,10 @@ namespace Hopper.Game.Entities.Particle
                 Floor = true;
                 if (!PlayedSound && chunk != IntPtr.Zero)
                 {
-                    SDL_mixer.Mix_PlayChannel(-1, chunk, 0);
+                    int channel = SDL_mixer.Mix_PlayChannel(-1, chunk, 0);
+                    SDL_mixer.Mix_Volume(channel, (byte)(SystemManager.SfxVolume / 10.0f * 128.0f));
                     PlayedSound = true;
                 }
-
             }
             else
             {

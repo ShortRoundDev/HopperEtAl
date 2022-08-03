@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 using NLog;
+using SDL2;
 
 namespace Hopper.Managers
 {
@@ -17,6 +18,27 @@ namespace Hopper.Managers
         public static UInt16 Height { get => Vars.Height; }
         private static SystemVars Vars { get; set; }
         public static bool Debug { get; set; }
+        public static int SfxVolume
+        {
+            get => _SfxVolume;
+            set
+            {
+                _SfxVolume = value;
+            }
+        }
+
+        private static int _SfxVolume = 10;
+        public static int MusVolume
+        {
+            get => _MusVolume;
+            set
+            {
+                _MusVolume = value;
+                SDL_mixer.Mix_VolumeMusic((byte)(value / 10.0f * 128.0f));
+            }
+        }
+        private static int _MusVolume = 10;
+
         public static void Init()
         {
             Vars = new();

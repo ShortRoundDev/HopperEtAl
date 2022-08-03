@@ -21,6 +21,8 @@ namespace Hopper.Managers
 
         private static IntPtr MainMenu { get; set; }
         private static IntPtr HowTo { get; set; }
+        private static IntPtr RightArrow { get; set; }
+        private static IntPtr LeftArrow { get; set; }
         private static IntPtr Numbers { get; set; }
         private static IntPtr Font { get; set; }
         private static IntPtr BubbleTea { get; set; }
@@ -40,6 +42,9 @@ namespace Hopper.Managers
         //Main Menu
         private static List<SDL.SDL_Point> StarField { get; set; } = new();
         private static int MainMenuCursor { get; set; } = 0;
+
+        // Volume
+        private static int VolumeCursor { get; set; } = 0;
 
         //Death Screen
         private static bool DeathScreenShowing { get; set; } = false;
@@ -108,6 +113,8 @@ namespace Hopper.Managers
             Selector = GraphicsManager.GetTexture("Selector");
             MainMenu = GraphicsManager.GetTexture("MainMenu");
             HowTo = GraphicsManager.GetTexture("HowTo");
+            RightArrow = GraphicsManager.GetTexture("RightArrow");
+            LeftArrow = GraphicsManager.GetTexture("LeftArrow");
             Recap = GraphicsManager.GetTexture("Recap");
             Screen = GraphicsManager.GetTexture("MessageScreen");
             RedKey = GraphicsManager.GetTexture("RedKey");
@@ -142,6 +149,7 @@ namespace Hopper.Managers
             DrawDeathScreen();
             DrawMainMenu();
             DrawHowTo();
+            DrawVolume();
             DrawRecap();
             DrawMesssage();
             DrawLevelName();
@@ -153,6 +161,7 @@ namespace Hopper.Managers
         public static void Update()
         {
             UpdateHowTo();
+            UpdateVolume();
 
             UpdateMainMenu();
             UpdateRecap();
@@ -404,7 +413,7 @@ namespace Hopper.Managers
             SDL.SDL_Rect selectorDst = new SDL.SDL_Rect()
             {
                 x = dst.x + 219,
-                y = dst.y + 525 + (MainMenuCursor * 76),
+                y = dst.y + 520 + (MainMenuCursor * 44),
                 w = selectorSrc.w * 3,
                 h = selectorSrc.h * 3
             };
@@ -436,7 +445,90 @@ namespace Hopper.Managers
             SDL.SDL_RenderCopy(GraphicsManager.Renderer, HowTo, ref src, ref dst);
         }
 
+        public static void DrawVolume()
+        {
+            if(GameManager.State != GAME_STATE.VOLUME)
+            {
+                return;
+            }
 
+            DrawStars();
+
+            var src = new SDL.SDL_Rect()
+            {
+                x = 0,
+                y = 0,
+                w = 32,
+                h = 32
+            };
+
+            var dst = new SDL.SDL_Rect()
+            {
+                x = SystemManager.Width / 2 + 380,
+                y = SystemManager.Height / 2 - 128,
+                w = 32 * 3,
+                h = 32 * 3
+            };
+
+            SDL.SDL_RenderCopy(GraphicsManager.Renderer, RightArrow, ref src, ref dst);
+
+            dst.x = SystemManager.Width / 2 - 380 - (32 * 3);
+            SDL.SDL_RenderCopy(GraphicsManager.Renderer, LeftArrow, ref src, ref dst);
+
+            dst.x += 32 * 4;
+            dst.w = 64;
+            dst.h = 96;
+            dst.y -= 4;
+
+            DrawString("SFX Volume", new(dst.x, dst.y - 64), 4.0f);
+            if (VolumeCursor == 0)
+            {
+                SDL.SDL_SetRenderDrawColor(GraphicsManager.Renderer, 0x00, 0xff, 0x00, 0xff);
+            }
+            else
+            {
+                SDL.SDL_SetRenderDrawColor(GraphicsManager.Renderer, 0xff, 0xff, 0xff, 0xff);
+            }
+            for (int i = 0; i < SystemManager.SfxVolume; i++)
+            {
+                SDL.SDL_RenderFillRect(GraphicsManager.Renderer, ref dst);
+                dst.x += 70;
+            }
+
+            dst = new SDL.SDL_Rect()
+            {
+                x = SystemManager.Width / 2 + 380,
+                y = SystemManager.Height / 2 + 128,
+                w = 32 * 3,
+                h = 32 * 3
+            };
+
+            SDL.SDL_RenderCopy(GraphicsManager.Renderer, RightArrow, ref src, ref dst);
+
+            dst.x = SystemManager.Width / 2 - 380 - (32 * 3);
+            SDL.SDL_RenderCopy(GraphicsManager.Renderer, LeftArrow, ref src, ref dst);
+
+            dst.x += 32 * 4;
+            dst.w = 64;
+            dst.h = 96;
+            dst.y -= 4;
+
+            DrawString("Mus Volume", new(dst.x, dst.y - 64), 4.0f);
+            if (VolumeCursor == 1)
+            {
+                SDL.SDL_SetRenderDrawColor(GraphicsManager.Renderer, 0x00, 0xff, 0x00, 0xff);
+            }
+            else
+            {
+                SDL.SDL_SetRenderDrawColor(GraphicsManager.Renderer, 0xff, 0xff, 0xff, 0xff);
+            }
+            for (int i = 0; i < SystemManager.MusVolume; i++)
+            {
+                SDL.SDL_RenderFillRect(GraphicsManager.Renderer, ref dst);
+                dst.x += 70;
+            }
+
+        }
 
         public static void UpdateMainMenu()
         {
@@ -456,7 +548,7 @@ namespace Hopper.Managers
             else if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_DOWN].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_DOWN].Edge)
             {
                 MainMenuCursor++;
-                MainMenuCursor %= 3;
+                MainMenuCursor %= 4;
             }
             else if(InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Edge)
             {
@@ -469,12 +561,66 @@ namespace Hopper.Managers
                         GameManager.State = GAME_STATE.HOW_TO;
                         break;
                     case 2:
+                        GameManager.State = GAME_STATE.VOLUME;
+                        break;
+                    case 3:
                         GameManager.Quit = true;
                         break;
                 }
             }
 
             UpdateStars();
+        }
+
+        public static void UpdateVolume()
+        {
+            if (GameManager.State != GAME_STATE.VOLUME)
+                return;
+            UpdateStars();
+
+            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_DOWN].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_DOWN].Edge)
+            {
+                VolumeCursor++;
+                VolumeCursor %= 2;
+            } else if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_UP].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_UP].Edge)
+            {
+                VolumeCursor--;
+                if(VolumeCursor < 0)
+                {
+                    VolumeCursor = 1;
+                }
+            }
+
+            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Edge)
+            {
+                if(VolumeCursor == 0 && SystemManager.SfxVolume > 0)
+                {
+                    SystemManager.SfxVolume--;
+                    GameManager.PlayRandomChunk("AlienHurt", 1, 3);
+                }
+                else if(VolumeCursor == 1 && SystemManager.MusVolume > 0)
+                {
+                    SystemManager.MusVolume--;
+                }
+            }
+            else if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Edge)
+            {
+                if (VolumeCursor == 0 && SystemManager.SfxVolume < 10)
+                {
+                    SystemManager.SfxVolume++;
+                    GameManager.PlayRandomChunk("AlienHurt", 1, 3);
+                }
+                else if (VolumeCursor == 1 && SystemManager.MusVolume < 10)
+                {
+                    SystemManager.MusVolume++;
+                }
+            }
+
+            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Edge)
+            {
+                GameManager.State = GAME_STATE.MAIN_MENU;
+                InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Edge = false; //ugh
+            }
         }
 
         public static void UpdateHowTo()

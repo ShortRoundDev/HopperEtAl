@@ -23,6 +23,7 @@ namespace Hopper.Managers
 
         private static string SongName { get; set; } = null;
         private static IntPtr Music { get; set; } = IntPtr.Zero;
+        public static int MusicChannel { get; set; } = -1;
 
         private static List<Entity> ToDelete { get; set; } = new();
         private static List<Entity> ToAdd { get; set; } = new();
@@ -281,6 +282,7 @@ namespace Hopper.Managers
             if (chunk != IntPtr.Zero)
             {
                 int channel = SDL_mixer.Mix_PlayChannel(-1, chunk, 0);
+                SDL_mixer.Mix_Volume(channel, (byte)(SystemManager.SfxVolume / 10.0f * 128.0f));
                 SDL_mixer.Mix_SetDistance(channel, 0);
             }
             return -1;
@@ -298,6 +300,7 @@ namespace Hopper.Managers
                     return -1;
                 }
                 int channel = SDL_mixer.Mix_PlayChannel(-1, chunk, 0);
+                SDL_mixer.Mix_Volume(channel, (byte)(SystemManager.SfxVolume / 10.0f * 128.0f));
                 SDL_mixer.Mix_SetDistance(channel, (byte)(Math.Max(0, Math.Min(distance / 2.0f, 255))));
             }
             return -1;
@@ -321,7 +324,7 @@ namespace Hopper.Managers
             }
             SongName = name;
             Music = SDL_mixer.Mix_LoadMUS(name);
-            SDL_mixer.Mix_PlayMusic(Music, -1);
+            MusicChannel = SDL_mixer.Mix_PlayMusic(Music, -1);
         }
 
         public static int PlayRandomChunkAtt(string Name, int min, int max, int x, int y, out int rand)
@@ -359,7 +362,9 @@ namespace Hopper.Managers
             var chunk = GetAudio(Name + rand);
             if (chunk != IntPtr.Zero)
             {
-                return SDL_mixer.Mix_PlayChannel(-1, chunk, 0);
+                int channel = SDL_mixer.Mix_PlayChannel(-1, chunk, 0);
+                SDL_mixer.Mix_Volume(channel, (byte)(SystemManager.SfxVolume / 10.0f * 128.0f));
+                return channel;
             }
             return -1;
         }
@@ -411,6 +416,7 @@ namespace Hopper.Managers
         IN_GAME = 0,
         MAIN_MENU = 1,
         DEMO_END = 2,
-        HOW_TO = 3
+        HOW_TO = 3,
+        VOLUME = 4
     }
 }
