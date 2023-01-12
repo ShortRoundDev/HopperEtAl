@@ -93,8 +93,13 @@
 		<Name>Font</Name>
 		<Path>Assets\Textures\Engine\Font.png</Path>
 	</Texture>
-	
-	<Texture>
+    <Texture>
+        <Name>Scancodes</Name>
+        <Path>Assets\Textures\Engine\Scancodes.png</Path>
+    </Texture>
+
+
+    <Texture>
 		<Name>Use</Name>
 		<Path>Assets\Textures\Engine\Use.png</Path>
 	</Texture>
@@ -256,6 +261,11 @@
 		<Path>Assets\Textures\Items\Collectibles\Burrito.png</Path>
 	</Texture>
 
+    <Texture>
+        <Name>JetPack</Name>
+        <Path>Assets\Textures\PowerUp\JetPack.png</Path>
+    </Texture>
+
 	<Texture>
 		<Name>ShotGun</Name>
 		<Path>Assets\Textures\PowerUp\ShotGun.png</Path>
@@ -311,6 +321,11 @@
 		<Name>Ink</Name>
 		<Path>Assets\Textures\Particles\Ink.png</Path>
 	</Texture>
+
+    <Texture>
+        <Name>Smoke</Name>
+        <Path>Assets\Textures\Particles\Smoke.png</Path>
+    </Texture>
 
 	<Texture>
 		<Name>DemoEnd</Name>

@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using Hopper.Game.Entities;
+﻿using System.Numerics;
 using Hopper.Geometry;
-using Hopper.Graphics;
 using SDL2;
 
-using Scancodes = SDL2.SDL.SDL_Scancode;
+using static SDL2.SDL.SDL_Scancode;
+using static Hopper.Managers.InputManager;
 
 namespace Hopper.Managers
 {
@@ -25,6 +19,7 @@ namespace Hopper.Managers
         private static IntPtr LeftArrow { get; set; }
         private static IntPtr Numbers { get; set; }
         private static IntPtr Font { get; set; }
+        private static IntPtr Keyboard { get; set; }
         private static IntPtr BubbleTea { get; set; }
         private static IntPtr EmptyBubbleTea { get; set; }
         private static IntPtr DeathScreen { get; set; }
@@ -42,6 +37,13 @@ namespace Hopper.Managers
         //Main Menu
         private static List<SDL.SDL_Point> StarField { get; set; } = new();
         private static int MainMenuCursor { get; set; } = 0;
+
+        // Options
+        private static int OptionsCursor { get; set; } = 0;
+
+        // Input
+        private static int InputCursor { get; set; } = 0;
+        private static bool KeyCapture { get; set; } = false;
 
         // Volume
         private static int VolumeCursor { get; set; } = 0;
@@ -107,6 +109,7 @@ namespace Hopper.Managers
         {
             Numbers = GraphicsManager.GetTexture("Numbers");
             Font = GraphicsManager.GetTexture("Font");
+            Keyboard = GraphicsManager.GetTexture("Scancodes");
             BubbleTea = GraphicsManager.GetTexture("BubbleTea");
             EmptyBubbleTea = GraphicsManager.GetTexture("BubbleTeaEmpty");
             DeathScreen = GraphicsManager.GetTexture("DeathScreen");
@@ -149,6 +152,8 @@ namespace Hopper.Managers
             DrawDeathScreen();
             DrawMainMenu();
             DrawHowTo();
+            DrawOptions();
+            DrawInputOptions();
             DrawVolume();
             DrawRecap();
             DrawMesssage();
@@ -161,8 +166,9 @@ namespace Hopper.Managers
         public static void Update()
         {
             UpdateHowTo();
+            UpdateOptions();
+            UpdateInput();
             UpdateVolume();
-
             UpdateMainMenu();
             UpdateRecap();
             HandleDeathScreenInput();
@@ -200,12 +206,11 @@ namespace Hopper.Managers
                 {
                     r.x = originalX;
                     r.y += 10 * size;
-                    continue;
+                    goto Next;
                 }
-                r.x += 10 * size;
                 if (c < '!' || c > '}')
                 {
-                    continue;
+                    goto Next;
                 }
                 
                 SDL.SDL_Rect src = new SDL.SDL_Rect()
@@ -216,8 +221,88 @@ namespace Hopper.Managers
                     h = 12
                 };
                 SDL.SDL_RenderCopyF(GraphicsManager.Renderer, Font, ref src, ref r);
+
+            Next:
+                r.x += 10 * size;
                 //Render.Box(r, src, Numbers, SDL.SDL_RendererFlip.SDL_FLIP_NONE);
             }
+        }
+
+        public static void DrawButton(string message, Point position, SDL.SDL_Color color, float size = 1.0f, bool outline = true)
+        {
+            var box = new SDL.SDL_Rect()
+            {
+                x = (int)(position.x) - (int)(2 * size),
+                y = (int)position.y - (int)(2 * size),
+                w = (12 * (message.Length - 1)) * (int)size + (int)(4 * size),
+                h = (int)(12 * size) + (int)(4 * size),
+            };
+            SDL.SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
+            if(outline)
+            {
+                SDL.SDL_RenderDrawRect(Renderer, ref box);
+            } else
+            {
+                SDL.SDL_RenderFillRect(Renderer, ref box);
+            }
+            DrawString(message, position, size);
+        }
+
+        public static void DrawScancode(SDL.SDL_Scancode code, Point position, SDL.SDL_Color color, float size = 1.0f)
+        {
+            var dst = new SDL.SDL_FRect()
+            {
+                x = position.x - 2,
+                y = position.y - 2,
+                w = 12.0f * size + 4,
+                h = 12.0f * size + 4
+            };
+            SDL.SDL_Rect src;
+
+            var codeNum = (int)code;
+            if(codeNum >= 4 && codeNum <= 82)
+            {
+                src = new SDL.SDL_Rect()
+                {
+                    x = 12 * codeNum,
+                    y = 0,
+                    w = 12,
+                    h = 12
+                };
+            } else if(codeNum >= 224 && codeNum <= 231)
+            {
+                int offset = codeNum <= 226 ? 224 : 228;
+                src = new SDL.SDL_Rect()
+                {
+                    x = 12 * ((codeNum - offset) + 83),
+                    y = 0,
+                    w = 12,
+                    h = 12
+                };
+            }else
+            {
+                return;
+            }
+
+
+            //draw black bg
+
+            SDL.SDL_SetRenderDrawColor(GraphicsManager.Renderer, color.r, color.g, color.b, color.a);
+            SDL.SDL_RenderFillRectF(GraphicsManager.Renderer, ref dst);
+
+            dst.x += 2;
+            dst.y += 2;
+            dst.w -= 4;
+            dst.h -= 4;
+
+            SDL.SDL_RenderCopyF(GraphicsManager.Renderer, Keyboard, ref src, ref dst);
+
+            dst.x -= 4;
+            dst.y -= 4;
+            dst.w += 8;
+            dst.h += 8;
+            SDL.SDL_SetRenderDrawColor(GraphicsManager.Renderer, color.r, color.g, color.b, color.a);
+            SDL.SDL_RenderDrawRectF(GraphicsManager.Renderer, ref dst);
         }
 
         private static void DrawNumberString(string message, Point position, float size = 1.0f)
@@ -334,12 +419,12 @@ namespace Hopper.Managers
         {
             if (!DeathScreenShowing)
                 return;
-            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_DOWN].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_DOWN].Edge)
+            if (InputManager.Keys[(int)SDL_SCANCODE_DOWN].Down && InputManager.Keys[(int)SDL_SCANCODE_DOWN].Edge)
             {
                 DeathScreenSelector++;
                 DeathScreenSelector %= 2;
             }
-            else if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_UP].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_UP].Edge)
+            else if (InputManager.Keys[(int)SDL_SCANCODE_UP].Down && InputManager.Keys[(int)SDL_SCANCODE_UP].Edge)
             {
                 DeathScreenSelector--;
                 if (DeathScreenSelector < 0)
@@ -347,7 +432,7 @@ namespace Hopper.Managers
                     DeathScreenSelector = 1;
                 }
             }
-            else if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Edge)
+            else if (InputManager.Keys[(int)SDL_SCANCODE_RETURN].Down && InputManager.Keys[(int)SDL_SCANCODE_RETURN].Edge)
             {
                 DeathScreenShowing = false;
                 if (DeathScreenSelector == 0) // continue
@@ -445,6 +530,97 @@ namespace Hopper.Managers
             SDL.SDL_RenderCopy(GraphicsManager.Renderer, HowTo, ref src, ref dst);
         }
 
+        public static void DrawOptions()
+        {
+            if(GameManager.State != GAME_STATE.OPTIONS)
+            {
+                return;
+            }
+            DrawStars();
+
+            DrawString("Input", new(SystemManager.Width / 2 - 380, SystemManager.Height / 2 - 64), 4.0f);
+            DrawString("Volume", new(SystemManager.Width / 2 - 380, SystemManager.Height / 2 + 48), 4.0f);
+
+            SDL.SDL_Rect selectorSrc = new SDL.SDL_Rect()
+            {
+                x = 0,
+                y = 0,
+                w = 12,
+                h = 16
+            };
+
+            SDL.SDL_Rect selectorDst = new SDL.SDL_Rect()
+            {
+                x = SystemManager.Width / 2,
+                y = SystemManager.Height / 2 - 64 + (OptionsCursor * 112),
+                w = selectorSrc.w * 3,
+                h = selectorSrc.h * 3
+            };
+
+            SDL.SDL_RenderCopy(GraphicsManager.Renderer, BubbleTea, ref selectorSrc, ref selectorDst);
+
+        }
+
+        public static void DrawInputOptions()
+        {
+            if (GameManager.State != GAME_STATE.INPUT_OPTIONS)
+            {
+                return;
+            }
+            DrawStars();
+
+            if (KeyCapture)
+            {
+                DrawString("Press key...", new Point(SystemManager.Width / 2 - 400, SystemManager.Height / 2 - 300), 6.0f);
+            }
+
+            DrawButton(
+                "Back",
+                new Point(SystemManager.Width / 2 - 400, SystemManager.Height / 2 - 128),
+                (InputCursor == 0 ? LT_GRN : WHITE),
+                4.0f,
+                false
+            );
+
+            (string action, SDL.SDL_Scancode key)[] inputs =
+            {
+                ("Left", Input.Left),
+                ("Right", Input.Right),
+                ("Jump", Input.Jump),
+                ("Shoot", Input.Shoot),
+                ("Use", Input.Use)
+            };
+
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                int lr = (i / 3);
+                int row = (i % 3);
+                int x = SystemManager.Width / 2 - 380 + (400 * lr);
+                int y = SystemManager.Height / 2 - 64 + (64 * row);
+
+                var pos = new Point(x, y);
+                DrawString(inputs[i].action, pos, 4.0f);
+                pos.x += 300;
+                DrawScancode(inputs[i].key, pos, (i + 1) == InputCursor ? LT_GRN : WHITE, 4.0f);
+            }
+
+            //DrawString("Classic")
+            DrawButton(
+                "Classic",
+                new Point(SystemManager.Width / 2 - 400, SystemManager.Height / 2 + 256),
+                (InputCursor == 6 ? LT_GRN : WHITE),
+                4.0f,
+                false
+            );
+            DrawButton(
+                "Modern",
+                new Point(SystemManager.Width / 2 , SystemManager.Height / 2 + 256),
+                (InputCursor == 7 ? LT_GRN : WHITE),
+                4.0f,
+                false
+            );
+        }
+
         public static void DrawVolume()
         {
             if(GameManager.State != GAME_STATE.VOLUME)
@@ -537,7 +713,7 @@ namespace Hopper.Managers
                 return;
             }
 
-            if(InputManager.Keys[(int)Scancodes.SDL_SCANCODE_UP].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_UP].Edge)
+            if(InputManager.Keys[(int)SDL_SCANCODE_UP].Down && InputManager.Keys[(int)SDL_SCANCODE_UP].Edge)
             {
                 MainMenuCursor--;
                 if(MainMenuCursor < 0)
@@ -545,12 +721,12 @@ namespace Hopper.Managers
                     MainMenuCursor = 2;
                 }
             }
-            else if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_DOWN].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_DOWN].Edge)
+            else if (InputManager.Keys[(int)SDL_SCANCODE_DOWN].Down && InputManager.Keys[(int)SDL_SCANCODE_DOWN].Edge)
             {
                 MainMenuCursor++;
                 MainMenuCursor %= 4;
             }
-            else if(InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Edge)
+            else if(InputManager.Keys[(int)SDL_SCANCODE_RETURN].Down && InputManager.Keys[(int)SDL_SCANCODE_RETURN].Edge)
             {
                 switch (MainMenuCursor)
                 {
@@ -561,7 +737,7 @@ namespace Hopper.Managers
                         GameManager.State = GAME_STATE.HOW_TO;
                         break;
                     case 2:
-                        GameManager.State = GAME_STATE.VOLUME;
+                        GameManager.State = GAME_STATE.OPTIONS;
                         break;
                     case 3:
                         GameManager.Quit = true;
@@ -572,17 +748,127 @@ namespace Hopper.Managers
             UpdateStars();
         }
 
+        private static int HandleCursorUpDown(int cursor, int max, int min)
+        {
+            if (InputManager.Keys[(int)SDL_SCANCODE_DOWN].Down && InputManager.Keys[(int)SDL_SCANCODE_DOWN].Edge)
+            {
+                cursor++;
+            }
+            else if (InputManager.Keys[(int)SDL_SCANCODE_UP].Down && InputManager.Keys[(int)SDL_SCANCODE_UP].Edge)
+            {
+                cursor--;
+            }
+            if(cursor >= max)
+            {
+                cursor = min;
+            }
+            else if(cursor < min)
+            {
+                cursor = max - 1;
+            }
+            return cursor;
+        }
+
+        public static void UpdateOptions()
+        {
+            if (GameManager.State != GAME_STATE.OPTIONS)
+                return;
+            UpdateStars();
+
+            OptionsCursor = HandleCursorUpDown(OptionsCursor, 2, 0);
+
+            if (InputManager.EdgeDown(SDL_SCANCODE_RETURN))
+            {
+                if (OptionsCursor == 0)
+                {
+                    GameManager.State = GAME_STATE.INPUT_OPTIONS;
+                    ClearFrame();
+                }
+                else
+                {
+                    GameManager.State = GAME_STATE.VOLUME;
+                    ClearFrame();
+                }
+            }
+            else if (EdgeDown(SDL_SCANCODE_ESCAPE))
+            {
+                GameManager.State = GAME_STATE.MAIN_MENU;
+            }
+        }
+
+        public static void UpdateInput()
+        {
+            if(GameManager.State != GAME_STATE.INPUT_OPTIONS)
+            {
+                return;
+            }
+            UpdateStars();
+
+            static bool MapKey(ref SDL.SDL_Scancode input)
+            {
+                if (InputManager.LastKeyDown is (SDL_SCANCODE_ESCAPE or SDL_SCANCODE_RETURN))
+                {
+                    KeyCapture = false;
+                    return true;
+                } else if (InputManager.LastKeyDown != null) {
+                    input = (SDL.SDL_Scancode)InputManager.LastKeyDown;
+                    KeyCapture = false;
+                    return true;
+                }
+                return false;
+            }
+
+            if(KeyCapture)
+            {
+                switch (InputCursor)
+                {
+                    case 1: MapKey(ref Input.Left); break;
+                    case 2: MapKey(ref Input.Right); break;
+                    case 3: MapKey(ref Input.Jump); break;
+                    case 4: MapKey(ref Input.Shoot); break;
+                    case 5: MapKey(ref Input.Use); break;
+                }
+                return;
+            }
+
+            InputCursor = HandleCursorUpDown(InputCursor, 8, 0);
+
+            if(EdgeDown(SDL_SCANCODE_RETURN))
+            {
+                if(InputCursor == 0)
+                {
+                    GameManager.State = GAME_STATE.OPTIONS;
+                    ClearFrame();
+                } else if(InputCursor >= 1 && InputCursor <= 5) {
+                    KeyCapture = true;
+                } else if(InputCursor == 6) // classic
+                {
+                    Input = new();
+                } else if(InputCursor == 7)
+                {
+                    Input = new()
+                    {
+                        Left = SDL_SCANCODE_A,
+                        Right = SDL_SCANCODE_D,
+                        Jump = SDL_SCANCODE_SPACE,
+                        Shoot = SDL_SCANCODE_F,
+                        Use = SDL_SCANCODE_E,
+                    };
+                }
+            }
+        }
+
         public static void UpdateVolume()
         {
             if (GameManager.State != GAME_STATE.VOLUME)
                 return;
             UpdateStars();
 
-            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_DOWN].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_DOWN].Edge)
+            if (InputManager.Keys[(int)SDL_SCANCODE_DOWN].Down && InputManager.Keys[(int)SDL_SCANCODE_DOWN].Edge)
             {
                 VolumeCursor++;
                 VolumeCursor %= 2;
-            } else if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_UP].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_UP].Edge)
+            } else if (InputManager.Keys[(int)SDL_SCANCODE_UP].Down && InputManager.Keys[(int)SDL_SCANCODE_UP].Edge)
             {
                 VolumeCursor--;
                 if(VolumeCursor < 0)
@@ -591,7 +877,7 @@ namespace Hopper.Managers
                 }
             }
 
-            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Edge)
+            if (InputManager.Keys[(int)SDL_SCANCODE_LEFT].Down && InputManager.Keys[(int)SDL_SCANCODE_LEFT].Edge)
             {
                 if(VolumeCursor == 0 && SystemManager.SfxVolume > 0)
                 {
@@ -603,7 +889,7 @@ namespace Hopper.Managers
                     SystemManager.MusVolume--;
                 }
             }
-            else if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Edge)
+            else if (InputManager.Keys[(int)SDL_SCANCODE_RIGHT].Down && InputManager.Keys[(int)SDL_SCANCODE_RIGHT].Edge)
             {
                 if (VolumeCursor == 0 && SystemManager.SfxVolume < 10)
                 {
@@ -616,10 +902,10 @@ namespace Hopper.Managers
                 }
             }
 
-            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Edge)
+            if (InputManager.Keys[(int)SDL_SCANCODE_RETURN].Down && InputManager.Keys[(int)SDL_SCANCODE_RETURN].Edge)
             {
                 GameManager.State = GAME_STATE.MAIN_MENU;
-                InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Edge = false; //ugh
+                InputManager.Keys[(int)SDL_SCANCODE_RETURN].Edge = false; //ugh
             }
         }
 
@@ -629,11 +915,11 @@ namespace Hopper.Managers
             {
                 return;
             }
-            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Edge)
+            if (InputManager.Keys[(int)SDL_SCANCODE_RETURN].Down && InputManager.Keys[(int)SDL_SCANCODE_RETURN].Edge)
             {
                 GameManager.State = GAME_STATE.MAIN_MENU;
 
-                InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Edge = false; //ugh
+                InputManager.Keys[(int)SDL_SCANCODE_RETURN].Edge = false; //ugh
             }
             UpdateStars();
         }
@@ -720,7 +1006,7 @@ namespace Hopper.Managers
         {
             if (!ShowStats)
                 return;
-            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_E].Down)
+            if (InputManager.Keys[(int)SDL_SCANCODE_E].Down)
             {
                 ShowStats = false;
                 RecapProgress = 0.0f;
@@ -948,7 +1234,7 @@ namespace Hopper.Managers
             {
                 return;
             }
-            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Down)
+            if (InputManager.Keys[(int)SDL_SCANCODE_RETURN].Down)
             {
                 Message = "";
                 ShowMessage = false;
@@ -1017,7 +1303,7 @@ namespace Hopper.Managers
                 return;
             }
 
-            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RETURN].Down)
+            if (InputManager.Keys[(int)SDL_SCANCODE_RETURN].Down)
             {
                 GameManager.PlayMusic("Assets/Music/CreepyWhistle.ogg");
 

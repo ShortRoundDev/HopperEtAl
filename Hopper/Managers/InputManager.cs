@@ -6,12 +6,19 @@ using System.Threading.Tasks;
 
 using SDL2;
 
+using static SDL2.SDL.SDL_Scancode;
+
 namespace Hopper.Managers
 {
     public static class InputManager
     {
         public static KeyState[] Keys { get; set; }= new KeyState[0xff];
         public static bool Quit { get; set; } = false;
+
+        public static KeyConfig Input = new();
+
+        public static SDL.SDL_Scancode? LastKeyDown;
+
         public static void Init()
         {
             for (int i = 0; i < Keys.Length; i++)
@@ -25,8 +32,17 @@ namespace Hopper.Managers
             }
         }
 
+        public static void ClearFrame()
+        {
+            for (int i = 0; i < Keys.Length; i++)
+            {
+                Keys[i].Edge = false;
+            }
+        }
+
         public static void Update()
         {
+            LastKeyDown = null;
             for (int i = 0; i < Keys.Length; i++)
             {
                 Keys[i].Edge = false;
@@ -64,8 +80,27 @@ namespace Hopper.Managers
             }
             state.Down = true;
             state.Edge = true;
+            LastKeyDown = scanCode;
             state.TimeDown = SDL.SDL_GetTicks();
             Keys[(int)scanCode] = state;
+        }
+
+        public static bool IsDown(SDL.SDL_Scancode scanCode)
+        {
+            if ((int)scanCode > Keys.Count())
+            {
+                return false;
+            }
+            return Keys[(int)scanCode].Down;
+        }
+
+        public static bool EdgeDown(SDL.SDL_Scancode scanCode)
+        {
+            if((int)scanCode > Keys.Count())
+            {
+                return false;
+            }
+            return Keys[(int)scanCode].Down && Keys[(int)scanCode].Edge;
         }
 
         private static void KeyUp(SDL.SDL_Scancode scanCode)
@@ -84,6 +119,15 @@ namespace Hopper.Managers
             state.Edge = true;
             Keys[(int)scanCode] = state;
         }
+    }
+
+    public class KeyConfig
+    {
+        public SDL.SDL_Scancode Left = SDL_SCANCODE_LEFT;
+        public SDL.SDL_Scancode Right = SDL_SCANCODE_RIGHT;
+        public SDL.SDL_Scancode Jump = SDL_SCANCODE_SPACE;
+        public SDL.SDL_Scancode Shoot = SDL_SCANCODE_LCTRL;
+        public SDL.SDL_Scancode Use = SDL_SCANCODE_E;
     }
 
     public struct KeyState

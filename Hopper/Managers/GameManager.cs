@@ -52,6 +52,11 @@ namespace Hopper.Managers
             InitEntityDefinitions();
             InitTileDefinitions();
             InitAudioChunks();
+
+            if (SystemManager.StartLevel != null)
+            {
+                NewLevel(SystemManager.StartLevel);
+            }
         }
 
         private static void InitFontColors()
@@ -160,6 +165,7 @@ namespace Hopper.Managers
 
         public static void DeleteEntity(Entity entity)
         {
+            entity.Deleted = true;
             ToDelete.Add(entity);
         }
 
@@ -417,6 +423,8 @@ namespace Hopper.Managers
         MAIN_MENU = 1,
         DEMO_END = 2,
         HOW_TO = 3,
-        VOLUME = 4
+        VOLUME = 4,
+        OPTIONS = 5,
+        INPUT_OPTIONS = 6
     }
 }

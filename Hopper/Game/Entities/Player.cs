@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Scancodes = SDL2.SDL.SDL_Scancode;
+using static Hopper.Managers.InputManager;
 
 namespace Hopper.Game.Entities
 {
@@ -33,6 +33,10 @@ namespace Hopper.Game.Entities
         private byte LastZoom { get; set; } = 3;
         public bool Shotgun { get; set; } = false;
         public bool CrossHair { get; set; } = false;
+        public int JetPack { get; set; } = -1;
+        private IntPtr JetPackTexture { get; set; } = IntPtr.Zero;
+        private CameraTracker Tracker { get; set; }
+        private float TrackerProgress { get; set; }
 
         private int FallingScream { get; set; } = -1;
         public Platform PlatformParent { get; set; }
@@ -49,14 +53,7 @@ namespace Hopper.Game.Entities
             "I didn't fill out my life insurance!",
             "Someone feed my cat!",
             "I die a virgin!",
-            "I never got to see spain!",
-            "Why, god, why!",
             "Ow",
-            "Why, Buddha, why!",
-            "Jesus save me!",
-            "Save me, L Ron Hubbard!",
-            "Don't let me die, Vishnu!",
-            "Save my life, Neil Degrasse Tyson!",
             "Science damn it!",
             "Don't blame me, I voted for Kodos!",
             "Por que!",
@@ -101,7 +98,10 @@ namespace Hopper.Game.Entities
         )
         {
             GameManager.MainPlayer = this;
-            GraphicsManager.MainCamera.Track(this);
+            Tracker = new((int)Box.x, (int)Box.y);
+            GraphicsManager.MainCamera.Track(Tracker);
+            
+            JetPackTexture = GraphicsManager.GetTexture("JetPack");
             Animate = new Animator()
             {
                 SrcRect = new SDL.SDL_Rect()
@@ -133,8 +133,53 @@ namespace Hopper.Game.Entities
             };
             if (DamageBoost == 0 || (DamageBoost / 3) % 2 != 0)
             {
+                DrawJetPack();
                 Render.Box(dst, Animate.GetUVMap(), Texture, SDLFlip);
             }
+        }
+
+        void DrawJetPack()
+        {
+            if(JetPack > 0)
+            {
+                SDL.SDL_FRect jetPackBox = new()
+                {
+                    x = Box.x,
+                    y = Box.y,
+                    w = 32,
+                    h = 32
+                };
+                Render.Box(jetPackBox, JetPackTexture, !RenderFlip ? SDL.SDL_RendererFlip.SDL_FLIP_HORIZONTAL : SDL.SDL_RendererFlip.SDL_FLIP_NONE);
+            }
+        }
+
+        private void UpdateCamera()
+        {
+            if(JetPack > 0)
+            {
+                if(TrackerProgress < 1.0f)
+                {
+                    TrackerProgress += 0.1f;
+                    if(TrackerProgress > 1.0f)
+                    {
+                        TrackerProgress = 1.0f;
+                    }
+                }
+            } else
+            {
+                if(TrackerProgress > 0.0f)
+                {
+                    TrackerProgress -= 0.01f;
+                    if (TrackerProgress < 0.0f)
+                    {
+                        TrackerProgress = 0.0f;
+                    }
+                }
+            }
+
+            Tracker.Box.y = Box.y + + Box.h/2.0f + (MoveVec.y * 10.0f * TrackerProgress);
+
+            Tracker.Box.x = Box.x + Box.w/2;
         }
 
         public override void Update()
@@ -145,6 +190,9 @@ namespace Hopper.Game.Entities
             }
             Animate.Update();
             MoveAndCollide();
+            UpdateJetPack();
+            UpdateCamera();
+
             CheckZoom();
 
             HandlePlatform();
@@ -179,6 +227,27 @@ namespace Hopper.Game.Entities
             var gun = Shotgun ? "Shotgun" : "Pistol";
 
             Animate.Animation = animations[((shooting ? "Shooting" : "Default") + gun) + animation];
+        }
+
+        private void UpdateJetPack()
+        {
+            if(JetPack < 0)
+            {
+                return;
+            }
+
+            JetPack--;
+            OnGround = false;
+            MoveVec.y -= 0.5f;
+            if(MoveVec.y < -10)
+            {
+                MoveVec.y = -10;
+            }
+
+            if(JetPack % 7 == 0)
+            {
+                GameManager.AddEntity(new Smoke((int)Box.x + (RenderFlip ? 20 : 0), (int)Box.y + 32));
+            }
         }
 
         private void HandlePlatform()
@@ -224,20 +293,20 @@ namespace Hopper.Game.Entities
                 animation = "Swimming";
 
                 Walking = false;
-                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down && MoveVec.x > -2.0f) {
+                if (IsDown(Input.Left) && MoveVec.x > -2.0f) {
                     MoveVec.x -= 0.1f;
                     Walking = true;
                     RenderFlip = true;
                 }
                 
-                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down && MoveVec.x < 2.0f)
+                if (IsDown(Input.Right) && MoveVec.x < 2.0f)
                 {
                     MoveVec.x += 0.1f;
                     Walking = true;
                     RenderFlip = false;
                 }
                 
-                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Edge)
+                if (EdgeDown(Input.Jump))
                 {
                     MoveVec.y -= 2.0f;
                 }
@@ -264,7 +333,7 @@ namespace Hopper.Game.Entities
             }
             else if (FeetInWater && !OnGround)
             {
-                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Edge)
+                if (EdgeDown(Input.Jump))
                 {
                     Console.WriteLine("Jump out of water");
                     MoveVec.y -= 4.0f;
@@ -277,13 +346,13 @@ namespace Hopper.Game.Entities
         {
             if (!OnGround && !InWater)
             {
-                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down && MoveVec.x > -2.0f)
+                if (IsDown(Input.Left) && MoveVec.x > -2.0f)
                 {
                     MoveVec.x -= 0.4f;
                     Walking = true;
                     RenderFlip = true;
                 }
-                if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down && MoveVec.x < 2.0f)
+                if (IsDown(Input.Right) && MoveVec.x < 2.0f)
                 {
                     Console.WriteLine(MoveVec.x);
                     MoveVec.x += 0.4f;
@@ -302,7 +371,7 @@ namespace Hopper.Game.Entities
                 shootTimer--;
             }
 
-            if (Ammo > 0 && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LCTRL].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LCTRL].Edge && shootTimer <= 10)
+            if (Ammo > 0 && EdgeDown(Input.Shoot) && shootTimer <= 10)
             {
                 Ammo--;
                 if (!Shotgun)
@@ -367,15 +436,17 @@ namespace Hopper.Game.Entities
             float gravity = !InWater
                 ? GameManager.Gravity
                 : GameManager.Gravity / 4.0f;
-            if (Jumping && MoveVec.y < -4 && !InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down)
+            if (JetPack < 0 && Jumping && MoveVec.y < -4 && !IsDown(Input.Jump))
             {
                 Console.WriteLine("Jumping");
                 MoveVec.y = -4;
 //                gravity *= 3.0f;
             }
 
-
-            MoveVec.y += gravity;
+            if (JetPack < 0)
+            {
+                MoveVec.y += gravity;
+            }
         }
 
         private void HandleOnGroundInput(out string animation)
@@ -395,7 +466,7 @@ namespace Hopper.Game.Entities
 
             Walking = false;
 
-            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_RIGHT].Down)
+            if (IsDown(Input.Right))
             {
                 MoveVec.x = 2.5f;
                 Walking = true;
@@ -403,13 +474,13 @@ namespace Hopper.Game.Entities
                 Console.WriteLine(MoveVec.x);
             }
 
-            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_LEFT].Down)
+            if (IsDown(Input.Left))
             {
                 MoveVec.x = -2.5f;
                 Walking = true;
                 RenderFlip = true;
             }
-            if (InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Down && InputManager.Keys[(int)Scancodes.SDL_SCANCODE_SPACE].Edge)
+            if (EdgeDown(Input.Jump))
             {
                 Jumping = true;
                 Console.WriteLine("Jump");

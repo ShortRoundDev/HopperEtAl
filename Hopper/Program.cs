@@ -15,7 +15,7 @@ namespace Hopper
         public static void Main(string[] args)
         {
             //tick = SDL.SDL_GetTicks();
-            Init();
+            Init(args);
             while (!InputManager.Quit)
             {
                 long NewTime = DateTime.Now.Ticks;
@@ -38,16 +38,14 @@ namespace Hopper
 
         }
 
-        private static void Init()
+        private static void Init(string[] args)
         {
-            SystemManager.Init();
+            SystemManager.Init(args);
             SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_AUDIO);
             GraphicsManager.Init(SystemManager.Width, SystemManager.Height);
             InputManager.Init();
             GameManager.Init();
             UIManager.Init();
-
-            GameManager.PlayMusic("Assets/Music/CreepyWhistle.ogg");
         }
 
         private static void Draw()
