@@ -146,8 +146,12 @@
 	<!-- Entities -->
 	<Texture>
 		<Name>Player</Name>
-		<Path>Assets\Textures\Player\Player.png</Path>
+		<Path>Assets\Textures\Player\PlayerC.png</Path>
 	</Texture>
+    <Texture>
+        <Name>PistolArm</Name>
+        <Path>Assets\Textures\Player\PistolArm.png</Path>
+    </Texture>
 	<Texture>
 		<Name>Brainiac</Name>
 		<Path>Assets\Textures\Enemies\Brainiac\Brainiac.png</Path>

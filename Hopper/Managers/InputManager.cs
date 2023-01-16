@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,9 +16,20 @@ namespace Hopper.Managers
         public static KeyState[] Keys { get; set; }= new KeyState[0xff];
         public static bool Quit { get; set; } = false;
 
-        public static KeyConfig Input = new();
+        public static KeyConfig Input = new()
+        {
+            Left = SDL_SCANCODE_A,
+            Right = SDL_SCANCODE_D,
+            Jump = SDL_SCANCODE_SPACE,
+            Shoot = SDL_SCANCODE_F,
+            Use = SDL_SCANCODE_E,
+        };
+
 
         public static SDL.SDL_Scancode? LastKeyDown;
+        public static (int X, int Y) MousePos;
+        public static bool MouseDown { get; set; } = false;
+        public static bool MouseEdge { get; set; } = false;
 
         public static void Init()
         {
@@ -38,6 +50,7 @@ namespace Hopper.Managers
             {
                 Keys[i].Edge = false;
             }
+            MouseEdge = false;
         }
 
         public static void Update()
@@ -47,6 +60,8 @@ namespace Hopper.Managers
             {
                 Keys[i].Edge = false;
             }
+            MouseEdge = false;
+
 
             SDL.SDL_Event e;
             while(SDL.SDL_PollEvent(out e) != 0)
@@ -62,9 +77,23 @@ namespace Hopper.Managers
                     case SDL.SDL_EventType.SDL_KEYUP:
                         KeyUp(e.key.keysym.scancode);
                         break;
+                    case SDL.SDL_EventType.SDL_MOUSEBUTTONDOWN:
+                        if(e.button.which == 0)
+                        {
+                            MouseDown = true;
+                            MouseEdge = true;
+                        }
+                        break;
+                    case SDL.SDL_EventType.SDL_MOUSEBUTTONUP:
+                        if(e.button.which == 0)
+                        {
+                            MouseDown = false;
+                            MouseEdge = true;
+                        }
+                        break;
                 }
             }
-            
+            SDL.SDL_GetMouseState(out MousePos.X, out MousePos.Y);
         }
 
         private static void KeyDown(SDL.SDL_Scancode scanCode)

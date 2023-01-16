@@ -15,7 +15,7 @@ namespace Hopper.Game.Entities.Projectiles
     {
         int Frame = 0;
         public PlayerBullet(Point start, Point move) : base(
-            IntPtr.Zero, new() { x = start.x, y = start.y, w =6, h = 2 }, move,
+            IntPtr.Zero, new() { x = start.x, y = start.y, w =2, h = 2 }, move,
             new Type[] {typeof(Enemy), typeof(Door)}
         )
         {

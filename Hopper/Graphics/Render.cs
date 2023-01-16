@@ -32,7 +32,7 @@ namespace Hopper.Graphics
             SDL.SDL_RenderCopyExF(GraphicsManager.Renderer, Texture, ref src, ref dst, 0.0f, IntPtr.Zero, flip);
         }
 
-        private static SDL.SDL_FRect FRectPerspective(SDL.SDL_FRect rect)
+        public static SDL.SDL_FRect FRectPerspective(SDL.SDL_FRect rect)
         {
             Vector4 dst = new Vector4(rect.x, rect.y, rect.w, rect.h);
             dst.X -= GraphicsManager.MainCamera.Position.x - (SystemManager.Width / (2 * GraphicsManager.MainCamera.Scale.x));

@@ -2,6 +2,7 @@
   "profiles": {
     "Hopper": {
       "commandName": "Project",
+      "commandLineArgs": "+Level Assets\\Levels\\Jetpack",
       "workingDirectory": "..\\Hopper"
     }
   }
