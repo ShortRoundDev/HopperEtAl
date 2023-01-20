@@ -23,7 +23,7 @@ namespace Hopper.Game.Entities.Projectiles
         public override void Update()
         {
             byte hitDirection = MoveAndCollide();
-            if(hitDirection != 0)
+            if(hitDirection != 0 && !(this.CollideWith?.Any(t => t.IsSubclassOf(typeof(Projectile))) ?? false))
             {
                 GameManager.DeleteEntity(this);
             }

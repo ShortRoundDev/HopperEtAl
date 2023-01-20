@@ -39,6 +39,8 @@ namespace Hopper.Game.Entities
         public int JetPack { get; set; } = -1;
         private IntPtr JetPackTexture { get; set; } = IntPtr.Zero;
         private IntPtr PistolArm { get; set; } = IntPtr.Zero;
+        private IntPtr ShotgunArm { get; set; } = IntPtr.Zero;
+
         private CameraTracker Tracker { get; set; }
         private float TrackerProgress { get; set; }
 
@@ -125,6 +127,7 @@ namespace Hopper.Game.Entities
                 Speed = 0.1f
             };
             PistolArm = GraphicsManager.GetTexture("PistolArm");
+            ShotgunArm = GraphicsManager.GetTexture("ShotgunArm");
         }
 
         public override void Draw()
@@ -145,28 +148,66 @@ namespace Hopper.Game.Entities
             {
                 DrawJetPack();
                 Render.Box(dst, Animate.GetUVMap(), Texture, SDLFlip);
+                DrawArm((int)dst.x, (int)dst.y);
             }
+        }
 
+        private Point GetArmPos()
+        {
+            return new Point(
+                Box.x - 8 + 18 + (RenderFlip ? 9 : 0),
+                Box.y + 11
+            );
+        }
+
+        private Vector2 GetMouseDiff()
+        {
+            var armPos = GetArmPos();
+            var transformed = Render.FRectPerspective(new SDL.SDL_FRect()
+            {
+                x = armPos.x,
+                y = armPos.y
+            });
+
+            return new Vector2(MousePos.X, MousePos.Y) - new Vector2(transformed.x, transformed.y);
+        }
+
+        private SDL.SDL_Point GetArmPivot()
+        {
+            return new SDL.SDL_Point()
+            {
+                x = (int)(1.0f * GraphicsManager.MainCamera.Scale.x),
+                y = (int)(5.0f * GraphicsManager.MainCamera.Scale.y)
+            };
+        }
+
+        private void GetAngles(Vector2 diff, out double rads, out double angle)
+        {
+            rads = Math.Atan2(diff.Y, diff.X);
+            angle = rads * (180.0 / Math.PI);
+
+        }
+
+        private void DrawArm(int x, int y)
+        {
             var pistolSrc = new SDL.SDL_Rect()
             {
                 x = 0,
                 y = 0,
-                w = 22,
-                h = 6
+                w = Shotgun ? 35 : 22,
+                h = 10
             };
+
+            var armPos = GetArmPos();
 
             var pistolDst = new SDL.SDL_FRect()
             {
-                x = dst.x + 18 + (RenderFlip ? 9 : 0),
-                y = dst.y + 11 + (RenderFlip ? 3 : 0),
-                w = 22,
-                h = 6
+                x = armPos.x,
+                y = armPos.y,
+                w = Shotgun ? 35 : 22,
+                h = 10
             };
-
-            var center = new SDL.SDL_Point() {
-                x = 4,
-                y = 12 + (RenderFlip ? -8 : 0)
-            };
+            var center = GetArmPivot();
 
             var pdst = Render.FRectPerspective(pistolDst);
             var pdstI = new SDL.SDL_Rect()
@@ -177,13 +218,10 @@ namespace Hopper.Game.Entities
                 h = (int)pdst.h,
             };
 
-            Vector2 diff = new Vector2(InputManager.MousePos.X, InputManager.MousePos.Y) - new Vector2(pdst.x, pdst.y);
-            double theta = Math.Atan2(diff.Y, diff.X);
-            double angle = theta * (180.0 / Math.PI);
+            GetAngles(GetMouseDiff(), out _, out double angle);
 
-            SDL.SDL_RenderCopyEx(GraphicsManager.Renderer, PistolArm, ref pistolSrc, ref pdstI, angle, ref center, RenderFlip ? SDL.SDL_RendererFlip.SDL_FLIP_VERTICAL : SDL.SDL_RendererFlip.SDL_FLIP_NONE);
-            //SDL.SDL_RenderCopy(GraphicsManager.Renderer, PistolArm, ref pistolSrc, ref pdst);
-            //Render.Box(pistolDst, pistolSrc, PistolArm, SDLFlip);
+            SDL.SDL_RenderCopyEx(GraphicsManager.Renderer, Shotgun ? ShotgunArm : PistolArm, ref pistolSrc, ref pdstI, angle, ref center, RenderFlip ? SDL.SDL_RendererFlip.SDL_FLIP_VERTICAL : SDL.SDL_RendererFlip.SDL_FLIP_NONE);
+
         }
 
         void DrawJetPack()
@@ -447,26 +485,22 @@ namespace Hopper.Game.Entities
                 };
                 var pdst = Render.FRectPerspective(pistolDst);
 
-
-                Vector2 diff = new Vector2(InputManager.MousePos.X, InputManager.MousePos.Y) - new Vector2(pdst.x, pdst.y);
-                double theta = Math.Atan2(diff.Y, diff.X);
-
-
                 Ammo--;
+
+                var armPos = GetArmPos();
+                GetAngles(GetMouseDiff(), out double rads, out _);
+                var end = new Point((float)Math.Cos(rads) * (Shotgun ? 35.0f : 22.0f) + armPos.x, (float)Math.Sin(rads) * (Shotgun ? 35.0f : 22.0f) + armPos.y);
+
                 if (!Shotgun)
                 {
                     GameManager.PlayChunk("Shoot");
                     GameManager.AddEntity(
                         new PlayerBullet(
+                            end,
                             new Point()
                             {
-                                x = Box.x + (RenderFlip ? -16 : 16),
-                                y = Box.y + 16
-                            },
-                            new Point()
-                            {
-                                x = (float)Math.Cos(theta) * 8.0f,
-                                y = (float)Math.Sin(theta) * 8.0f
+                                x = (float)Math.Cos(rads) * 8.0f,
+                                y = (float)Math.Sin(rads) * 8.0f
                             }
                         )
                     );
@@ -478,37 +512,18 @@ namespace Hopper.Game.Entities
                     MoveVec.x -= dir * 3;
                     for (int i = -1; i < 2; i++)
                     {
+                        Console.WriteLine(Math.Sin(rads + (((float)i) * 0.2f)));
                         GameManager.AddEntity(
                             new PlayerBullet(
-                                new()
+                                end,
+                                new Point()
                                 {
-                                    x = Box.x + (RenderFlip ? -16 : 16),
-                                    y = Box.y + (i * 6) + 12
-                                },
-                                RenderFlip
+                                    x = (float)Math.Cos(rads + (((float)i) * 0.2f)) * 8.0f,
+                                    y = (float)Math.Sin(rads + (((float)i) * 0.2f)) * 8.0f
+                                }
                             )
                         );
                     }
-                   /* GameManager.AddEntity(
-                        new PlayerBullet(
-                            new()
-                            {
-                                x = Box.x + (RenderFlip ? -16 : 16),
-                                y = Box.y + 12
-                            },
-                            new Point(dir, 0) * 8
-                        )
-                    );
-                    GameManager.AddEntity(
-                        new PlayerBullet(
-                            new()
-                            {
-                                x = Box.x + (RenderFlip ? -16 : 16),
-                                y = Box.y + 12
-                            },
-                            new Point(COS_ANGLE * dir, SIN_ANGLE) * 8
-                        )
-                    );*/
                 }
                 shootTimer = 20;
             }

@@ -23,7 +23,7 @@ namespace Hopper.Game.Tags
             var _this = this as Entity;
             foreach (var entity in GameManager.CurrentLevel.Entities)
             {
-                if(entity == this)
+                if(entity == this || (entity.GetType() == this.GetType()))
                 {
                     continue;
                 }

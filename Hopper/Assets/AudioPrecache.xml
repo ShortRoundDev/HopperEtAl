@@ -145,6 +145,6 @@
 
 	<Audio>
 		<Name>ShotgunShoot</Name>
-		<Path>Assets/Audio/Sfx/ShotgunShoot.ogg</Path>
+		<Path>Assets/Audio/Sfx/ShotgunShoot2.ogg</Path>
 	</Audio>
 </Chunks>

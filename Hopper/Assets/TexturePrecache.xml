@@ -152,6 +152,10 @@
         <Name>PistolArm</Name>
         <Path>Assets\Textures\Player\PistolArm.png</Path>
     </Texture>
+    <Texture>
+        <Name>ShotgunArm</Name>
+        <Path>Assets\Textures\Player\ShotgunArm.png</Path>
+    </Texture>
 	<Texture>
 		<Name>Brainiac</Name>
 		<Path>Assets\Textures\Enemies\Brainiac\Brainiac.png</Path>
