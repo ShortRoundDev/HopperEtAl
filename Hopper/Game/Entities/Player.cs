@@ -9,6 +9,7 @@ using Hopper.Managers;
 using SDL2;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Security.Cryptography;
@@ -568,6 +569,7 @@ namespace Hopper.Game.Entities
             {
                 MoveVec.x = 2.5f;
                 Walking = true;
+                Tracker.Box.x = (Box.x + Box.w/2) + 64;
                 RenderFlip = false;
                 Console.WriteLine(MoveVec.x);
             }
@@ -576,6 +578,7 @@ namespace Hopper.Game.Entities
             {
                 MoveVec.x = -2.5f;
                 Walking = true;
+                Tracker.Box.x = (Box.x + Box.w / 2) - 64;
                 RenderFlip = true;
             }
             if (EdgeDown(Input.Jump))
